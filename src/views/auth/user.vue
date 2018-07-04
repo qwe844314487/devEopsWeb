@@ -77,12 +77,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="160px" align="center" label="上次登陆">
-        <template slot-scope="user">
-          <span>{{ user.row.last_login |timeFilter }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column align="center" label="操作" width="500px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="user">
           <el-button type="primary" size="medium" @click="handleGroup(user.row)" :disabled="btnStatus">管理组</el-button>
@@ -152,15 +146,6 @@
           return 'success'
         }else{
           return 'danger'
-        }
-      },
-      timeFilter(last_login){
-        if(last_login){
-          const date = last_login.split('T')
-          const time = date[1].split('.')
-          return date[0]+' '+time[0]
-        }else{
-          return ''
         }
       }
     },
