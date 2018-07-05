@@ -7,6 +7,7 @@
         inactive-text="详细检索">
         </el-switch>
         <el-button class="filter-item" @click="resetSearch()" style="margin-left: 10px;" type="primary" icon="el-icon-refresh" :disabled="btnStatus">清除</el-button>
+        <el-button class="filter-item" @click="handleCreate()" style="float:right;" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>
       </el-row>
       <el-row style="margin-bottom:5px;" v-show="detailSearch">
          <el-col :span="7" :offset="1">
@@ -80,9 +81,9 @@
       <el-table-column align="center" label="操作" width="500px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="user">
           <el-button type="primary" size="medium" @click="handleGroup(user.row)" :disabled="btnStatus">管理组</el-button>
-          <!-- <el-button type="warning" size="medium" @click="" :disabled="btnStatus">编辑</el-button> -->
+          <el-button type="warning" size="medium" @click="handleUpdate(user.row)" :disabled="btnStatus">编辑</el-button>
           <el-button type="danger" size="medium" @click="handleStatus(user.row)" :disabled="btnStatus">改变状态</el-button>
-          <el-button type="primary" size="medium" @click="handleDetail(user.row)" :disabled="btnStatus">操作详情</el-button>
+          <el-button type="primary" size="medium" @click="handleDetail(user.row)" disabled="">操作详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -91,6 +92,33 @@
       <el-pagination background layout="total, prev, pager, next, jumper" @current-change="handleCurrentChange" :total="pagination.count">
       </el-pagination>
     </div>
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogUserVisible" width="60%" top="2vh">
+      <el-form :rules="rules" ref="userForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
+
+        <el-form-item label="Phone" prop="phone">
+          <el-input v-model="commit_obj.phone"></el-input>
+        </el-form-item>
+
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="commit_obj.username"></el-input>
+        </el-form-item>
+
+        <el-form-item label="姓名" prop="full_name">
+          <el-input v-model="commit_obj.full_name"></el-input>
+        </el-form-item>
+
+        <el-form-item label="电子邮箱" prop="email">
+          <el-input v-model="commit_obj.email"></el-input>
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogUserVisible = false" :disabled="btnStatus">取消</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createUser" :disabled="btnStatus">提交</el-button>
+        <el-button v-else type="primary" @click="updateUser" :disabled="btnStatus">提交</el-button>
+      </div>
+    </el-dialog>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogGroupVisible" width="60%" top="2vh">
       <el-form ref="userGrpForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
@@ -111,7 +139,7 @@
 </template>
 
 <script>
-  import { fetch_UserListByPage,update_User,fetch_PmnGroupList } from '@/api/auth'
+  import { fetch_UserListByPage,create_User,update_User,fetch_PmnGroupList } from '@/api/auth'
   export default {
     data(){
       return {
@@ -134,7 +162,14 @@
           update: '编辑用户',
           create: '新建用户'
         },
-        dialogGroupVisible: false
+        dialogGroupVisible: false,
+        dialogUserVisible: false,
+        rules: {
+            phone:[{ required: true, message: '电话号码是必须的', trigger: 'blur' }],
+            username: [{ required: true, message: '用户名是必须的', trigger: 'blur' }],
+            full_name: [{ required: true, message:'您的姓名是必须的', trigger: 'blur'}],
+            email: [{ required: false, message:'您的邮箱', trigger: 'blur'}]
+        }
       }
     },
     created(){
@@ -171,7 +206,9 @@
         })
       },
       reset_commit(){
-        this.commit_obj = {}
+        this.commit_obj = {
+          is_active: false
+        }
       },
       reset_search(){
         this.search_obj = {}
@@ -200,6 +237,19 @@
         this.commit_obj = Object.assign({},row)
         this.init_pmngroup()
       },
+      handleCreate(row){
+        this.dialogStatus = 'create'
+        this.dialogUserVisible = true
+        this.reset_commit()
+      },
+      handleUpdate(row){
+        this.commit_obj = Object.assign({}, row) // copy obj
+        this.dialogStatus = 'update'
+        this.$nextTick(() => {
+          this.$refs['userForm'].clearValidate()
+        })
+        this.dialogUserVisible = true
+      },
       handleStatus(row){
         this.commit_obj = Object.assign({},row)
         this.$confirm('此操作将修改该用户状态, 是否继续?', '提示', {
@@ -221,6 +271,47 @@
       handleDetail(row){
         return
       },
+      createUser(){
+        this.$refs['userForm'].validate((valid) => {
+          if (valid) {
+            this.btnStatus=true
+            create_User(this.commit_obj).then(() => {
+              this.resetSearch()
+              this.dialogUserVisible = false
+              this.$message({
+                showClose: true,
+                message: '添加用户成功',
+                type: 'success'
+              })
+              this.btnStatus=false
+            }).catch((error)=>{
+              this.btnStatus=false
+              this.dialogUserVisible = false
+            })
+          }
+        })
+      },
+      updateUser(){
+        this.$refs['userForm'].validate((valid) => {
+          if (valid) {
+            this.btnStatus=true
+            update_User(this.commit_obj).then(() => {
+              this.reset_commit()
+              this.init()
+              this.dialogUserVisible = false
+              this.$message({
+                showClose: true,
+                message: '更新成功',
+                type: 'success'
+              })
+              this.btnStatus=false
+            }).catch((error)=>{
+              this.btnStatus=false
+              this.dialogUserVisible = false
+            })
+          }
+        })
+      },
       updateGroup(){
         this.$refs['userGrpForm'].validate((valid) => {
           if (valid) {
@@ -240,7 +331,6 @@
             })
           }
         })
-
       }
     }
   }

@@ -116,12 +116,16 @@
           })
         },
         QRCode(){
-          qrcode_User().then((response)=>{
-            console.log(response.data.url)
-            this.qrcodeimg = 'http://10.100.100.246:8888'+response.data.url
-
-          })
-          this.dialogQRCode = true
+          this.$confirm('您只有一次获取QRCode的机会 是否要获取QRCode？', '提示', {
+              confirmButtonText: '马上获取',
+              cancelButtonText: '暂时不获取',
+              type: 'warning'
+            }).then(()=>{
+              qrcode_User().then((response)=>{
+                this.dialogQRCode = true
+                this.qrcodeimg = 'http://10.100.100.245:8888'+response.data.url
+              })
+            })
         }
       }
     }

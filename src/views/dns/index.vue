@@ -73,7 +73,7 @@
     </el-table>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDNSVisible" width="60%" top="2vh">
-      <el-form ref="dnsForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
+      <el-form :rules="rules" ref="dnsForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
         <el-form-item label="分域名" prop="name">
           <el-tooltip content="请输入该域名的内容 如果op.8531.cn 请输入op" placement="top" effect="light">
@@ -180,7 +180,10 @@
           },
           commit_obj: {
           },
-          detailSearch: null
+          detailSearch: null,
+          rules: {
+            name:[{ required: true, message: '分域名名称是必须的', trigger: 'blur' }]
+          }
         }
       },
       created(){

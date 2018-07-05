@@ -184,6 +184,15 @@ export const devEopsRouterMap = [
     path:'',
     component: layout,
     children: [{
+      path: 'file',
+      component: _import('file/index'),
+      name: 'file',
+      meta: { title: '分发中心',icon:'file-code-o',hidden:true,cache:true}
+    }]
+  },{
+    path:'',
+    component: layout,
+    children: [{
       path: 'about',
       component: _import('about/index'),
       name: 'about',
