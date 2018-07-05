@@ -29,7 +29,7 @@
     },
     methods:{
       initWebSocket(){ //初始化weosocket 
-        this.websock = new WebSocket('ws://10.100.100.246:8888/ansible/'+this.work_uuid+'/')
+        this.websock = new WebSocket('ws://10.100.100.245:8888/ansible/'+this.work_uuid+'/')
         this.websock.onmessage = this.websocketonmessage
         this.websock.onclose = this.websocketclose
       },

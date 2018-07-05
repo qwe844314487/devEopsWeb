@@ -3,8 +3,9 @@ import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from "@/utils/auth"
 
+// baseURL: process.env.API_URL,
 const service = axios.create({
-	baseURL: "http://10.100.100.246:8888/",
+  baseURL: "http://10.100.100.245:8888/",
   timeout: 5000
 })
 

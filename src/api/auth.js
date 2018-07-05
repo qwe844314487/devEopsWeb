@@ -35,6 +35,14 @@ export function fetch_OpsUserListByPage(pagination){
   })
 }
 
+export function create_User(data){
+  return request({
+    url: '/api-auth/v1/user/create/',
+    method: 'POST',
+    data: data
+  })
+}
+
 export function update_User(data){
   return request({
     url: '/api-auth/v1/user/'+data.id+'/update/',

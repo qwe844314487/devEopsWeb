@@ -62,7 +62,7 @@
       <!---->
     <!--</el-dialog>-->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogGroupVisible" width="60%" top="2vh">
-      <el-form ref="groupForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
+      <el-form :rules="rules" ref="groupForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
         <el-form-item label="权限组名称" prop="name">
           <el-tooltip content="请输入您的权限组名称，如:新媒体云服务平台开发组" placement="top" effect="light">
             <el-input v-model="commit_obj.name"></el-input>
@@ -109,7 +109,10 @@
           create: '创建权限组',
           update: '修改权限组'
         },
-        dialogGroupVisible: false
+        dialogGroupVisible: false,
+        rules: {
+            name:[{ required: true, message: '应用组名称是必须的', trigger: 'blur' }],
+        }
       }
     },
     created() {

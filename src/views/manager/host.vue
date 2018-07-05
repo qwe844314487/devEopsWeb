@@ -83,7 +83,7 @@
 
       <el-table-column width="115" align="center" label="状态" class-name="status-col" >
         <template slot-scope="host">
-          <el-tag :type="host.row._status | statusFilter">{{ optionState[host.row._status].label }}</el-tag>
+          <el-tag :type="host.row._status | statusFilter">{{optionStateObj[host.row._status]}}</el-tag>
         </template>
       </el-table-column>
 
@@ -338,15 +338,20 @@
             detail:{
             }
           },
+          optionStateObj:{
+            '-2': '关机',
+            '-1': '暂停',
+            '1': '正常'
+          },
           optionState: [
             {
-              value: -3,
+              value: '-2',
               label: '关机'
             }, {
-              value: -2,
+              value: '-1',
               label: '暂停'
             },{
-              value: 1,
+              value: '1',
               label: '正常'
             }],
           rules: {
