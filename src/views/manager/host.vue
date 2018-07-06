@@ -131,19 +131,42 @@
     </el-dialog>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailVisible" width="80%" top="2vh" :fullscreen="true">
-      <div class="cpu">
-        <IEcharts
-          :option="monitor_obj.CPU"
-          :loading="monitorLoading"
-        />
-      </div>
-      <div class="memory">
-        <IEcharts
-          :option="monitor_obj.Memory"
-          :loading="monitorLoading"
-        />
-      </div>
-
+      <el-row>
+        <el-col :span="12">
+          <div class="cpu">
+            <IEcharts
+              :option="monitor_obj.CPU"
+              :loading="monitorLoading"
+            />
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="memory">
+            <IEcharts
+              :option="monitor_obj.Memory"
+              :loading="monitorLoading"
+            />
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <div class="disk">
+            <IEcharts
+              :option="monitor_obj.DiskRead"
+              :loading="monitorLoading"
+            />
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="internet">
+            <IEcharts
+              :option="monitor_obj.InternetIn"
+              :loading="monitorLoading"
+            />
+          </div>
+        </el-col>
+      </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDetailVisible = false" :disabled="btnStatus">取消</el-button>
       </div>
@@ -290,7 +313,7 @@
   import 'echarts/lib/component/title';
   import { fetch_HostListByPage,fetch_PositionList,fetch_SystypeList,delete_Host,create_Host,update_Host,create_Systype,create_Position,fetch_HostPasswd,detail_HostByUUID } from '@/api/manager';
   import { fetch_GroupList,selectHost_Group } from "@/api/manager";
-  import { fetch_MonitorHostAliyunCPU,fetch_MonitorHostAliyunMemory } from '@/api/monitor';
+  import { fetch_MonitorHostAliyunCPU,fetch_MonitorHostAliyunMemory,fetch_MonitorHostAliyunDiskRead,fetch_MonitorHostAliyunInternetIn } from '@/api/monitor';
   export default {
       data(){
         return{
@@ -441,17 +464,38 @@
             }
           })
         },
+        check_init_detail(){
+          if(this.monitor_obj.CPU != null & this.monitor_obj.Memory != null & this.monitor_obj.DiskRead != null & this.monitor_obj.InternetIn != null){
+            return true
+          }else{
+            return false
+          }
+        },
         init_detail_aliyun(obj){
           fetch_MonitorHostAliyunCPU(obj.uuid).then((response)=>{
             this.monitor_obj.CPU = response.data
-            if(this.monitor_obj.CPU != null & this.monitor_obj.Memory != null){
+            if(this.check_init_detail()){
               this.dialogDetailVisible = true
               this.monitorLoading = false
             }
           })
           fetch_MonitorHostAliyunMemory(obj.uuid).then((response)=>{
             this.monitor_obj.Memory = response.data
-            if(this.monitor_obj.CPU != null & this.monitor_obj.Memory != null){
+            if(this.check_init_detail()){
+              this.dialogDetailVisible = true
+              this.monitorLoading = false
+            }
+          })
+          fetch_MonitorHostAliyunDiskRead(obj.uuid).then((response)=>{
+            this.monitor_obj.DiskRead = response.data
+            if(this.check_init_detail()){
+              this.dialogDetailVisible = true
+              this.monitorLoading = false
+            }
+          })
+          fetch_MonitorHostAliyunInternetIn(obj.uuid).then((response)=>{
+            this.monitor_obj.InternetIn = response.data
+            if(this.check_init_detail()){
               this.dialogDetailVisible = true
               this.monitorLoading = false
             }
@@ -749,12 +793,20 @@
     /*background-color: rgb(240, 242, 245);*/
   }
   .cpu {
-    width: 700px;
-    height: 400px;
+    width: 500px;
+    height: 300px;
   }
   .memory {
-    width: 700px;
-    height: 400px;
+    width: 500px;
+    height: 300px;
+  }
+  .disk {
+    width: 500px;
+    height: 300px;
+  }
+  .internet {
+    width: 500px;
+    height: 300px;
   }
   .el-tag {
     margin-left: 10px;

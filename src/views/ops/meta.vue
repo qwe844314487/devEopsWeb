@@ -180,7 +180,7 @@
 
 <script>
   import { fetch_MetaListByPage,create_Meta,update_Meta,delete_Meta,checkFile_Meta } from '@/api/ops';
-  import { fetch_GroupList,fetch_HostList } from '@/api/manager';
+  import { fetch_GroupOpsList,fetch_HostList } from '@/api/manager';
   import Xterm from '@/components/Xterm/index';
   export default {
     data(){
@@ -250,7 +250,7 @@
         })
       },
       init_group(){
-        fetch_GroupList().then(response=>{
+        fetch_GroupOpsList().then(response=>{
           this.group_options = []
           for (const group of response.data){
             this.group_options.push({

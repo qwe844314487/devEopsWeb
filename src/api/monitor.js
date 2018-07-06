@@ -17,3 +17,17 @@ export function fetch_MonitorHostAliyunMemory(uuid){
     method: 'GET'
   })
 }
+
+export function fetch_MonitorHostAliyunDiskRead(uuid){
+  return request({
+    url: '/api-monitor/v1/host/'+uuid+'/disk/read/aliyun/byuuid/',
+    method: 'GET'
+  })
+}
+
+export function fetch_MonitorHostAliyunInternetIn(uuid){
+  return request({
+    url: '/api-monitor/v1/host/'+uuid+'/internet/in/aliyun/byuuid/',
+    method: 'GET'
+  })
+}

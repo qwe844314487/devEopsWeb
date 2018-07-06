@@ -13,6 +13,14 @@ export function fetch_GroupList(obj){
   })
 }
 
+export function fetch_GroupOpsList(obj){
+  let st = objectIterator(obj)
+  return request({
+    url: '/api-manager/v1/group/byops/' + st,
+    method: 'GET'
+  })
+}
+
 export function fetch_GroupListByPage(pagination,obj){
   let st = objectIterator(obj)
   return request({
