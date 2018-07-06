@@ -83,6 +83,8 @@
           <el-button size="mini" v-else-if="work.row.status==3" type="danger" @click="handleRun(work.row)" :disabled="btnStatus">执行</el-button>
           <el-button size="mini" v-else-if="work.row.status==4" type="warning" disabled>执行中</el-button>
           <el-button size="mini" v-else-if="work.row.status==5" type="primary" disabled>执行完毕</el-button>
+          <el-button size="mini" v-else-if="work.row.status==6" type="warning" disabled>加载参数</el-button>
+          <el-button size="mini" v-else-if="work.row.status==7" type="warning" disabled>加载任务</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -378,7 +380,7 @@
           this.init()
         },
         handleClose(done) {
-        this.$confirm('您确定的工单已经执行完毕了吗？')
+          this.$confirm('关闭窗口您将无法实时获取工单进度')
           .then(_ => {
             done();
           })

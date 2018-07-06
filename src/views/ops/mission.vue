@@ -115,7 +115,7 @@
 
 <script>
   import { fetch_MissionListByPage,create_Mission,update_Mission,delete_Mission,fetch_MetaList } from '@/api/ops';
-  import { fetch_GroupList } from '@/api/manager';
+  import { fetch_GroupOpsList } from '@/api/manager';
   export default {
     data(){
       return{
@@ -166,7 +166,7 @@
         })
       },
       init_group(){
-        fetch_GroupList(this.search_obj).then(response=>{
+        fetch_GroupOpsList(this.search_obj).then(response=>{
           this.group_options = []
           for (const group of response.data){
             this.group_options.push({
