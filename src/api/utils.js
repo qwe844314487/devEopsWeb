@@ -28,6 +28,14 @@ export function create_File(data){
   })
 }
 
+export function update_File(data){
+  return request({
+    url: '/api-utils/v1/file/'+data.uuid+'/update/',
+    method: 'PUT',
+    data: data
+  })
+}
+
 export function delete_File(data){
   return request({
     url: '/api-utils/v1/file/'+data.uuid+'/delete/',

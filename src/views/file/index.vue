@@ -2,19 +2,16 @@
   <div class="manager-file-container">
     <div class="filter-container">
       <el-row style="margin-bottom:20px;">
-        <el-switch
+        <!-- <el-switch
         v-model="detailSearch"
         inactive-text="详细检索">
         </el-switch>
-        <el-button class="filter-item" @click="resetSearch()" style="margin-left: 10px;" type="primary" icon="el-icon-refresh" :disabled="btnStatus">清除</el-button>
-        <el-button class="filter-item" @click="handleCreate()" style="float:right;" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>
+        <el-button class="filter-item" @click="resetSearch()" style="margin-left: 10px;" type="primary" icon="el-icon-refresh" :disabled="btnStatus">清除</el-button> -->
+        <el-button class="filter-item" @click="handleCreate()" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>
       </el-row>
       <el-row style="margin-bottom:20px;" v-show="detailSearch">
         <el-col :span="7" :offset="1">
           密钥名称： <el-input size="medium" style="width: 200px;" v-model="search_obj.name" class="filter-item" placeholder="模糊查找密钥名称"></el-input>
-        </el-col>
-        <el-col :span="7" :offset="1">
-          应用组名称： <el-input size="medium" style="width: 200px;" v-model="search_obj.group_name" class="filter-item" placeholder="模糊查找应用组下密钥"></el-input>
         </el-col>
         <el-button class="filter-item" type="primary" @click="searchFile" icon="el-icon-search" :disabled="btnStatus" style="float:right;">搜索</el-button>
       </el-row>
@@ -29,9 +26,21 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="260px" align="center" label="名称">
+      <el-table-column width="260px" align="center" label="文件名称">
         <template slot-scope="file">
           <span>{{ file.row.name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="260px" align="center" label="关联任务">
+        <template slot-scope="file">
+          <span>{{ file.row.mission_uuid }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="260px" align="center" label="上传时间">
+        <template slot-scope="file">
+          <span>{{ file.row.create_time|filter_time }}</span>
         </template>
       </el-table-column>
 
@@ -55,14 +64,25 @@
           <el-input v-model="commit_obj.id" disabled></el-input>
         </el-form-item>
 
-        <el-form-item label="密钥名称" prop="name">
+        <el-form-item label="文件名称" prop="name">
           <el-input v-model="commit_obj.name"></el-input>
         </el-form-item>
-
+              <!-- :http-request="uploadFile" -->
+          <el-form-item label="上传文件" prop="file">
+            <el-upload
+              action="string"
+              :limit="1"
+              :http-request="uploadFile"
+              :on-progress="progressFile"
+              class="upload-demo"
+              :file-list="fileList">
+              <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+          </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFileVisible = false" :disabled="btnStatus">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData" :disabled="btnStatus">提交</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="updateData" :disabled="btnStatus">提交</el-button>
       </div>
     </el-dialog>
 
@@ -70,16 +90,19 @@
 </template>
 
 <script>
-  import { fetch_FileListByPage,create_File,delete_File } from '@/api/utils'
+  import { fetch_FileListByPage,create_File,delete_File,update_File } from '@/api/utils'
   export default {
     data(){
       return {
         list: null,
         listLoading: true,
+        loading: null,
         btnStatus:false,
         dialogFileVisible: false,
         dialogStatus:'',
         detailSearch: false,
+        fileList: [],
+        percentage: 70,
         commit_obj: {
         },
         search_obj: {
@@ -116,14 +139,8 @@
           this.listLoading = false
         })
       },
-      clipboardSuccess() {
-        this.$message({
-          message: '复制成功',
-          type: 'success',
-          duration: 1500
-        })
-      },
       reset_commit(){
+        this.fileList = []
         this.commit_obj = {}
       },
       reset_search(){
@@ -148,11 +165,38 @@
         this.pagination.page = val
         this.init()
       },
-      createData(){
+      uploadFile(item){
+        const formData=new FormData()
+        formData.append('file',item.file)
+        this.loading = this.$loading({
+          lock: true,
+          text: '上传文件中',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+        create_File(formData).then((response)=>{
+          this.commit_obj.uuid = response.data.uuid
+          this.commit_obj.id = response.data.id
+          this.loading.close()
+          this.$message({
+            showClose: true,
+            message: '上传成功',
+            type: 'success'
+          })
+        }).catch((error)=>{
+          this.loading.close()
+          this.$message({
+            showClose: true,
+            message: '上传失败',
+            type: 'danger'
+          })
+        })
+      },
+      updateData(){
         this.$refs['fileForm'].validate((valid) => {
           if (valid) {
             this.btnStatus=true
-            create_File(this.commit_obj).then(() => {
+            update_File(this.commit_obj).then(() => {
               this.init()
               this.dialogFileVisible = false
               this.$message({

@@ -169,10 +169,21 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="handleAssetBack" :disabled="btnStatus">上一步</el-button>
-          <el-button v-if="dialogStatus=='create'" type="primary" @click="createMeta" :disabled="btnStatus">提交</el-button>
-          <el-button v-else type="primary" @click="updateMeta" :disabled="btnStatus">提交</el-button>
+          <el-button type="primary" @click="handleQRCode" :disabled="btnStatus">下一步</el-button>
         </div>
       </el-dialog>
+
+      <el-dialog title="QRCode二次验证" :visible.sync="dialogQRCodeVisible" width="30%" top="20vh">
+        <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
+        <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="handleQRCodeBack" :disabled="btnStatus">上一步</el-button>
+          <el-button v-if="dialogStatus=='create'" type="primary" @click="createMeta" :disabled="btnStatus">创建</el-button>
+          <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateMeta" :disabled="btnStatus">更新</el-button>
+          <el-button v-else type="primary" @click="deleteMeta" :disabled="btnStatus">删除</el-button>
+        </div>
+      </el-dialog>
+
     </el-form>
 
   </div>
@@ -191,7 +202,8 @@
         dialogStatus:'',
         textMap:{
           create: '新建元操作',
-          update: '修改元操作'
+          update: '修改元操作',
+          delete: '删除元操作',
         },
         pagination: {
           page: 1,
@@ -200,10 +212,11 @@
         detailSearch: false,
         group_options:[],
         hosts:[],
-        dialogMetaVisible:false,
-        dialogAssetVisible:false,
-        dialogCreateContentVisible:false,
-        dialogFileVisible:false,
+        dialogMetaVisible: false,
+        dialogAssetVisible: false,
+        dialogCreateContentVisible: false,
+        dialogQRCodeVisible: false,
+        dialogFileVisible: false,
         meta_id: null,
         content: {
           need_file:false
@@ -315,11 +328,15 @@
           this.$refs['metaForm'].clearValidate()
         })
       },
+
       handleDelete(row){
         this.commit_obj = Object.assign({},row)
-        this.btnStatus=true
-        this.deleteConfirm()
         this.btnStatus=false
+        this.dialogStatus = 'delete'
+        this.dialogQRCodeVisible = true
+      },
+      deleteMeta(){
+        this.deleteConfirm()
       },
       deleteConfirm() {
         this.$confirm('此操作将删除元操作, 是否继续?', '提示', {
@@ -333,6 +350,7 @@
               message: '删除成功',
               type: 'success'
             })
+            this.dialogQRCodeVisible = false
             this.init()
           })
         })
@@ -351,6 +369,14 @@
         this.dialogStatus = 'create'
         this.dialogAssetVisible = false
         this.dialogMetaVisible = true
+      },
+      handleQRCode(){
+        this.dialogAssetVisible = false
+        this.dialogQRCodeVisible = true
+      },
+      handleQRCodeBack(){
+        this.dialogAssetVisible = true
+        this.dialogQRCodeVisible = false
       },
       sortContents(){
         this.commit_obj.contents.sort(function(a,b){
@@ -404,7 +430,7 @@
             this.btnStatus=true
             create_Meta(this.commit_obj).then(() => {
               this.init()
-              this.dialogAssetVisible = false
+              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: '创建元操作成功',
@@ -413,7 +439,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogAssetVisible = false
+              this.dialogQRCodeVisible = false
               console.log(error)
             })
           }
@@ -425,7 +451,7 @@
             this.btnStatus=true
             update_Meta(this.commit_obj).then(() => {
               this.init()
-              this.dialogAssetVisible = false
+              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: '更新元操作成功',
@@ -434,7 +460,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogAssetVisible = false
+              this.dialogQRCodeVisible = false
               console.log(error)
             })
           }

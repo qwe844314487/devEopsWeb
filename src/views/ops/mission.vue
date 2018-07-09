@@ -104,10 +104,20 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogMissionVisible = false" :disabled="btnStatus">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createMission" :disabled="btnStatus">提交</el-button>
-        <el-button v-else type="primary" @click="updateMission" :disabled="btnStatus">提交</el-button>
+        <el-button type="primary" @click="handleQRCode" :disabled="btnStatus">下一步</el-button>
       </div>
 
+    </el-dialog>
+
+    <el-dialog title="QRCode二次验证" :visible.sync="dialogQRCodeVisible" width="30%" top="20vh">
+        <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
+        <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="handleQRCodeBack" :disabled="btnStatus">上一步</el-button>
+          <el-button v-if="dialogStatus=='create'" type="primary" @click="createMission" :disabled="btnStatus">提交</el-button>
+          <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateMission" :disabled="btnStatus">提交</el-button>
+          <el-button v-else type="primary" @click="deleteMission" :disabled="btnStatus">删除</el-button>
+        </div>
     </el-dialog>
 
   </div>
@@ -124,6 +134,7 @@
         btnStatus: false,
         dialogStatus:'',
         dialogMissionVisible: false,
+        dialogQRCodeVisible: false,
         metas:[],
         detailSearch: false,
         textMap:{
@@ -240,6 +251,17 @@
           this.$refs['missionForm'].clearValidate()
         })
       },
+      handleQRCode(){
+        this.dialogMissionVisible = false
+        this.dialogQRCodeVisible = true
+      },
+      handleQRCodeBack(){
+        this.dialogMissionVisible = true
+        this.dialogQRCodeVisible = false
+      },
+      deleteMission(){
+        this.deleteConfirm()
+      },
       createMission(){
         this.$refs['missionForm'].validate((valid) => {
           if (valid) {
@@ -283,9 +305,9 @@
       },
       handleDelete(row){
         this.commit_obj = Object.assign({},row)
-        this.btnStatus=true
-        this.deleteConfirm()
         this.btnStatus=false
+        this.dialogStatus = 'delete'
+        this.dialogQRCodeVisible = true
       },
       deleteConfirm() {
         this.$confirm('此操作将删除任务, 是否继续?', '提示', {

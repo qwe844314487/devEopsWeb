@@ -6,7 +6,7 @@ import { getToken } from "@/utils/auth"
 // baseURL: process.env.API_URL,
 const service = axios.create({
   baseURL: "http://10.100.100.245:8888/",
-  timeout: 5000
+  timeout: 90000
 })
 
 service.interceptors.request.use(config => {
