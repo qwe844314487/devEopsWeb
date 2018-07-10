@@ -77,7 +77,7 @@
 
       <el-table-column align="center" label="操作" width="100px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="work">      
-          <el-button size="mini" v-if="work.row.status<0" type="danger" disabled>失败</el-button>    
+          <el-button size="mini" v-if="work.row.status<0" type="danger" @click="resultsWork(work.row)">失败</el-button>    
           <el-button size="mini" v-else-if="work.row.status==1" type="warning" @click="checkWork(work.row)" :disabled="btnStatus">审核</el-button>
           <el-button size="mini" v-else-if="work.row.status==2" type="warning" @click="handleUploadWork(work.row)" :disabled="btnStatus">上传文件</el-button>
           <el-button size="mini" v-else-if="work.row.status==3" type="danger" @click="handleRun(work.row)" :disabled="btnStatus">执行</el-button>
@@ -127,42 +127,44 @@
           <span>{{ file.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="500px" align="center" label="UUID">
+
+      <el-table-column width="200px" align="center" label="文件状态">
         <template slot-scope="file">
-          <span>{{ file.row.uuid}}</span>
+          <span>{{ file.row.status }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="上传">
+
+      <el-table-column width="200px" align="center" label="UUID">
         <template slot-scope="file">
-          <el-button size="small" type="primary" @click="hanldUploadFile(file.row.name)">点击上传</el-button>
+          <span>{{ file.row.uuid }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="200px" align="center" label="选择文件">
+        <template slot-scope="file">
+          <el-button size="small" type="primary" @click="hanldSelectFile(file.row)">点击上传</el-button>
         </template>
       </el-table-column>
 
       </el-table>
-
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogUploadVisible = false" :disabled="btnStatus">取消</el-button>
         <el-button type="primary" @click="uploadWork()" :disabled="btnStatus">提交</el-button>
       </div>
 
-        <el-dialog
-          width="20%"
-          :title="temp_filename"
-          :visible.sync="dialogFileVisible"
-          append-to-body>
-            <el-upload
-              ref="uploadele"
-              action="string"
-              :limit="1"
-              :http-request="httpFileUpload"
-              class="upload-demo">
-              <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">请根据文件名上传工单所需要文件</div>
-            </el-upload>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFileVisible = false" :disabled="btnStatus">关闭</el-button>
-          </div>
-        </el-dialog>
+      <el-dialog
+        width="20%"
+        :title="'文件上传'"
+        :visible.sync="dialogFileVisible"
+        append-to-body>
+          <el-select v-model="update_obj.uuid" placeholder="请选择执行的任务" filterable>
+            <el-option v-for="option in optionFiles" :key="option.label" :label="option.label" :value="option.value"></el-option>
+          </el-select>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="selectFile()" :disabled="btnStatus">提交</el-button>
+          <el-button @click="dialogFileVisible = false" :disabled="btnStatus">关闭</el-button>
+        </div>
+      </el-dialog>
 
     </el-dialog>
 
@@ -174,17 +176,24 @@
       <!-- <xterm :work_uuid="work_uuid"></xterm> -->
       <yo-progress :work_uuid="work_uuid"></yo-progress>
       <!-- <div slot="footer" class="dialog-footer">
-        <el-button @click="closeXterm" :disabled="btnStatus">关闭</el-button>
       </div> -->
     </el-dialog>
+
+      <el-dialog
+      width="70%"
+      title="错误信息"
+      :visible.sync="dialogResultsVisible">
+      <textarea v-model="error" style="height: 700px;width: 1200px;resize: none;"></textarea>
+    </el-dialog>
+
 
   </div>
 </template>
 
 <script>
     import { fetch_MissionListByUser } from '@/api/ops';
-    import { fetch_WorkListByPage,create_Work,check_Work,run_Work,upload_Work } from '@/api/work';
-    import { create_File } from '@/api/utils';
+    import { fetch_WorkListByPage,create_Work,check_Work,run_Work,upload_Work,results_Work } from '@/api/work';
+    import { fetch_FileList,update_File } from '@/api/utils';
     import Xterm from '@/components/Xterm/index';
     import YoProgress from '@/components/Progress/index';
     export default {
@@ -198,8 +207,11 @@
           dialogWorkVisible: false,
           dialogXtermVisible: false,
           dialogFileVisible: false,
+          dialogResultsVisible: false,
+          error: '',
           upload_tb: [],
-          temp_filename: null,
+          uuid_list: [],
+          update_obj: {},
           mission_item: null,
           select_time: '',
           work_uuid: null,
@@ -217,7 +229,8 @@
           },
           search_obj: {
           },
-          optionMission: []
+          optionMission: [],
+          optionFiles: []
         }
       },
       components: {
@@ -257,6 +270,17 @@
                 disabled: false
               })
             }       
+          })
+        },
+        init_files(){
+          fetch_FileList().then((response)=>{
+            for ( const file of response.data){
+              this.optionFiles.push({
+                value: file.uuid,
+                label: file.name,
+                disabled: false
+              })
+            }
           })
         },
         selectTime(){
@@ -310,6 +334,13 @@
           this.pagination.page = val
           this.init()
         },
+        resultsWork(row){
+          results_Work(row).then((response)=>{
+            console.log(response.data)
+            this.dialogResultsVisible = true
+            this.error = response.data.results
+          })
+        },
         checkWork(row){
           check_Work(row.uuid).then((response)=>{
             this.init()
@@ -319,30 +350,27 @@
           this.work_uuid = row.uuid
           this.upload_tb = []
           for(let file in row.files){
-            this.upload_tb.push({'name':row.files[file],'uuid':''})
+            this.upload_tb.push({'name':row.files[file],'status':'未上传'})
           }
           this.dialogStatus = 'upload'
           this.dialogUploadVisible = true
           this.btnStatus = false
         },
-        hanldUploadFile(filename){
-          if(this.temp_filename!=null){ //判断是否需要表单清空
-            this.$refs.uploadele.clearFiles()
-          }
+        hanldSelectFile(file){
+          this.init_files()
+          this.update_obj = {}
+          this.update_obj = {'var_name': file.name}
           this.dialogFileVisible = true
-          this.temp_filename = filename
         },
-        httpFileUpload(item){
-          let formData=new FormData()
-          formData.append('file',item.file)
-          formData.append('type',1)
-          formData.append('name',this.temp_filename)
-          create_File(formData).then(response=>{
-            for(let tb in this.upload_tb){
-              if(this.upload_tb[tb].name == this.temp_filename){
-                this.upload_tb[tb].uuid = response.data.uuid
+        selectFile(){
+          update_File(this.update_obj).then((response)=>{
+            for(let row in this.upload_tb){
+              if(this.upload_tb[row].name == this.update_obj.var_name){
+                this.upload_tb[row].status = '选择完毕'
+                this.upload_tb[row].uuid = this.update_obj.uuid
               }
             }
+            this.dialogFileVisible = false
           })
         },
         uploadWork(){
@@ -374,10 +402,6 @@
               this.dialogXtermVisible = false
             })
           })
-        },
-        closeXterm(){ 
-          this.dialogXtermVisible = false
-          this.init()
         },
         handleClose(done) {
           this.$confirm('关闭窗口您将无法实时获取工单进度')

@@ -32,9 +32,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="260px" align="center" label="关联任务">
+      <el-table-column width="360px" align="center" label="关联任务">
         <template slot-scope="file">
           <span>{{ file.row.mission_uuid }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="220px" align="center" label="变量名称">
+        <template slot-scope="file">
+          <el-tag>{{ file.row.var_name }}</el-tag>
         </template>
       </el-table-column>
 
@@ -73,7 +79,6 @@
               action="string"
               :limit="1"
               :http-request="uploadFile"
-              :on-progress="progressFile"
               class="upload-demo"
               :file-list="fileList">
               <el-button size="small" type="primary">点击上传</el-button>
@@ -90,7 +95,7 @@
 </template>
 
 <script>
-  import { fetch_FileListByPage,create_File,delete_File,update_File } from '@/api/utils'
+  import { fetch_FileListByPage,create_File,delete_File,update_File } from '@/api/utils';
   export default {
     data(){
       return {
