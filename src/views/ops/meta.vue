@@ -15,7 +15,7 @@
         inactive-text="详细检索">
         </el-switch>
         <el-button class="filter-item" @click="resetSearch()" style="margin-left: 10px;" type="primary" icon="el-icon-refresh" :disabled="btnStatus">清除</el-button>
-        <el-button class="filter-item" @click="handleCreate()" style="float:right;" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>
+        <el-button class="filter-item" @click="handleCreate();dialogStatus = 'create'" style="float:right;" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>
       </el-row>
       <el-row style="margin-bottom:20px;" v-show="detailSearch">
         <el-col :span="5" :offset="1">
@@ -50,7 +50,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="700px" align="center" label="信息">
+      <el-table-column width="300px" align="center" label="需求文件标签">
+        <div slot-scope="meta">
+          <template v-for="f in meta.row.need_files">
+              <el-tag>{{ f }}</el-tag>
+          </template>
+          <!--<el-tag>...</el-tag>-->
+        </div>
+      </el-table-column>
+
+      <el-table-column width="600px" align="center" label="信息">
         <template slot-scope="meta">
           <span>{{ meta.row.info }}</span>
         </template>
@@ -58,8 +67,8 @@
 
       <el-table-column align="center" label="操作" width="280" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="meta">
-          <el-button type="warning" @click="handleUpdate(meta.row)" :disabled="btnStatus">编辑</el-button>
-          <el-button type="danger" @click="handleDelete(meta.row)" :disabled="btnStatus">删除</el-button>
+          <el-button type="warning" @click="handleUpdate(meta.row);dialogStatus = 'update'" :disabled="btnStatus">编辑</el-button>
+          <el-button type="danger" @click="handleDelete(meta.row);dialogStatus = 'delete'" :disabled="btnStatus">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -93,12 +102,6 @@
               <el-table-column width="250px" align="center" label="参数">
                 <template slot-scope="content">
                   <span>{{ content.row.args }}</span>
-                </template>
-              </el-table-column>
-
-              <el-table-column width="120px" align="center" label="需要上传文件">
-                <template slot-scope="content">
-                  <span>{{ content.row.need_file | needFile }}</span>
                 </template>
               </el-table-column>
 
@@ -141,7 +144,6 @@
                 <el-input placeholder="src=/etc/hosts dest=/tmp/hosts" v-model="content.args">
                   <template slot="prepend">参数:  </template>
                 </el-input>
-                <el-checkbox v-model="content.need_file">是否需要上传文件</el-checkbox>
             </div>
           <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click="createContent" :disabled="btnStatus">提交</el-button>
@@ -177,7 +179,7 @@
         <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
         <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="handleQRCodeBack" :disabled="btnStatus">上一步</el-button>
+          <el-button v-if="dialogStatus!='delete'" @click="handleQRCodeBack" :disabled="btnStatus">上一步</el-button>
           <el-button v-if="dialogStatus=='create'" type="primary" @click="createMeta" :disabled="btnStatus">创建</el-button>
           <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateMeta" :disabled="btnStatus">更新</el-button>
           <el-button v-else type="primary" @click="deleteMeta" :disabled="btnStatus">删除</el-button>
@@ -219,7 +221,6 @@
         dialogFileVisible: false,
         meta_id: null,
         content: {
-          need_file:false
         },
         commit_obj: {},
         search_obj: {}
@@ -283,7 +284,6 @@
       },
       reset_content(){
         this.content = {
-          need_file: false
         }
       },
       reset_commit(){
@@ -313,7 +313,6 @@
       },
       handleCreate(){
         this.reset_commit()
-        this.dialogStatus = 'create'
         this.dialogMetaVisible = true
         this.$nextTick(() => {
           this.$refs['metaForm'].clearValidate()
@@ -321,18 +320,15 @@
       },
       handleUpdate(row){
         this.commit_obj = Object.assign({}, row) // copy obj
-        this.dialogStatus = 'update'
         this.dialogMetaVisible = true
         this.init_host(this.commit_obj.group)
         this.$nextTick(() => {
           this.$refs['metaForm'].clearValidate()
         })
       },
-
       handleDelete(row){
         this.commit_obj = Object.assign({},row)
         this.btnStatus=false
-        this.dialogStatus = 'delete'
         this.dialogQRCodeVisible = true
       },
       deleteMeta(){
@@ -366,7 +362,6 @@
         this.dialogAssetVisible = true
       },
       handleAssetBack(){
-        this.dialogStatus = 'create'
         this.dialogAssetVisible = false
         this.dialogMetaVisible = true
       },

@@ -89,7 +89,7 @@
 
       <el-table-column align="center" label="操作" width="450px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="host">
-          <el-button type="primary" size="medium" @click="handleQRCode(host.row)" :disabled="btnStatus">密码</el-button>
+          <!-- <el-button type="primary" size="medium" @click="handleQRCode(host.row)" :disabled="btnStatus">密码</el-button> -->
           <el-button type="primary" size="medium" @click="handleDetail(host.row)" :disabled="btnStatus">详细</el-button>
           <el-button type="warning" size="medium" @click="handleGroup(host.row)" :disabled="btnStatus">应用组</el-button>
           <el-button type="warning" size="medium" @click="handleUpdate(host.row)" :disabled="btnStatus">编辑</el-button>
@@ -793,20 +793,20 @@
     /*background-color: rgb(240, 242, 245);*/
   }
   .cpu {
-    width: 500px;
-    height: 300px;
+    width: 600px;
+    height: 400px;
   }
   .memory {
-    width: 500px;
-    height: 300px;
+    width: 600px;
+    height: 400px;
   }
   .disk {
-    width: 500px;
-    height: 300px;
+    width: 600px;
+    height: 400px;
   }
   .internet {
-    width: 500px;
-    height: 300px;
+    width: 600px;
+    height: 400px;
   }
   .el-tag {
     margin-left: 10px;

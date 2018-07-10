@@ -268,7 +268,7 @@
             this.btnStatus=true
             create_Mission(this.commit_obj).then(() => {
               this.resetSearch()
-              this.dialogMissionVisible = false
+              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: '创建任务成功',
@@ -277,7 +277,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogMissionVisible = false
+              this.dialogQRCodeVisible = false
             })
           }
         })
@@ -288,7 +288,7 @@
             this.btnStatus=true
             update_Mission(this.commit_obj).then(() => {
               this.resetSearch()
-              this.dialogMissionVisible = false
+              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: '更新任务成功',
@@ -297,7 +297,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogMissionVisible = false
+              this.dialogQRCodeVisible = false
               console.log(error)
             })
           }

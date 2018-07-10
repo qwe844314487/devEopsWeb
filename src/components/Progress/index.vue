@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-progress type="circle" :percentage="centage" :status="status"></el-progress>
+    <el-progress :text-inside="true" :stroke-width="18" :percentage="centage" :status="status"></el-progress>
   </div>
 </template>
 
@@ -34,10 +34,14 @@
         this.websock.onclose = this.websocketclose
       },
       websocketonmessage(e){
-        console.log(e)
-        if(this.centage+12<100&&e.data=='OK'){
-          this.centage = this.centage+12
-        }else{
+        if(this.centage+11<100&&e.data=='OK'){
+          this.centage = this.centage+11
+        }else if(e.data=='SUCCESS'){
+          this.centage = 100
+          this.status = 'success'
+        }
+        else{
+          this.websock.close()
           this.status = 'exception'
         }
       },

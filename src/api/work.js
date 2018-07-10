@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import { objectIterator } from '@/utils/iterator'
+import { get } from 'https';
 
 /*
 * API_MODULE: WORK
@@ -42,5 +43,12 @@ export function fetch_WorkListByPage(pagination,obj){
       url: '/api-work/v1/codework/'+uuid+'/upload/',
       method: 'PUT',
       data: {"files":data}
+    })
+  }
+
+  export function results_Work(obj){
+    return request({
+      url: '/api-work/v1/codework/'+obj.uuid+'/results/',
+      method: 'GET'
     })
   }
