@@ -158,17 +158,11 @@ export function delete_Host(obj){
     data: obj
   })
 }
-
-export function detail_HostByUUID(obj){
+ 
+export function selectGroup_Host(data){
   return request({
-    url: '/api-manager/v1/host/'+obj.uuid+'/detail/byuuid/',
-    method: 'GET'
-  })
-}
-
-export function detail_HostByAliID(ali_id){
-  return request({
-    url: '/api-manager/v1/host/'+ali_id+'/detail/byalid/',
-    method: 'GET'
+    url: '/api-manager/v1/host/'+ data.uuid + '/selectgroup/',
+    method: 'PUT',
+    data: data
   })
 }

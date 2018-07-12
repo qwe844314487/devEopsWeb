@@ -14,7 +14,6 @@
 <script>
 import echarts from 'echarts';
 import Echarts from '@/components/Echarts/index';
-import { Trends,TimeLine,Pie } from '@/utils/charts';
 export default {
   data () {
     return {

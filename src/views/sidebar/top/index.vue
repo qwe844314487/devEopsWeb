@@ -83,6 +83,7 @@
 </template>
 
 <script>
+  import GLOBAL from "@/config"
   import { qrcode_User } from '@/api/auth'
   import Hamburger from '@/components/Hamburger'
   import Breadcrumb from '@/components/Breadcrumb'
@@ -123,7 +124,7 @@
             }).then(()=>{
               qrcode_User().then((response)=>{
                 this.dialogQRCode = true
-                this.qrcodeimg = 'http://10.100.100.245:8888'+response.data.url
+                this.qrcodeimg = GLOBAL.MEDIA_URL + response.data.url
               })
             })
         }

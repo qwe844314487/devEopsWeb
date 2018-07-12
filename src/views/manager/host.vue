@@ -178,7 +178,6 @@
           <el-transfer v-model="commit_obj.groups" :data="groups" placeholder="请选择所属应用组" filterable>
           </el-transfer>
         </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogGroupVisible = false" :disabled="btnStatus">取消</el-button>
@@ -311,8 +310,8 @@
   import 'echarts/lib/chart/bar';
   import 'echarts/lib/chart/line';
   import 'echarts/lib/component/title';
-  import { fetch_HostListByPage,fetch_PositionList,fetch_SystypeList,delete_Host,create_Host,update_Host,create_Systype,create_Position,fetch_HostPasswd,detail_HostByUUID } from '@/api/manager';
-  import { fetch_GroupList,selectHost_Group } from "@/api/manager";
+  import { fetch_HostListByPage,fetch_PositionList,fetch_SystypeList,delete_Host,create_Host,update_Host,create_Systype,create_Position,fetch_HostPasswd } from '@/api/manager';
+  import { fetch_GroupList,selectHost_Group,selectGroup_Host } from "@/api/manager";
   import { fetch_MonitorHostAliyunCPU,fetch_MonitorHostAliyunMemory,fetch_MonitorHostAliyunDiskRead,fetch_MonitorHostAliyunInternetIn } from '@/api/monitor';
   export default {
       data(){
@@ -331,6 +330,7 @@
           detailSearch: false,
           systemtype: [],
           position: [],
+          monitorFlag: null,
           temp_passwd: '',
           systype_item: '',
           position_item: '',
@@ -464,38 +464,35 @@
             }
           })
         },
-        check_init_detail(){
-          if(this.monitor_obj.CPU != null & this.monitor_obj.Memory != null & this.monitor_obj.DiskRead != null & this.monitor_obj.InternetIn != null){
-            return true
-          }else{
-            return false
-          }
-        },
         init_detail_aliyun(obj){
           fetch_MonitorHostAliyunCPU(obj.uuid).then((response)=>{
             this.monitor_obj.CPU = response.data
-            if(this.check_init_detail()){
+            this.monitorFlag = this.monitorFlag + 1
+            if(this.monitorFlag >=4 ){
               this.dialogDetailVisible = true
               this.monitorLoading = false
             }
           })
           fetch_MonitorHostAliyunMemory(obj.uuid).then((response)=>{
             this.monitor_obj.Memory = response.data
-            if(this.check_init_detail()){
+            this.monitorFlag = this.monitorFlag + 1
+            if(this.monitorFlag >=4 ){
               this.dialogDetailVisible = true
               this.monitorLoading = false
             }
           })
           fetch_MonitorHostAliyunDiskRead(obj.uuid).then((response)=>{
             this.monitor_obj.DiskRead = response.data
-            if(this.check_init_detail()){
+            this.monitorFlag = this.monitorFlag + 1
+            if(this.monitorFlag >=4 ){
               this.dialogDetailVisible = true
               this.monitorLoading = false
             }
           })
           fetch_MonitorHostAliyunInternetIn(obj.uuid).then((response)=>{
             this.monitor_obj.InternetIn = response.data
-            if(this.check_init_detail()){
+            this.monitorFlag = this.monitorFlag + 1
+            if(this.monitorFlag >=4 ){
               this.dialogDetailVisible = true
               this.monitorLoading = false
             }
@@ -558,6 +555,7 @@
         },
         handleDetail(row){
           this.dialogStatus = 'detail'
+          this.monitorFlag = 0
           this.init_detail_aliyun(row)
         },
         handleCreate(row){
@@ -595,7 +593,8 @@
               message: '归类成功',
               type: 'success'
             })
-            this.init_hosts()
+            this.reset_commit()
+            this.init()
           }).catch((error)=>{
             this.$message({
               showClose: true,
@@ -615,6 +614,7 @@
         },
         handleUpdate(row){
           this.commit_obj = Object.assign({}, row) // copy obj
+          this.commit_obj._status = this.commit_obj._status + ''
           this.dialogStatus = 'update'
           this.dialogFormVisible = true
           this.$nextTick(() => {
@@ -656,7 +656,7 @@
           this.$refs['groupForm'].validate((valid) => {
             if (valid) {
               this.btnStatus=true
-              update_Host(this.commit_obj).then(() => {
+              selectGroup_Host(this.commit_obj).then(() => {
                 this.dialogGroupVisible = false
                 this.init()
                 this.$message({
