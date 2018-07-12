@@ -40,7 +40,7 @@
 
       <el-table-column align="center" label="操作" width="100px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="host">
-          <el-button type="primary" size="mini" @click="handleDetail(host.row)" :disabled="btnStatus">详细</el-button>
+          <el-button type="primary" size="mini" disabled="btnStatus">详细</el-button>
         </template>
       </el-table-column>
 
@@ -64,7 +64,6 @@
 </template>
 
 <script>
-  import { detail_HostByAliID } from '@/api/manager';
   import { fetch_ExpiredAliyunECSList } from '@/api/dashboard';
   export default {
       data(){
@@ -103,40 +102,6 @@
         handleCurrentChange(val) {
           this.pagination.page = val
           this.init()
-        },
-        filterDetail(data){
-          const list=[]
-          if(data.type=='aliyun'){
-            list.push('地区 : ' + data.RegionId)
-            list.push('过期时间 : ' + data.ExpiredTime)
-            list.push('私网地址 : ' + data.VpcAttributes.PrivateIpAddress.IpAddress[0])
-            list.push('实例名称 : ' + data.InstanceName)
-            list.push('CPU核数 : ' + data.Cpu)
-            list.push('内存大小MB : ' + data.Memory)
-            list.push('带宽大小 : ' + data.InternetMaxBandwidthIn)
-          }else{
-            list.push('使用内存MB : ' + data.privateMemory +'/'+ data.memoryMB)
-            list.push('电源状态 : ' + data.powerState)
-            list.push('CPU核数 : ' + data.numCpu)
-            list.push('CPU使用 : ' + data.overallCpuUsage +'MHz')
-            list.push('私网地址 : ' + data.ipAddress)
-            list.push('存储使用B : ' + data.committed)
-          }
-          return list
-        },
-        handleDetail(row){
-          this.temp = Object.assign({},row)
-          this.dialogStatus = 'detail'
-          detail_HostByAliID(row.recognition_id).then((response) =>{
-            this.details = this.filterDetail(response.data)
-            this.dialogDetailVisible = true
-          }).catch((error) => {
-            this.$message({
-              type: 'error',
-              message: '获取详细信息失败!'
-            })
-            this.dialogDetailVisible = false
-          })
         }
       }
     }

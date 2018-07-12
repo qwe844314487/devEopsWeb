@@ -21,7 +21,7 @@ export function create_Variable(data){
 
 export function delete_Variable(data){
     return request({
-        url: '/api-var/v1/group/'+data.id+'/delete/',
+        url: '/api-var/v1/group/'+data.uuid+'/delete/',
         method: 'DELETE',
         data:data
       })

@@ -48,7 +48,6 @@ import 'echarts/lib/chart/bar';
 import 'echarts/lib/chart/line';
 import 'echarts/lib/component/title';
 import { fetch_SystemStatus } from '@/api/dashboard';
-import { Trends,TimeLine,Pie } from '@/utils/charts';
 export default {
   data () {
     return {

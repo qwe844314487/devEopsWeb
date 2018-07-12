@@ -241,6 +241,9 @@
         this.dialogStatus = 'create'
         this.dialogUserVisible = true
         this.reset_commit()
+        this.$nextTick(() => {
+          this.$refs['userForm'].clearValidate()
+        })
       },
       handleUpdate(row){
         this.commit_obj = Object.assign({}, row) // copy obj

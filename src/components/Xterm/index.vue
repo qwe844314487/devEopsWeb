@@ -41,7 +41,7 @@
         cursorBlink: true
       })
       this.term.open(this.$refs.yoshell,false)
-      this.socket = new WebSocket('ws://10.100.100.246:8888/ansible/'+this.work_uuid+'/')
+      this.socket = new WebSocket('ws://'+ GLOBAL.API_URL+'/ansible/'+this.work_uuid+'/')
       this.term.attach(this.socket)
       this.term.focus()
     },

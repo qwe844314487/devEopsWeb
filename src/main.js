@@ -20,9 +20,7 @@ import 'vue-awesome/icons/flag'
 import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
 
-
 Vue.config.productionTip = false
-
 Vue.use(ElementUI)
 Vue.use(VueI18n)
 Vue.use(VueClipboard)

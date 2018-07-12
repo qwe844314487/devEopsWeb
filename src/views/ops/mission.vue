@@ -201,7 +201,9 @@
         })
       },
       reset_commit(){
-        this.commit_obj = {}
+        this.commit_obj = {
+          need_validate: False
+        }
       },
       reset_search(){
         this.search_obj = {}
@@ -321,6 +323,7 @@
               message: '删除成功',
               type: 'success'
             })
+            this.dialogQRCodeVisible = false
             this.init()
           })
         })

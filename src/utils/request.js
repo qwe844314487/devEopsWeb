@@ -2,11 +2,11 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from "@/utils/auth"
-
+import GLOBAL from "@/config"
 // baseURL: process.env.API_URL,
 const service = axios.create({
-  baseURL: "http://10.100.100.245:8888/",
-  timeout: 90000
+  baseURL: GLOBAL.API_URL,
+  timeout: GLOBAL.API_TIMEOUT
 })
 
 service.interceptors.request.use(config => {

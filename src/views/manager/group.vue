@@ -203,7 +203,7 @@
   import { fetch_GroupListByPage,update_Group,delete_Group,create_Group,framework_Group } from '@/api/manager'
   import { fetch_OpsUserList,fetch_PmnGroupList,fetch_KeyList,fetch_JumperList } from '@/api/auth'
   import { fetch_VariableList,create_Variable,delete_Variable} from '@/api/variable'
-  import { create_File } from '@/api/utils'
+  import { create_Image } from '@/api/utils'
   export default {
     data(){
       return {
@@ -290,8 +290,7 @@
       uploadFramework(item){
         const formData=new FormData()
         formData.append('image',item.file)
-        formData.append('type',0)
-        create_File(formData).then(response=>{
+        create_Image(formData).then(response=>{
           this.commit_obj._framework = response.data.id
         }).catch((error)=>{
           this.commit_obj._framework = ''
