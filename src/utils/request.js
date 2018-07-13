@@ -1,12 +1,11 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from "@/utils/auth"
-import GLOBAL from "@/config"
+
 // baseURL: process.env.API_URL,
 const service = axios.create({
-  baseURL: GLOBAL.API_URL,
-  timeout: GLOBAL.API_TIMEOUT
+  baseURL: process.env.API_URL,
+  timeout: process.env.API_TIMEOUT
 })
 
 service.interceptors.request.use(config => {
@@ -32,7 +31,7 @@ function findError(error){
 service.interceptors.response.use(
   response => response,
   error => {
-    Message({
+    this.$message({
       message: findError(error),
       type: 'error',
       duration: 5 * 1000

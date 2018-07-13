@@ -117,9 +117,39 @@ export const devEopsRouterMap = [
       meta: { title: '主机',icon:'laptop',hidden:false,cache:true}
     },{
       path: 'expired',
-      component: _import('manager/expired'),
+      component: _import('expired/host'),
       name: 'expired',  
-      meta: { title: '过期列表',icon:'clock-o',hidden:true,cache:true}
+      meta: { title: 'ECS过期列表',icon:'clock-o',hidden:true,cache:true}
+    }]
+  },{
+    path: '/mongodb',
+    component: layout,
+    meta:{title: 'MongoDB',icon:'database'},
+    children: [{
+      path: 'instance',
+      component: _import('db/instance'),
+      name: 'instance',
+      meta: { title: '实例',icon:'cubes',hidden:false,cache:true}
+    },{
+      path: 'expired',
+      component: _import('expired/mongodb'),
+      name: 'expired',
+      meta: { title: 'MongoDB过期列表',icon:'click-o',hidden:true,cache:true}
+    }]
+  },{
+    path: '/kvstore',
+    component: layout,
+    meta:{title: 'KVStore',icon:'database'},
+    children: [{
+      path: 'instance',
+      component: _import('db/instance'),
+      name: 'instance',
+      meta: { title: '实例',icon:'cubes',hidden:false,cache:true}
+    },{
+      path: 'expired',
+      component: _import('expired/kvstore'),
+      name: 'expired',
+      meta: { title: 'KVStore过期列表',icon:'click-o',hidden:true,cache:true}
     }]
   },{
     path: '/db',
@@ -147,9 +177,9 @@ export const devEopsRouterMap = [
       meta: { title: '用户',icon:'user-circle-o',hidden:false,cache:true}
     },{
       path: 'expired',
-      component: _import('db/expired'),
+      component: _import('expired/db'),
       name: 'expired',
-      meta: { title: '过期列表',icon:'click-o',hidden:true,cache:true}
+      meta: { title: 'RDS过期列表',icon:'click-o',hidden:true,cache:true}
     }]
   },{
     path: '/ops',

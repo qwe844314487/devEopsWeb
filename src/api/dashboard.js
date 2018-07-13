@@ -19,6 +19,20 @@ export function fetch_ExpiredAliyunRDSList(pagination){
   })
 }
 
+export function fetch_ExpiredAliyunKVStoreList(pagination){
+  return request({
+    url: '/api-dashboard/v1/expired/kvstore/bypage/'+'?page='+pagination.page,
+    method: 'GET'
+  })
+}
+
+export function fetch_ExpiredAliyunMongoDBList(pagination){
+  return request({
+    url: '/api-dashboard/v1/expired/mongodb/bypage/'+'?page='+pagination.page,
+    method: 'GET'
+  })
+}
+
 export function fetch_SystemStatus(){
   return request({
     url: '/api-dashboard/v1/systype/',

@@ -5,7 +5,6 @@
 </template>
 
 <script>
-  import GLOBAL from '@/config'
   export default {
     name: 'YoProgress',
     props: {
@@ -30,7 +29,7 @@
     },
     methods:{
       initWebSocket(){ //初始化weosocket 
-        this.websock = new WebSocket(GLOBAL.WEBSOCKET_URL+'ansible/'+this.work_uuid+'/')
+        this.websock = new WebSocket(this.API_WEBSOCKET+'ansible/'+this.work_uuid+'/')
         this.websock.onmessage = this.websocketonmessage
         this.websock.onclose = this.websocketclose
       },

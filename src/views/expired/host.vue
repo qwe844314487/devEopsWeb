@@ -26,7 +26,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="220px" align="center" label="VPC私网地址">
+      <el-table-column width="220px" align="center" label="连接地址">
         <template slot-scope="host">
           <span>{{ host.row.connect_ip }}</span>
         </template>
@@ -40,7 +40,7 @@
 
       <el-table-column align="center" label="操作" width="100px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="host">
-          <el-button type="primary" size="mini" disabled="btnStatus">详细</el-button>
+          <el-button type="primary" size="mini" disabled="">详细</el-button>
         </template>
       </el-table-column>
 
