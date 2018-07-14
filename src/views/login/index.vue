@@ -36,6 +36,7 @@
 </template>
 
 <script>
+  import CryptoJS from 'crypto-js'
   import Awesome from "@/components/Awesome/index";
     export default {
       components: {Awesome},
@@ -45,13 +46,18 @@
       },
         data (){
           return {
-              loginForm: {
-                username: '',
-                password: ''
-              },
-              passwordType: 'password',
-              loading: false
+            key: null,
+            loginForm: {
+              username: '',
+              password: ''
+            },
+            passwordType: 'password',
+            loading: false
           }
+        },
+        created(){
+          // this.key = CryptoJS.enc.Utf8.parse("dq4WUCxzEcKsGDjx")
+          this.key = "dq4WUCxzEcKsGDjx"
         },
         methods: {
           showPasswd() {
@@ -63,6 +69,10 @@
           },
           userLogin(){
             this.loading = true
+            // this.loginForm.password = CryptoJS.AES.encrypt(this.loginForm.password, this.key, {  
+            //   mode: CryptoJS.mode.ECB,  
+            //   padding: CryptoJS.pad.Pkcs7  
+            // }).toString()
             this.$store.dispatch('LoginByUsername',this.loginForm).then(()=>{
               this.loading = false
               this.$router.push({path: '/dashboard' })

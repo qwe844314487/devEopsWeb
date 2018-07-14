@@ -202,8 +202,9 @@
       },
       reset_commit(){
         this.commit_obj = {
-          need_validate: False
-        }
+          need_validate: 'False'
+        },
+        this.metas = []
       },
       reset_search(){
         this.search_obj = {}
@@ -235,7 +236,6 @@
       },
       handleCreate(){
         this.dialogStatus = 'create'
-        this.metas = []
         this.reset_commit()
         this.init_group()
         this.dialogMissionVisible = true

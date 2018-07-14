@@ -79,8 +79,8 @@
         <template slot-scope="work">      
           <el-button size="mini" v-if="work.row.status<0" type="danger" @click="resultsWork(work.row)">失败</el-button>    
           <el-button size="mini" v-else-if="work.row.status==1" type="warning" @click="checkWork(work.row)" :disabled="btnStatus">审核</el-button>
-          <el-button size="mini" v-else-if="work.row.status==2" type="warning" @click="handleUploadWork(work.row)" :disabled="btnStatus">上传文件</el-button>
-          <el-button size="mini" v-else-if="work.row.status==3" type="danger" @click="handleRun(work.row)" :disabled="btnStatus">执行</el-button>
+          <el-button size="mini" v-else-if="work.row.status==2" type="warning" @click="uploadWork(work.row)" :disabled="btnStatus">上传文件</el-button>
+          <el-button size="mini" v-else-if="work.row.status==3" type="danger" @click="handleQRCode(work.row)" :disabled="btnStatus">执行</el-button>
           <el-button size="mini" v-else-if="work.row.status==4" type="warning" disabled>执行中</el-button>
           <el-button size="mini" v-else-if="work.row.status==5" type="primary" disabled>执行完毕</el-button>
           <el-button size="mini" v-else-if="work.row.status==6" type="warning" disabled>加载参数</el-button>
@@ -149,7 +149,7 @@
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogUploadVisible = false" :disabled="btnStatus">取消</el-button>
-        <el-button type="primary" @click="uploadWork()" :disabled="btnStatus">提交</el-button>
+        <el-button type="primary" @click="handleUploadWork()" :disabled="btnStatus">提交</el-button>
       </div>
 
       <el-dialog
@@ -173,10 +173,7 @@
       title="执行任务"
       :visible.sync="dialogXtermVisible"
       :before-close="handleClose">
-      <!-- <xterm :work_uuid="work_uuid"></xterm> -->
-      <yo-progress :work_uuid="work_uuid"></yo-progress>
-      <!-- <div slot="footer" class="dialog-footer">
-      </div> -->
+      <yo-progress :work_uuid="commit_obj.uuid"></yo-progress>
     </el-dialog>
 
       <el-dialog
@@ -186,6 +183,15 @@
       <textarea v-model="error" style="height: 700px;width: 1200px;resize: none;"></textarea>
     </el-dialog>
 
+    <el-dialog title="QRCode二次验证" :visible.sync="dialogQRCodeVisible" width="30%" top="20vh">
+        <span>请确认您的权限并且已经拥有QR-Code</span>
+        <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
+        <div slot="footer" class="dialog-footer">
+          <el-button v-if="dialogStatus=='check'" type="primary" @click="handleCheck()" :disabled="btnStatus">提交</el-button>
+          <el-button v-else-if="dialogStatus=='upload'" type="primary" @click="handleUpload()" :disabled="btnStatus">提交</el-button>
+          <el-button v-else-if="dialogStatus=='run'" type="primary" @click="handleRun()" :disabled="btnStatus">提交</el-button>
+        </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -208,13 +214,13 @@
           dialogXtermVisible: false,
           dialogFileVisible: false,
           dialogResultsVisible: false,
+          dialogQRCodeVisible: false,
           error: '',
           upload_tb: [],
           uuid_list: [],
           update_obj: {},
           mission_item: null,
           select_time: '',
-          work_uuid: null,
           detailSearch: false,
           textMap:{
             create: '新建工单',
@@ -273,6 +279,7 @@
           })
         },
         init_files(){
+          this.optionFiles = []
           fetch_FileList().then((response)=>{
             for ( const file of response.data){
               this.optionFiles.push({
@@ -336,18 +343,26 @@
         },
         resultsWork(row){
           results_Work(row).then((response)=>{
-            console.log(response.data)
             this.dialogResultsVisible = true
             this.error = response.data.results
           })
         },
         checkWork(row){
-          check_Work(row.uuid).then((response)=>{
+          this.commit_obj = Object.assign({}, row) // copy obj
+          this.dialogStatus = 'check'
+          this.dialogQRCodeVisible = true
+        },
+        handleCheck(){
+          check_Work(this.commit_obj).then((response)=>{
             this.init()
+            this.reset_commit()
+            this.dialogQRCodeVisible = false
+          }).catch((error)=>{
+            this.dialogQRCodeVisible = false
           })
         },
-        handleUploadWork(row){
-          this.work_uuid = row.uuid
+        uploadWork(row){
+          this.commit_obj = Object.assign({}, row) // copy obj
           this.upload_tb = []
           for(let file in row.files){
             this.upload_tb.push({'name':row.files[file],'status':'未上传'})
@@ -373,32 +388,45 @@
             this.dialogFileVisible = false
           })
         },
-        uploadWork(){
-          let uuid_list = []
+        handleUploadWork(){
+          this.commit_obj.uuid_list = []
           for(let tb in this.upload_tb){
-            uuid_list.push(this.upload_tb[tb].uuid)
+            this.commit_obj.uuid_list.push(this.upload_tb[tb].uuid)
           }
-          upload_Work(this.work_uuid,uuid_list).then((response)=>{
+          this.dialogStatus = 'upload'
+          this.dialogQRCodeVisible = true
+        },
+        handleUpload(){
+          upload_Work(this.commit_obj).then((response)=>{
             this.$message({
               showClose: true,
               message: '上传文件成功',
               type: 'success'
             })
+            this.dialogQRCodeVisible = false
             this.dialogUploadVisible = false
             this.init()
+          }).catch((error)=>{
+            this.dialogUploadVisible = false
+            this.dialogQRCodeVisible = false
           })
         },
-        handleRun(row){
-          run_Work(row.uuid).then((response)=>{
+        handleQRCode(row){
+          this.dialogQRCodeVisible = true
+          this.dialogStatus = 'run'
+          this.commit_obj = Object.assign({}, row)
+        },
+        handleRun(){
+          run_Work(this.commit_obj).then((response)=>{
             this.$confirm('此操作将执行该并对业务系统造成影响, 是否继续?', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
             }).then(()=>{
-              this.work_uuid = row.uuid
+              this.dialogQRCodeVisible = false
               this.dialogXtermVisible = true
             }).catch(()=>{
-              this.meta_id = null
+              this.dialogQRCodeVisible = false
               this.dialogXtermVisible = false
             })
           })

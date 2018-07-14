@@ -262,6 +262,7 @@
           this.reset_commit()
           this.dialogStatus = "create"
           this.init_group()
+          this.fatherDNS = []
           this.dialogDNSVisible = true
         },
         createDNS(){
@@ -290,6 +291,7 @@
           this.dialogDNSVisible = true
           this.search_obj.level = row._level-1
           this.changeLevel()
+          this.fatherDNS = []
           this.init_group()
         },
         updateDNS(){

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { getToken } from "@/utils/auth"
+import { Message } from 'element-ui'
 
 // baseURL: process.env.API_URL,
 const service = axios.create({
@@ -31,12 +32,12 @@ function findError(error){
 service.interceptors.response.use(
   response => response,
   error => {
-    this.$message({
+    Message({
       message: findError(error),
       type: 'error',
       duration: 5 * 1000
     })
-    return Promise.reject(error)
+    return Promise.reject('error')
   })
 
 export default service

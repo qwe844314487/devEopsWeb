@@ -22,27 +22,27 @@ export function fetch_WorkListByPage(pagination,obj){
     })
   }
 
-  export function check_Work(uuid){
+  export function check_Work(obj){
     return request({
-      url: '/api-work/v1/codework/'+uuid+'/check/',
+      url: '/api-work/v1/codework/'+obj.uuid+'/check/',
       method: 'PUT',
-      data: {'status':2}
+      data: {'status':2, 'qrcode':obj.qrcode}
     })
   }
 
-  export function run_Work(uuid){
+  export function run_Work(obj){
     return request({
-      url: '/api-work/v1/codework/'+uuid+'/run/',
+      url: '/api-work/v1/codework/'+obj.uuid+'/run/',
       method: 'PUT',
-      data: {'status':4}
+      data: {'status':4, 'qrcode':obj.qrcode}
     })
   }
 
-  export function upload_Work(uuid,data){
+  export function upload_Work(obj){
     return request({
-      url: '/api-work/v1/codework/'+uuid+'/upload/',
+      url: '/api-work/v1/codework/'+obj.uuid+'/upload/',
       method: 'PUT',
-      data: {"files":data}
+      data: {"files":obj.uuid_list, 'qrcode':obj.qrcode}
     })
   }
 

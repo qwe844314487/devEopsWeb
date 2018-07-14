@@ -122,34 +122,24 @@ export const devEopsRouterMap = [
       meta: { title: 'ECS过期列表',icon:'clock-o',hidden:true,cache:true}
     }]
   },{
-    path: '/mongodb',
+    path: '/expired',
     component: layout,
-    meta:{title: 'MongoDB',icon:'database'},
+    meta:{title: '过期列表(暂时)',icon:'clock-o'},
     children: [{
-      path: 'instance',
-      component: _import('db/instance'),
-      name: 'instance',
-      meta: { title: '实例',icon:'cubes',hidden:false,cache:true}
-    },{
-      path: 'expired',
-      component: _import('expired/mongodb'),
-      name: 'expired',
-      meta: { title: 'MongoDB过期列表',icon:'click-o',hidden:true,cache:true}
-    }]
-  },{
-    path: '/kvstore',
-    component: layout,
-    meta:{title: 'KVStore',icon:'database'},
-    children: [{
-      path: 'instance',
-      component: _import('db/instance'),
-      name: 'instance',
-      meta: { title: '实例',icon:'cubes',hidden:false,cache:true}
-    },{
-      path: 'expired',
+      path: 'kvstore',
       component: _import('expired/kvstore'),
-      name: 'expired',
-      meta: { title: 'KVStore过期列表',icon:'click-o',hidden:true,cache:true}
+      name: 'instance',
+      meta: { title: 'KVStore',icon:'database',hidden:false,cache:true}
+    },{
+      path: 'mongodb',
+      component: _import('expired/mongodb'),
+      name: 'role',
+      meta: { title: 'MongoDB',icon:'database',hidden:false,cache:true}
+    },{
+      path: 'rds',
+      component: _import('expired/db'),
+      name: 'user',
+      meta: { title: 'RDS',icon:'database',hidden:false,cache:true}
     }]
   },{
     path: '/db',

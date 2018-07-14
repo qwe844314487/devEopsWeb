@@ -288,6 +288,7 @@
       },
       reset_commit(){
         this.commit_obj = {contents:[]}
+        this.hosts = []
       },
       reset_search(){
         this.search_obj = {}
