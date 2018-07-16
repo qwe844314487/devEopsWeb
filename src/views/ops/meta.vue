@@ -19,13 +19,13 @@
       </el-row>
       <el-row style="margin-bottom:20px;" v-show="detailSearch">
         <el-col :span="5" :offset="1">
-          模块： <el-input size="medium" style="width: 200px;" v-model="search_obj.username" class="filter-item" placeholder="根据使用模块模糊搜索"></el-input>
+          模块： <el-input size="medium" style="width: 200px;" v-model="search_obj.mdle" class="filter-item" placeholder="根据使用模块模糊搜索"></el-input>
         </el-col>
         <el-col :span="7" :offset="1">
-          参数： <el-input size="medium" style="width: 200px;" v-model="search_obj.phone" class="filter-item" placeholder="根据使用参数模糊搜索"></el-input>
+          参数： <el-input size="medium" style="width: 200px;" v-model="search_obj.args" class="filter-item" placeholder="根据使用参数模糊搜索"></el-input>
         </el-col>
         <el-col :span="7" :offset="1">
-          主机： <el-input size="medium" style="width: 250px;" v-model="search_obj.name" class="filter-item" placeholder="根据主机连接IP或主机名模糊搜索"></el-input>
+          主机： <el-input size="medium" style="width: 250px;" v-model="search_obj.host" class="filter-item" placeholder="根据主机连接IP或主机名模糊搜索"></el-input>
         </el-col>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchMeta" style="float:right;" :disabled="btnStatus">搜索</el-button>
       </el-row>
@@ -50,7 +50,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="300px" align="center" label="需求文件标签">
+      <el-table-column width="200px" align="center" label="需求文件标签">
         <div slot-scope="meta">
           <template v-for="f in meta.row.need_files">
               <el-tag>{{ f }}</el-tag>
