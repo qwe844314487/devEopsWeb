@@ -22,10 +22,7 @@
       ...mapGetters([
         'routers',
         'topsidebar'
-      ]),
-      isCollapse(){
-        return !this.topsidebar.opened
-      }
+      ])
     }
   }
 </script>

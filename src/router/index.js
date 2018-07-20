@@ -204,6 +204,15 @@ export const devEopsRouterMap = [
     path:'',
     component: layout,
     children: [{
+      path: 'xdm',
+      component: _import('xdm/index'),
+      name: 'xdm',
+      meta: { title: 'XDM',icon:'database',hidden:true,cache:true}
+    }]
+  },{
+    path:'',
+    component: layout,
+    children: [{
       path: 'file',
       component: _import('file/index'),
       name: 'file',
