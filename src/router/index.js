@@ -201,13 +201,19 @@ export const devEopsRouterMap = [
       meta: { title: '工单',icon:'dashboard',hidden:true,cache:true}
     }]
   },{
-    path:'',
+    path:'/console',
     component: layout,
+    meta:{title: '控制台',icon:'terminal'},
     children: [{
-      path: 'xdm',
-      component: _import('xdm/index'),
-      name: 'xdm',
-      meta: { title: 'XDM',icon:'database',hidden:true,cache:true}
+      path: 'terminal',
+      component: _import('console/terminal'),
+      name: '终端',
+      meta: { title: '终端',icon:'terminal',hidden:false,cache:true}
+    },{
+      path: 'enumerate',
+      component: _import('console/enumerate'),
+      name: '列举',
+      meta: { title: '列举',icon:'terminal',hidden:false,cache:true}
     }]
   },{
     path:'',
