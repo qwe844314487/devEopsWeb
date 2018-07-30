@@ -44,7 +44,7 @@
 
       <el-table-column width="150px" align="center" label="状态" class-name="status-col" >
         <template slot-scope="group">
-          <el-tag :type="group.row._status | statusFilter">{{ optionState[group.row._status].label }}</el-tag>
+          <el-tag :type="group.row._status | statusFilter">{{ getOptionState(group.row._status) }}</el-tag>
         </template>
       </el-table-column>
 
@@ -70,7 +70,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%" top="2vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="50%" top="2vh">
       <el-form :rules="rules" ref="dataForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
         <el-form-item label="应用组UUID" prop="uuid">
           <el-input v-model="commit_obj.uuid" disabled></el-input>
@@ -85,22 +85,17 @@
             <el-input type="textarea" v-model="commit_obj.info"></el-input>
           </el-tooltip>
         </el-form-item>
-        <el-form-item label="状态" prop="_status">
-          <el-select v-model="commit_obj._status" placeholder="请选择应用组状态">
-            <el-option v-for="option in optionState" :key="option.label" :label="option.label" :value="option.value"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="管理用户" prop="users">
             <el-transfer v-model="commit_obj.users" :data="users" placeholder="请选择管理用户" filterable>
             </el-transfer>
         </el-form-item>
         <el-form-item label="添加密钥对" prop="key">
-          <el-select v-model="commit_obj.key" placeholder="请选择密钥对">
+          <el-select v-model="commit_obj.key" placeholder="请选择密钥对" clearable>
             <el-option v-for="key in this.keys" :key="key.label" :label="key.label" :value="key.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="添加跳板机" prop="key">
-          <el-select v-model="commit_obj.jumper" placeholder="请选择密钥对">
+          <el-select v-model="commit_obj.jumper" placeholder="请选择密钥对" clearable>
             <el-option v-for="jumper in this.jumpers" :key="jumper.label" :label="jumper.label" :value="jumper.value"></el-option>
           </el-select>
         </el-form-item>
@@ -123,7 +118,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="60%" top="2vh">
+    <el-dialog :title="commit_obj.name+textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="50%" top="2vh">
       <el-form ref="permissionForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
         <el-form-item label="所属权限组" prop="pmn_groups">
@@ -147,13 +142,13 @@
             </template>
           </el-table-column>
 
-          <el-table-column width="230px" align="center" label="Key">
+          <el-table-column width="280px" align="center" label="Key">
             <template slot-scope="vars">
               <span>{{ vars.row.key }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column width="250px" align="center" label="Value">
+          <el-table-column width="430px" align="center" label="Value">
             <template slot-scope="vars">
               <span>{{ vars.row.value }}</span>
             </template>
@@ -192,7 +187,7 @@
     </el-dialog>
 
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogImgVisible" width="80%" top="2vh">
+    <el-dialog :title="commit_obj.name+'>'+textMap[dialogStatus]" :visible.sync="dialogImgVisible" width="80%" top="2vh">
       <img :src="commit_obj.framework" style="width:100%;height:100%;">
     </el-dialog>
 
@@ -248,17 +243,14 @@
         },
         optionState:[
           {
-            value: 0,
-            label: '禁用中'
+            value: -2,
+            label: '暂停'
+          }, {
+            value: -1,
+            label: '不可达'
           }, {
             value: 1,
-            label: '使用中'
-          }, {
-            value: 2,
-            label: '暂停中'
-          }, {
-            value: 3,
-            label: '不可达'
+            label: '正常'
           }]
       }
     },
@@ -278,15 +270,22 @@
       },
       statusFilter(_status) {
         const statusMap = {
-          0: 'danger',
-          1: 'success',
-          2: 'warning',
-          3: 'info'
+          '-2': 'danger',
+          '1': 'success',
+          '-1': 'warning'
         }
         return statusMap[_status]
       }
     },
     methods:{
+      getOptionState(status){
+          let option = {
+            '-2': '暂停',
+            '-1': '不可达',
+            '1': '正常'
+          }
+          return option[status]
+      },
       uploadFramework(item){
         const formData=new FormData()
         formData.append('image',item.file)
@@ -297,7 +296,9 @@
         })
       },
       reset_commit(){
-        this.commit_obj = {}
+        this.commit_obj = {
+          _status: 1
+        }
       },
       reset_search(){
         this.search_obj = {}
@@ -484,8 +485,8 @@
               })
               this.btnStatus=false
             }).catch((error)=>{
-              this.dialogPermissionVisible = false
               this.btnStatus=false
+              this.dialogPermissionVisible = false
             })
           }
         })

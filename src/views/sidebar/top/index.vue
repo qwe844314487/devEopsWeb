@@ -1,6 +1,5 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
-    <hamburger class="hamburger-container" :toggleClick="Toggle" :isActive="topsidebar.opened"></hamburger>
     <breadcrumb class="breadcrumb-container"></breadcrumb>
     <div class="right-menu">
       <el-tooltip effect="dark" content="全屏" placement="bottom">
@@ -29,47 +28,6 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-
-
-      <!--<el-dropdown class="right-menu-item" trigger="click">-->
-        <!--<awesome awesclass="user" class="user-svg"></awesome>-->
-        <!--<el-dropdown-menu slot="dropdown">-->
-          <!--<router-link to="/">-->
-            <!--<el-dropdown-item>-->
-              <!--&lt;!&ndash;<awesome awesclass="user"></awesome> 图标颜色无法更改&ndash;&gt;-->
-              <!--仪表盘-->
-            <!--</el-dropdown-item>-->
-          <!--</router-link>-->
-
-          <!--<el-dropdown-item divided>-->
-          <!--@click="logout"-->
-          <!--<span style="display:block;" @click="logout">登出</span>-->
-          <!--</el-dropdown-item>-->
-
-        <!--</el-dropdown-menu>-->
-      <!--</el-dropdown>-->
-
-      <!--<el-dropdown class="avatar-container right-menu-item" trigger="click">-->
-        <!--&lt;!&ndash;<div class="avatar-wrapper">&ndash;&gt;-->
-          <!--&lt;!&ndash;<awesome awesclass="eye" style="color: #C03639" class="user-avatar"></awesome>&ndash;&gt;-->
-          <!--&lt;!&ndash;<i class="el-icon-caret-bottom"></i>&ndash;&gt;-->
-        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-        <!--<el-dropdown-menu slot="dropdown">-->
-          <!--<router-link to="/">-->
-            <!--<el-dropdown-item>-->
-              <!--Dashboard-->
-            <!--</el-dropdown-item>-->
-          <!--</router-link>-->
-
-          <!--<el-dropdown-item>-->
-            <!--&lt;!&ndash;<a target='_blank' href="https://github.com/PanJiaChen/vue-element-admin/">&ndash;&gt;-->
-            <!--Github-->
-            <!--&lt;!&ndash;</a>&ndash;&gt;-->
-          <!--</el-dropdown-item>-->
-
-        <!--</el-dropdown-menu>-->
-      <!--</el-dropdown>-->
-
     </div>
 
     <el-dialog
@@ -84,7 +42,6 @@
 
 <script>
   import { qrcode_User } from '@/api/auth'
-  import Hamburger from '@/components/Hamburger'
   import Breadcrumb from '@/components/Breadcrumb'
   import Screenfull from '@/components/Screenfull'
   import Awesome from '@/components/Awesome'
@@ -97,7 +54,7 @@
         }
       },
       components: {
-        Hamburger,Breadcrumb,Screenfull,Awesome
+        Breadcrumb,Screenfull,Awesome
       },
       computed: {
         ...mapGetters([

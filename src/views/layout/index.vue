@@ -3,22 +3,19 @@
       <left-sidebar class="sidebar-container"></left-sidebar>
       <div class="main-container">
         <top-sidebar></top-sidebar>
-        <tags></tags>
         <app></app>
       </div>
   </div>
 </template>
 
 <script>
-  // import Tags from '@/views/tags/index'
   import LeftSidebar from '@/views/sidebar/left/index'
   import TopSidebar from '@/views/sidebar/top/index'
-  import Tags from '@/views/tags/index'
   import App from '@/views/app/index'
   export default {
     name: "layout",
     components: {
-      TopSidebar,LeftSidebar, Tags, App
+      TopSidebar,LeftSidebar, App
     },
     computed: {
       topsidebar() {

@@ -27,7 +27,7 @@ router.beforeEach((to,from,next)=>{
       }
     }
   }else{//未登陆
-    if(to.path=='/login'){
+    if(to.path === '/login'){
       next()
     }else{
       Message.error('请重新登陆')

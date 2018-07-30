@@ -80,6 +80,7 @@
             this.groups = []
             for (const group of response.data){
               this.groups.push({
+                value: group.id,
                 key: group.id,
                 label: group.name,
                 disabled: false
