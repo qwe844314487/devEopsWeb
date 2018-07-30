@@ -58,13 +58,10 @@
       },
       computed: {
         ...mapGetters([
-          'topsidebar','name'
+          'name'
         ])
       },
       methods: {
-        Toggle() {
-          this.$store.dispatch('ToggleSidebar')
-        },
         Logout(){
           this.$store.dispatch('LogOut').then(()=>{
             this.$store.dispatch('FedLogOut').then(()=>{

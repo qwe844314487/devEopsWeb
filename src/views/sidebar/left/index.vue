@@ -21,8 +21,7 @@
     },
     computed:{
       ...mapGetters([
-        'routers',
-        'topsidebar'
+        'routers'
       ])
     }
   }

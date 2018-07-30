@@ -3,9 +3,6 @@ import store from '@/store'
 import { Message } from 'element-ui'
 import { getToken } from "@/utils/auth"
 
-function hasPermission(roles,permissionRoles){
-  return true
-}
 router.beforeEach((to,from,next)=>{
   if(getToken()){//登陆
     if(to.path === '/login'){

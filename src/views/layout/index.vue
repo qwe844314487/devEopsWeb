@@ -1,5 +1,5 @@
 <template>
-    <div class="app-wrapper" :class="{hideSidebar:!topsidebar.opened}">
+    <div class="app-wrapper">
       <left-sidebar class="sidebar-container"></left-sidebar>
       <div class="main-container">
         <top-sidebar></top-sidebar>
@@ -16,11 +16,6 @@
     name: "layout",
     components: {
       TopSidebar,LeftSidebar, App
-    },
-    computed: {
-      topsidebar() {
-        return this.$store.state.app.topsidebar
-      }
     }
   }
 </script>

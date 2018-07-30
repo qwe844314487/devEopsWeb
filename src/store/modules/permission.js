@@ -1,7 +1,4 @@
-import { defaultsRouterMap, devEopsRouterMap } from '@/router'
-import { isAdmin } from "@/api/login";
-import store from '@/store'
-import getters from "../getters";
+import { devEopsRouterMap } from '@/router'
 
 const permission = {
   state: {
@@ -9,14 +6,13 @@ const permission = {
   },
   mutations: {
     SET_ROUTERS: (state,routers)=>{
-      console.log(routers)
       state.routers = routers
     }
   },
   actions: {
     GenerateRouter({commit}){
       return new Promise((resolve) => {
-        if(true){ //store.getters.isadmin
+        if(true){
           commit('SET_ROUTERS',devEopsRouterMap)
           resolve()
         }else{
