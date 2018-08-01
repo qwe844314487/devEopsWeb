@@ -3,7 +3,8 @@ const getters = {
   username: state => state.user.username,
   name: state => state.user.name,
   islogin: state => state.user.islogin,
-  routers: state => state.permission.routers
+  routers: state => state.permission.routers,
+  dber: state => state.user.dber
 }
 
 export default getters

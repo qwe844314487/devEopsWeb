@@ -9,11 +9,11 @@
 </template>
 
 <script>
-  import LeftSidebar from '@/views/sidebar/left/index'
-  import TopSidebar from '@/views/sidebar/top/index'
-  import App from '@/views/app/index'
+  import LeftSidebar from '@/views/zdb/sidebar/left/index'
+  import TopSidebar from '@/views/zdb/sidebar/top/index'
+  import App from '@/views/zdb/app/index'
   export default {
-    name: "layout",
+    name: "dblayout",
     components: {
       TopSidebar,LeftSidebar, App
     }

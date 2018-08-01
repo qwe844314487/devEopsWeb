@@ -6,7 +6,7 @@
           <h2>devEops 2.0</h2>
         </el-menu-item>
       </template>
-      <sidebar-item :routes="routers"></sidebar-item>
+      <sidebar-item :routes="routers" :types="'deveops'"></sidebar-item>
       <!--:collapse="isCollapse"-->
     </el-menu>
 </template>

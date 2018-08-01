@@ -1,6 +1,6 @@
 <template>
   <div class="menu-wrapper">
-    <template v-for="route in routes" v-if="!route.children[0].hidden">
+    <template v-for="route in routes" v-if="route.meta.types == types">
       <router-link v-if="route.children.length===1" :to="route.path+'/'+route.children[0].path" :key="route.children[0].name">
         <el-menu-item :index="route.path+'/'+route.children[0].path" class="submenu-title-noDropdown">
           <awesome :awesclass="route.children[0].meta.icon"></awesome>
@@ -34,6 +34,9 @@
     props: {
       routes: {
         type: Array
+      },
+      types: {
+        type: String
       }
     }
   }

@@ -6,7 +6,8 @@ const user = {
     user: '',
     token: getToken(),
     name: '',
-    islogin: false
+    islogin: false,
+    dber: false
   },
 
   mutations: {
@@ -21,10 +22,17 @@ const user = {
     },
     SET_NAME: (state, name) =>{
       state.name = name
+    },
+    SET_DBER: (state) => {
+      state.dber = !state.dber
     }
   },
 
   actions: {
+    DBER({commit}){
+      commit('SET_DBER')
+    },
+    
     UserInfo({commit}){
       return new Promise((resolve,reject) => {
         fetch_UserInfo().then((response) => {
