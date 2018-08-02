@@ -4,7 +4,7 @@
       <el-row style="margin-bottom:20px;">
           <el-select v-model="search_obj.group" placeholder="请选择" @change="changeGroup" filterable clearable style="width: 400px;">
             <el-option
-              v-for="item in groups"
+              v-for="item in instancegroups"
               :key="item.value"
               :label="item.label"
               :value="item.value">
@@ -19,26 +19,6 @@
           <el-button class="filter-item" @click="handleType()" style="float:right;" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>
       </el-row>
       <el-row v-show="detailSearch" style="margin-bottom:20px;">
-          <el-col :span="7">
-            实例名称： <el-input style="width: 200px;" v-model="search_obj.name" class="filter-item" placeholder="根据实例名称模糊搜索"></el-input>
-          </el-col>
-          <el-col :span="7">
-            实例状态：
-            <el-select v-model="search_obj.status" placeholder="请选择应用组状态" style="width: 200px;" disabled="">
-              <option key=1>正常</option>
-              <option key=0>停止</option>
-            </el-select>
-          </el-col>
-          <el-col :span="7">
-            <el-switch
-              style="margin-top:10px"
-              v-model="search_obj.is_master"
-              active-text="Slave节点"
-              active-value=False
-              inactive-text="Master节点"
-              inactive-value=True>
-            </el-switch>
-          </el-col>
           <el-button class="filter-item" type="primary" icon="el-icon-search" style="float:right;" @click="searchDBInstance" :disabled="btnStatus">搜索</el-button>
       </el-row>
     </div>
@@ -59,27 +39,33 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="200px" align="center" label="应用组">
+      <el-table-column width="200px" align="center" label="实例组">
         <template slot-scope="role">
           <span>{{ role.row.groupname }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="145px" align="center" label="状态">
+      <el-table-column width="150px" align="center" label="状态" class-name="status-col" >
         <template slot-scope="db">
-          <el-tag :type="db.row._status | statusFilter">{{ optionState[db.row._status].label }}</el-tag>
+          <el-tag :type="db.row._status | statusFilter">{{ getOptionState(db.row._status) }}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="150px" align="center" label="类型" class-name="status-col" >
+        <template slot-scope="db">
+          <el-tag>{{ getOptionType(db.row.type) }}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="200px" align="center" label="连接地址">
+        <template slot-scope="db">
+          <span>{{ db.row.connect_ip }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="145px" align="center" label="端口">
         <template slot-scope="db">
           <span>{{ db.row.port }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="145px" align="center" label="主节点">
-        <template slot-scope="db">
-          <span>{{ db.row.is_master }}</span>
         </template>
       </el-table-column>
 
@@ -96,7 +82,6 @@
       </el-pagination>
     </div>
 
-    <el-form ref="dataForm" :model="commit_obj" label-position="left" label-width="100px">
     <el-dialog title="入库类型" :visible.sync="dialogDBChoiceType" width="20%" top="30vh">
       <el-row>
         <el-col :offset="2" :span="11">
@@ -108,35 +93,61 @@
       </el-row>
     </el-dialog>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDBImport" width="60%" top="2vh">
-        <el-form-item label="实例名称" prop="name" size="medium">
-          <el-tooltip content="请输入该实例的名称" placement="bottom" effect="light">
-            <el-input v-model="commit_obj.name"></el-input>
-          </el-tooltip>
-        </el-form-item>
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDBImport" width="50%" top="20vh">
+      <el-row :gutter="20">
+          <el-col :span="16">
+            <el-tooltip content="请输入该实例的名称" placement="bottom" effect="light">
+              <el-select v-model="formselect" placeholder="请选择"  clearable style="width: 400px;">
+                <el-option
+                  key="aliyun"
+                  label="阿里云"
+                  value="aliyun"
+                ></el-option>
+                <el-option
+                  key="vmware"
+                  label="私有云"
+                  value="vmware"
+                ></el-option>
+              </el-select>
+            </el-tooltip>
+          </el-col>
+      </el-row>
+      <el-form ref="dataForm" :model="commit_obj" label-position="left" label-width="100px">
+        <div v-show="formselect==='aliyun'">
+          <el-form-item label="实例名称" prop="name" size="medium">
+            <el-tooltip content="请输入该实例的名称" placement="bottom" effect="light">
+              <el-input v-model="commit_obj.name"></el-input>
+            </el-tooltip>
+          </el-form-item>
+        </div>
+        <div v-show="formselect==='vmware'">
+          <el-form-item label="实例连接地址" prop="name" size="medium">
+            <el-tooltip content="请输入该实例连接地址" placement="bottom" effect="light">
+              <el-input v-model="commit_obj.connect_ip"></el-input>
+            </el-tooltip>
+          </el-form-item>
 
-        <el-form-item label="实例连接地址" prop="name" size="medium">
-          <el-tooltip content="请输入该实例连接地址" placement="bottom" effect="light">
-            <el-input v-model="commit_obj.connect_ip"></el-input>
-          </el-tooltip>
-        </el-form-item>
+          <el-form-item label="实例端口" prop="port" size="medium">
+            <el-tooltip content="请输入该实例连接端口" placement="bottom" effect="light">
+              <el-input v-model="commit_obj.port"></el-input>
+            </el-tooltip>
+          </el-form-item>
 
-        <el-form-item label="实例端口" prop="port" size="medium">
-          <el-tooltip content="请输入该实例连接端口" placement="bottom" effect="light">
-            <el-input v-model="commit_obj.port"></el-input>
-          </el-tooltip>
-        </el-form-item>
+          <el-form-item label="所属应用组" prop="group" size="medium">
+            <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_hosts" filterable>
+              <el-option
+                v-for="item in groups"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
 
-        <el-form-item label="所属应用组" prop="group" size="medium">
-          <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_hosts" filterable>
-            <el-option
-              v-for="item in groups"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
+
+
+       
 
         <el-form-item label="超管账户" prop="admin_user" size="medium">
           <el-tooltip content="请输入超管账户" placement="bottom" effect="light">
@@ -149,19 +160,18 @@
             <el-input type="password" v-model="commit_obj.passwd"></el-input>
           </el-tooltip>
         </el-form-item>
-  
+    </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDBImport = false" :disabled="btnStatus">取消</el-button>
         <el-button @click="createInstance" type="primary" :disabled="btnStatus">提交</el-button>
       </div>
     </el-dialog>
-  </el-form>
+
   </div>
 </template>
 
 <script>
-  import { fetch_DBInstanceListByPage,create_DBInstance,update_DBInstance,delete_DBInstance } from '@/api/zdb';
-  import { fetch_HostList,fetch_GroupList } from '@/api/manager';
+  import { fetch_DBInstanceGroupList,fetch_DBInstanceListByPage,create_DBInstance,update_DBInstance,delete_DBInstance } from '@/api/zdb';
   export default {
       data(){
         return{
@@ -176,24 +186,18 @@
             count: 0
           },
           textMap:{
+            import: '入库数据库实例',
             update: '编辑数据库实例',
             create: '新建数据库实例',
           },
           dialogStatus:'',
+          instancegroups: [],
           groups: [],
           hosts:[],
-          zz: "False",
+          formselect: null,
           detailSearch: false,
           commit_obj: {},
-          search_obj: {},
-          optionState: [
-            {
-              value: 0,
-              label: '错误'
-            }, {
-              value: 1,
-              label: '正常'
-            }]
+          search_obj: {}
         }
       },
       created(){
@@ -202,18 +206,17 @@
       filters:{
         statusFilter(_status) {
           const statusMap = {
-            0: 'danger',
-            1: 'success',
-            2: 'info'
+            '-1': 'danger',
+            '1': 'success'
           }
           return statusMap[_status]
-        },
+        }
       },
       methods:{
         init(){
           this.reset_search()
           this.init_instance()
-          this.init_group()
+          this.init_ingroup()
         },
         init_instance(){
           fetch_DBInstanceListByPage(this.pagination,this.search_obj).then((response)=>{
@@ -222,14 +225,14 @@
             this.listLoading = false
           })
         },
-        init_group(){
-          fetch_GroupList().then((response)=>{
-            this.groups = []
-            for (const group of response.data){
-              this.groups.push({
-                value: group.id,
-                key: group.id,
-                label: group.name,
+        init_ingroup(){
+          fetch_DBInstanceGroupList().then((response)=>{
+            this.instancegroups = []
+            for (const ingroup of response.data){
+              this.instancegroups.push({
+                value: ingroup.id,
+                key: ingroup.id,
+                label: ingroup.name,
                 disabled: false
               })
             }
@@ -257,6 +260,21 @@
         resetSearch(){
           this.init()
         },
+        getOptionState(status){
+            let option = {
+              '-1': '不可达',
+              '1': '正常'
+            }
+            return option[status]
+        },
+        getOptionType(status){
+            let option = {
+              '1': '主节点',
+              '2': '从节点',
+              '3': 'MGR'
+            }
+            return option[status]
+        },
         changeGroup(){
           this.pagination = {
             page: 1,
@@ -270,12 +288,10 @@
         handleType(){
           this.reset_commit()
           this.dialogDBChoiceType = true
-          this.$nextTick(() => {
-            this.$refs['dataForm'].clearValidate()
-          })
         },
         handleImport(){
           this.dialogDBImport = true
+          this.dialogStatus = 'import'
           this.hosts = []
         },
         handleCreate(){
@@ -289,7 +305,6 @@
           this.$nextTick(() => {
             this.$refs['dataForm'].clearValidate()
           })
-          this.commit_obj.is_master = String(this.commit_obj.is_master)
         },
         handleDelete(row){
           this.commit_obj = Object.assign({},row)
@@ -318,7 +333,7 @@
           this.dialogStatus = 'update'
           this.dialogDBDetailVisible = true
           this.$nextTick(() => {
-            this.$refs['detailForm'].clearValidate()
+            this.$refs['dataForm'].clearValidate()
           })
         },
         handleExpired(){

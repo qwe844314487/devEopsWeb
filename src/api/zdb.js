@@ -53,7 +53,7 @@ export function delete_DBInstanceGroup(obj){
 export function fetch_DBInstanceList(obj){
   let st = objectIterator(obj)
   return request({
-    url: '/api-db/v1/instance/'+st,
+    url: '/api-zdb/v1/instance/'+st,
     method: 'GET'
   })
 }
@@ -61,14 +61,14 @@ export function fetch_DBInstanceList(obj){
 export function fetch_DBInstanceListByPage(pagination,obj){
   let st = objectIterator(obj)
   return request({
-    url: '/api-db/v1/instance/bypage/'+st+'&page='+pagination.page,
+    url: '/api-zdb/v1/instance/bypage/'+st+'&page='+pagination.page,
     method: 'GET'
   })
 }
 
 export function create_DBInstance(obj){
   return request({
-    url: '/api-db/v1/instance/create/',
+    url: '/api-zdb/v1/instance/create/',
     method: 'POST',
     data: obj
   })
@@ -76,7 +76,7 @@ export function create_DBInstance(obj){
 
 export function update_DBInstance(obj){
   return request({
-    url: '/api-db/v1/instance/'+obj.uuid+'/update/',
+    url: '/api-zdb/v1/instance/'+obj.uuid+'/update/',
     method: 'PUT',
     data: obj
   })
@@ -84,7 +84,7 @@ export function update_DBInstance(obj){
 
 export function delete_DBInstance(obj){
   return request({
-    url: '/api-db/v1/instance/'+obj.uuid+'/delete/',
+    url: '/api-zdb/v1/instance/'+obj.uuid+'/delete/',
     method: 'DELETE',
     data: obj
   })
