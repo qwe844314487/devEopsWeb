@@ -74,6 +74,14 @@ export function create_DBInstance(obj){
   })
 }
 
+export function import_DBInstance(obj){
+  return request({
+    url: '/api-zdb/v1/instance/import/',
+    method: 'POST',
+    data: obj
+  })
+}
+
 export function update_DBInstance(obj){
   return request({
     url: '/api-zdb/v1/instance/'+obj.uuid+'/update/',

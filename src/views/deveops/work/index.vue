@@ -94,19 +94,34 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogWorkVisible" width="60%" top="20vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogWorkVisible" width="40%" top="20vh">
       <el-form ref="workForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
         <el-row :gutter="20">
+          <el-col :span="4">
+            <p>选择应用组： </p> 
+          </el-col>
           <el-col :span="16">
-            <el-select v-model="commit_obj.mission" placeholder="请选择执行的任务" filterable>
+            <el-select v-model="search_obj.group" placeholder="请选择应用组" @change="groupSelect" filterable clearable>
+              <el-option v-for="option in optionGroup" :key="option.label" :label="option.label" :value="option.value"></el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="4">
+            <p>选择任务： </p> 
+          </el-col>
+          <el-col :span="16">
+            <el-select v-model="commit_obj.mission" placeholder="请选择执行的任务" filterable clearable>
               <el-option v-for="option in optionMission" :key="option.label" :label="option.label" :value="option.value"></el-option>
             </el-select>
           </el-col>
         </el-row>
         <el-row :gutter="20">
+          <el-col :span="4">
+            <p>发版理由：  </p> 
+          </el-col>
           <el-col :span="16">
             <el-input placeholder="重大BUG发版" v-model="commit_obj.info" label="123">
-              <template slot="prepend">执行原因: </template>
             </el-input>
           </el-col>
         </el-row>
@@ -199,6 +214,7 @@
 <script>
     import { fetch_MissionListByUser } from '@/api/ops';
     import { fetch_WorkListByPage,create_Work,check_Work,run_Work,upload_Work,results_Work } from '@/api/work';
+    import { fetch_GroupList } from '@/api/manager';
     import { fetch_FileList,update_File } from '@/api/utils';
     import Xterm from '@/components/Xterm/index';
     import YoProgress from '@/components/Progress/index';
@@ -236,6 +252,7 @@
           search_obj: {
           },
           optionMission: [],
+          optionGroup: [],
           optionFiles: []
         }
       },
@@ -266,9 +283,21 @@
             this.listLoading = false
           })
         },
-        init_mission(){
+        init_group(){
+          this.optionGroup = []
+          fetch_GroupList().then((response)=>{
+            for (const group of response.data){
+              this.optionGroup.push({
+                value: group.id,
+                label: group.name,
+                disabled: false
+              })
+            }  
+          })
+        },
+        init_mission(obj){
           this.optionMission = []
-          fetch_MissionListByUser().then(response=>{
+          fetch_MissionListByUser(obj).then(response=>{
             for (const mission of response.data){
               this.optionMission.push({
                 value: mission.id,
@@ -302,15 +331,21 @@
         },
         reset_commit(){
           this.commit_obj = {}
+          this.optionMission = []
         },
         reset_search(){
           this.search_obj = {}
+        },
+        groupSelect(){
+          this.reset_commit()
+          this.init_mission(this.search_obj)
         },
         handleCreate(){
           this.dialogStatus = 'create'
           this.dialogWorkVisible = true
           this.reset_commit()
-          this.init_mission()
+          this.reset_search()
+          this.init_group()
         },
         createWork(){
           this.$refs['workForm'].validate((valid) => {
