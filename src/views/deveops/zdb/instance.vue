@@ -102,7 +102,7 @@
         </el-form-item>
 
         <el-form-item label="所属实例组" prop="group" size="medium">
-          <el-select v-model="commit_obj.group" placeholder="请选择" filterable>
+          <el-select v-model="commit_obj.group" placeholder="请选择" filterable clearable>
             <el-option
               v-for="item in instancegroups"
               :key="item.value"
@@ -112,8 +112,8 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="所属应用组" prop="group" size="medium">
-          <el-select v-model="temp_group" placeholder="请选择" @change="init_hosts" filterable>
+        <el-form-item label="所属应用组" prop="detail.group" size="medium">
+          <el-select v-model="commit_obj.detail.group" placeholder="请选择" @change="init_hosts" clearable filterable>
             <el-option
               v-for="item in groups"
               :key="item.value"
@@ -150,9 +150,33 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="部署版本" prop="detail.version" size="medium">
+            <el-tooltip content="请输入部署的版本" placement="bottom" effect="light">
+              <el-select v-model="commit_obj.detail.version" placeholder="请选择" clearable>
+                <el-option
+                  key="5.6"
+                  label="5.6"
+                  value="5.6"
+                ></el-option>
+                <el-option
+                  key="5.7"
+                  label="5.7"
+                  value="5.7"
+                ></el-option>
+                </el-select>
+            </el-tooltip>
+          </el-form-item>
+        </el-col>
+        <el-col :offset="1" :span="11">
+        </el-col>
+      </el-row>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogDBCreate = false" :disabled="btnStatus">取消</el-button>
+        <el-button @click="dialogDBCreate = false;dialogDBChoiceType=false;" :disabled="btnStatus">取消</el-button>
         <el-button @click="createInstance" type="primary" :disabled="btnStatus">提交</el-button>
       </div>
 
@@ -209,7 +233,7 @@
 
         <div v-show="formselect==='vmware'">
           <el-form-item label="所属应用组" prop="group" size="medium">
-            <el-select v-model="temp_group" placeholder="请选择" @change="init_hosts" filterable>
+            <el-select v-model="temp_group" placeholder="请选择" @change="init_hosts" filterable clearable>
               <el-option
                 v-for="item in groups"
                 :key="item.value"
@@ -250,7 +274,7 @@
         </el-form-item>
     </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogDBImport = false" :disabled="btnStatus">取消</el-button>
+        <el-button @click="dialogDBImport = false;dialogDBChoiceType = false;" :disabled="btnStatus">取消</el-button>
         <el-button @click="importInstance" type="primary" :disabled="btnStatus">提交</el-button>
       </div>
     </el-dialog>
@@ -299,6 +323,8 @@
       filters:{
         statusFilter(_status) {
           const statusMap = {
+            '-3': 'warning',
+            '-2': 'danger',
             '-1': 'danger',
             '1': 'success'
           }
@@ -376,6 +402,8 @@
         },
         getOptionState(status){
             let option = {
+              '-3': '连接拒绝',
+              '-2': '密码错误',
               '-1': '不可达',
               '1': '正常'
             }
@@ -461,8 +489,10 @@
           this.$refs['createForm'].validate((valid) => {
             if (valid) {
               this.btnStatus=true
+              console.log(this.commit_obj)
               create_DBInstance(this.commit_obj).then(() => {
                 this.init()
+                this.dialogDBChoiceType = false
                 this.dialogDBCreate = false
                 this.$message({
                   showClose: true,
@@ -472,6 +502,7 @@
                 this.btnStatus=false
               }).catch((error)=>{
                 this.btnStatus=false
+                this.dialogDBChoiceType = false
                 this.dialogDBCreate = false
               })
             }
