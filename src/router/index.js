@@ -3,6 +3,7 @@ import Router from 'vue-router'
 const _import = require('./_import_route')
 import layout from '@/views/deveops/layout'
 import dblayout from '@/views/zdb/layout'
+import dashboardlayout from '@/views/dashboard/layout'
 Vue.use(Router)
 
 export const defaultsRouterMap = [
@@ -26,18 +27,7 @@ export default new Router({
 })
 
 
-export const devEopsRouterMap = [
-  {
-    path:'/dashboard',
-    component: layout,
-    meta: {title:'仪表盘', icon:'dashboard', types: 'deveops'},
-    children: [{
-      path: '',
-      component: _import('deveops/dashboard/index'),
-      name: 'dashboard',
-      meta: { title: '仪表盘',icon:'dashboard',hidden:true,cache:true}
-    }]
-  },{
+export const devEopsRouterMap = [{
     path: '/authority',
     component: layout,
     meta:{title: '人员管理',icon:'address-card-o',types: 'deveops'},
@@ -200,6 +190,21 @@ export const devEopsRouterMap = [
       path: 'role',
       component: _import('zdb/db/role'),
       name: 'DBer',
+      meta: { title: 'DBer',icon:'terminal',hidden:false,cache:true}
+    }]
+  },{
+    path:'/dashboard',
+    component: dashboardlayout,
+    meta:{title: 'Dashboard',icon:'terminal',types:'zdb'},
+    children: [{
+      path: 'manager',
+      component: _import('dashboard/manager/index'),
+      name: 'manager',
+      meta: { title: 'DBer',icon:'terminal',hidden:false,cache:true}
+    },{
+      path: 'manager',
+      component: _import('dashboard/manager/index'),
+      name: 'manager',
       meta: { title: 'DBer',icon:'terminal',hidden:false,cache:true}
     }]
   }

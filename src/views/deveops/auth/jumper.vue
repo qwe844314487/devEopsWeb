@@ -43,7 +43,7 @@
 
       <el-table-column width="150px" align="center" label="状态" class-name="status-col" >
         <template slot-scope="jumper">
-          <el-tag :type="jumper.row.status | statusFilter">{{ optionState[jumper.row.status].label }}</el-tag>
+          <el-tag :type="jumper.row.status | statusFilter">{{ optionStateObj[jumper.row.status] }}</el-tag>
         </template>
       </el-table-column>
 
@@ -133,6 +133,10 @@
             value: 1,
             label: '正常'
           }],
+        optionStateObj:{
+            '-1': '不可达',
+            '1': '可达'
+        },
         textMap:{
           update: '编辑跳板机',
           create: '新建跳板机',
@@ -153,8 +157,8 @@
     filters:{
       statusFilter(status) {
         const statusMap = {
-          0: 'info',
-          1: 'success'
+          '-1': 'danger',
+          '1': 'success'
         }
         return statusMap[status]
       }
