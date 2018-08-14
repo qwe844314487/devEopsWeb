@@ -1,5 +1,5 @@
 <template>
-    <section class="app-main" style="min-height: 100%">
+    <section class="app-main">
       <router-view></router-view>
     </section>
 </template>

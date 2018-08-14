@@ -1,6 +1,6 @@
 <template>
-<div>
-    <template v-if="params.mp_id">
+<div class="y-background">
+    <template>
         <h2 class="u-title">账号整体情况</h2>
             <el-row>
                 <el-col :span="6">
@@ -80,16 +80,6 @@
                 </el-col>
             </el-row>
     </template>
-    <template v-else>
-        <div class="u-text-center u-padding-top-lg">
-            <h2 class="u-margin-bottom-md no-bind">
-                <img src="" alt=""><br>
-                你当前还未绑定应用账号，请先绑定应用账号。
-            </h2>
-            <el-button class="u-btn" type="primary" @click="openCreatePage(1)">绑定APP</el-button>
-            <el-button class="u-btn" type="primary" @click="openCreatePage(2)">绑定微信公众号</el-button>
-        </div>
-    </template>
 </div>
 </template>
 <script>
@@ -133,125 +123,15 @@ export default{
                 }
             }
         }
-    },
-    props: ['viewData'],
-    watch: { //更新全局公众号id
-        viewData: function(n, o) {
-        if (n) {
-               this.params.mp_id = n;
-               this.init();
-            }
-        }
-    },
-    created(){
-    //    this.getCurMpID();
-    //    if(this.params.mp_id>0){
-    //        this.init();
-    //    }
-    },
-    components:{
-        IEcharts
-    },
-    methods:{
-        init(){
-            this.requestAccountInfo();
-            this.requestChartData();
-        },
-        /** 账号整体情况 */
-        requestAccountInfo(){
-            let vm = this;
-            this.ajaxGet({
-              url:'/api.php',
-              data:{
-                  m:'weixin',
-                  subm:'homepage',
-                  mp_id:this.params.mp_id
-              },
-              success(res){
-                  let {instance_living,instance_end,instance_not_start} = res.data,total = instance_living+instance_end+instance_not_start;
-                  vm.accountInfo=res.data;
-                  if(total>0){
-                      vm.accountInfo.instance_living_percent=instance_living*100/total;
-                      vm.accountInfo.instance_end_percent=instance_end*100/total;
-                      vm.accountInfo.instance_not_start_percent=instance_not_start*100/total;
-                  }else{
-                      vm.accountInfo.instance_living_percent=0;
-                      vm.accountInfo.instance_end_percent=0;
-                      vm.accountInfo.instance_not_start_percent=0;
-                  }
-              }
-          })
-        },
-        /** 用户分析 */
-        requestChartData(){
-            let vm = this;
-            this.ajaxGet({
-              url:'/api.php',
-              data:{
-                  m:'weixin',
-                  subm:'homepagestatistics',
-                  mp_id:this.params.mp_id
-              },
-              success(res){
-                    let chartData=res.data.list,xAxis=[],
-                    series=[
-                        {name:'新增用户',type:'line', data:[],symbol:'circle',symbolSize:4},
-                        {name:'取消关注用户',type:'line',data:[],symbol:'circle',symbolSize:4},
-                        {name:'总用户数',type:'line',data:[],symbol:'circle',symbolSize:4}];
-                    for(let i=0,len=chartData.length;i<len;i++){
-                        let item=chartData[i];
-                        xAxis.push(item.pdate);
-                        series[0].data.push(item.new_user);
-                        series[1].data.push(item.cancel_user);
-                        series[2].data.push(item.total_user);
-                    }
-                    vm.$set(vm.chartOptions,'xAxis',{data:xAxis,type:'category',name:'',axisLabel:{
-                    interval:0,
-                    formatter:function(value,index){
-                        let len = xAxis.length;
-                        return index%(Math.floor(len/3))==0? value:''
-                    }
-                }});
-                    vm.$set(vm.chartOptions,'yAxis',{type:'value',name:'',minInterval: 1});
-                    vm.$set(vm.chartOptions,'series',series||[]);
-              }
-          })
-        },
-        /** [getCurMpID description]获取当前的mpid */
-        getCurMpID() {
-            this.params.mp_id = store.state.mpid;
-        },
-        openCreatePage(type){
-            let vm = this;
-            this.$emit('viewIn',function(){
-                vm.$router.replace({
-                   name:type==1?'createApp':'createAccount'
-                });
-            });
-            
-       },
-       /** 打开消息中心 */
-       openMessagePage(){
-           this.$router.push({
-               name:'Message'
-           })
-       },
-       /** 打开用户页面 */
-       openUserPage(){
-           this.$router.push({
-               name:'Wechat'
-           });
-       },
-       /** 打开活动页面 */
-       openActivityPage(){
-           this.$router.push({
-               name:'createActivity'
-           })
-       }
     }
 }
 </script>
 <style scoped>
+    .y-background{
+        height: 100%;
+        width: 100%;
+        background: url('~@/assets/dashboard.jpg')
+    }
     .u-btn{
         width: 166px;
         margin:0 15px;
@@ -267,12 +147,12 @@ export default{
         margin-bottom: 10px;
     }
     .m-border-box{
-        border:1px solid #efefef;
+        border:1px solid #00FFFF;
         min-height: 58px;
         margin: 10px;
         padding: 20px;
         border-radius: 3px;
-        color: #aaa;
+        color: #000000;
     }
     .m-border-box .label{
         font-size: 14px;

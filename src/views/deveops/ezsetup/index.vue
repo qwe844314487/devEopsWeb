@@ -2,14 +2,6 @@
   <div class="manager-host-container">
     <div class="filter-container">
       <el-row style="margin-bottom:20px;">
-        <el-select v-model="search_obj.group" placeholder="请选择" @change="changeGroup" filterable clearable style="width: 400px;">
-          <el-option
-            v-for="item in groups"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
         <el-switch
           v-model="detailSearch"
           inactive-text="详细检索">
@@ -17,57 +9,27 @@
         <el-button class="filter-item" @click="resetSearch()" style="margin-left: 10px;" type="primary" icon="el-icon-refresh" :disabled="btnStatus">清除</el-button>
         <el-button class="filter-item" @click="handleCreate()" style="float:right;" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>
       </el-row>
-      <el-row v-show="detailSearch" style="margin-bottom:20px;">
-        <el-col :span="7" :offset="1">
-          外网解析： <el-input style="width: 200px;" v-model="search_obj.dig" class="filter-item" placeholder="精准搜索外网解析"></el-input>
-        </el-col>
-        <el-col :span="7">
-          内网解析： <el-input style="width: 200px;" v-model="search_obj.inner_dig" class="filter-item" placeholder="精准搜索内网解析"></el-input>
-        </el-col>
-        <el-col :span="7">
-          分段域名： <el-input style="width: 200px;" v-model="search_obj.dns_name" class="filter-item" placeholder="模糊搜索段域名"></el-input>
-        </el-col>
-        <el-button class="filter-item" type="primary" icon="el-icon-search" style="float:right;" @click="searchDNS" :disabled="btnStatus">搜索</el-button>
-      </el-row>
     </div>
     <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       ref="multipleTable"
       style="width: 100%"
       tooltip-effect="dark">
       <el-table-column width="260px" align="center" label="UUID">
-        <template slot-scope="dns">
-          <span>{{ dns.row.uuid }}</span>
+        <template slot-scope="setup">
+          <span>{{ setup.row.uuid }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="200px" align="center" label="域名全称">
-        <template slot-scope="dns">
-          <span>{{ dns.row.dns_name }}</span>
+        <template slot-scope="setup">
+          <span>{{ setup.row.create_time | timeFilter}}</span>
         </template>
       </el-table-column>
+    </el-table>
 
-      <el-table-column width="300px" align="center" label="关联应用组名称">
-        <template slot-scope="dns">
-          <span>{{ dns.row.group_name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="300px" align="center" label="内网解析">
-        <template slot-scope="dns">
-          <span>{{ dns.row.inner_dig }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="300px" align="center" label="外网解析">
-        <template slot-scope="dns">
-          <span>{{ dns.row.dig }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="操作" width="200px" class-name="small-padding fixed-width" fixed="right">
-        <template slot-scope="dns">
-          <el-button type="warning" size="medium" @click="handleUpdate(dns.row)" :disabled="btnStatus">编辑</el-button>
-          <el-button type="danger" size="medium" @click="handleDelete(dns.row)" :disabled="btnStatus">删除</el-button>
+    <el-table-column width="200px" align="center" label="域名全称">
+        <template slot-scope="setup">
+          <span>{{ setup.row.type | typeFilter}}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -142,7 +104,7 @@
 </template>
 
 <script>
-  import { fetch_DNSListByPage,fetch_DNSList,create_DNS,update_DNS,delete_DNS } from "@/api/dns";
+  import { fetch_EZSetupList } from '@/api/ezsetup';
   import { fetch_GroupList } from '@/api/manager';
   export default {
       data(){
@@ -186,6 +148,17 @@
           }
         }
       },
+      filters: {
+        timeFilter(timeformat){
+          if(timeformat){
+            const date = timeformat.split('T')
+            const time = date[1].split('.')
+            return date[0]+' '+time[0]
+          }else{
+            return ''
+          }
+        }
+      },
       created(){
         this.init()
         this.init_group()
@@ -204,7 +177,7 @@
           this.commit_obj = {}
         },
         init(){
-          fetch_DNSListByPage(this.pagination,this.search_obj).then((response)=>{
+          fetch_EZSetupList(this.pagination,this.search_obj).then((response)=>{
             this.pagination.count = response.data.count
             this.list=response.data.results
             this.listLoading = false

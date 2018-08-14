@@ -160,6 +160,16 @@ export const devEopsRouterMap = [{
   },{
     path:'',
     component: layout,
+    meta:{title: '装机宝',icon:'steam',types: 'deveops'},
+    children: [{
+      path: 'ezsetup',
+      component: _import('deveops/ezsetup/index'),
+      name: 'file',
+      meta: { title: '装机宝',icon:'steam',hidden:true,cache:true}
+    }]
+  },{
+    path:'',
+    component: layout,
     meta:{title: '分发中心',icon:'file-code-o',types: 'deveops'},
     children: [{
       path: 'file',
@@ -195,17 +205,17 @@ export const devEopsRouterMap = [{
   },{
     path:'/dashboard',
     component: dashboardlayout,
-    meta:{title: 'Dashboard',icon:'terminal',types:'zdb'},
+    meta:{title: '',icon:'',types:'dashboard'},
     children: [{
       path: 'manager',
       component: _import('dashboard/manager/index'),
       name: 'manager',
-      meta: { title: 'DBer',icon:'terminal',hidden:false,cache:true}
+      meta: { title: '',icon:'',hidden:true,cache:true}
     },{
       path: 'manager',
       component: _import('dashboard/manager/index'),
       name: 'manager',
-      meta: { title: 'DBer',icon:'terminal',hidden:false,cache:true}
+      meta: { title: '',icon:'',hidden:true,cache:true}
     }]
   }
 ]

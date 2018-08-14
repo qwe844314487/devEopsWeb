@@ -6,7 +6,7 @@ import { getToken } from "@/utils/auth"
 router.beforeEach((to,from,next)=>{
   if(getToken()){//登陆
     if(to.path === '/login'){
-      next('/dashboard')
+      next('/manager/group')
     }else{
       if(!store.getters.islogin){
         store.dispatch('UserInfo').then(()=>{ //判断用戶权限
