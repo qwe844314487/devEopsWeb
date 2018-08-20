@@ -25,7 +25,7 @@
           内网解析： <el-input style="width: 200px;" v-model="search_obj.inner_dig" class="filter-item" placeholder="精准搜索内网解析"></el-input>
         </el-col>
         <el-col :span="7">
-          分段域名： <el-input style="width: 200px;" v-model="search_obj.dns_name" class="filter-item" placeholder="模糊搜索段域名"></el-input>
+          域名： <el-input style="width: 200px;" v-model="search_obj.url" class="filter-item" placeholder="模糊搜索域名"></el-input>
         </el-col>
         <el-button class="filter-item" type="primary" icon="el-icon-search" style="float:right;" @click="searchDNS" :disabled="btnStatus">搜索</el-button>
       </el-row>
@@ -40,9 +40,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="200px" align="center" label="域名全称">
+      <el-table-column width="200px" align="center" label="域名">
         <template slot-scope="dns">
-          <span>{{ dns.row.dns_name }}</span>
+          <span>{{ dns.row.url }}</span>
         </template>
       </el-table-column>
 
@@ -54,13 +54,13 @@
 
       <el-table-column width="300px" align="center" label="内网解析">
         <template slot-scope="dns">
-          <span>{{ dns.row.inner_dig }}</span>
+          <span>{{ dns.row.internal_dig }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="300px" align="center" label="外网解析">
         <template slot-scope="dns">
-          <span>{{ dns.row.dig }}</span>
+          <span>{{ dns.row.external_dig }}</span>
         </template>
       </el-table-column>
 
@@ -75,9 +75,9 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDNSVisible" width="60%" top="2vh">
       <el-form :rules="rules" ref="dnsForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
-        <el-form-item label="分域名" prop="name">
-          <el-tooltip content="请输入该域名的内容 如果op.8531.cn 请输入op" placement="top" effect="light">
-            <el-input v-model="commit_obj.name"></el-input>
+        <el-form-item label="域名" prop="url">
+          <el-tooltip content="请输入该域名 如op.8531.cn" placement="top" effect="light">
+            <el-input v-model="commit_obj.url"></el-input>
           </el-tooltip>
         </el-form-item>
 
@@ -97,28 +97,6 @@
           <el-select v-model="commit_obj.group" placeholder="请选择" filterable clearable>
             <el-option
               v-for="item in groups"
-              :key="item.label"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="上级域名层级" prop="level">
-          <el-select v-model="search_obj.level" placeholder="请选择" @change="changeLevel">
-            <el-option
-              v-for="item in levelOptions"
-              :key="item.label"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="上级域名" prop="father">
-          <el-select v-model="commit_obj.father" placeholder="请选择" filterable clearable>
-            <el-option
-              v-for="item in fatherDNS"
               :key="item.label"
               :label="item.label"
               :value="item.value">
@@ -160,22 +138,7 @@
             create: '新建DNS',
           },
           dialogStatus:'',
-          level: 0,
           groups: [],
-          levelOptions:[
-            {
-              value: 1,
-              label: '一级域名'
-            }, {
-              value: 2,
-              label: '二级域名'
-            }, {
-              value: 3,
-              label: '三级域名'
-            }
-          ],
-          fatherDNS:[
-          ],
           search_obj:{
           },
           commit_obj: {
@@ -214,9 +177,6 @@
         handleCurrentChange(val) {
           this.pagination.page = val
         },
-        handleSelectionChange(val) {
-          this.multipleSelection = val
-        },
         init_group(){
           fetch_GroupList().then((response)=>{
             this.groups = []
@@ -244,25 +204,11 @@
           this.reset_search()
           this.init()
         },
-        changeLevel(){
-          fetch_DNSList(this.search_obj).then((response)=>{
-            this.fatherDNS = []
-            for(const dns of response.data){
-              this.fatherDNS.push({
-                value: dns.id,
-                key: dns.id,
-                label: dns.dns_name,
-                disabled: false
-              })
-            }
-          })
-        },
         handleCreate(){
           this.reset_search()
           this.reset_commit()
           this.dialogStatus = "create"
           this.init_group()
-          this.fatherDNS = []
           this.dialogDNSVisible = true
         },
         createDNS(){
@@ -289,9 +235,6 @@
         handleUpdate(row){
           this.commit_obj = Object.assign({}, row) // copy obj
           this.dialogDNSVisible = true
-          this.search_obj.level = row._level-1
-          this.changeLevel()
-          this.fatherDNS = []
           this.init_group()
         },
         updateDNS(){

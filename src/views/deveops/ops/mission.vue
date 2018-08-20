@@ -22,14 +22,19 @@
           信息： <el-input size="medium" style="width: 200px;" v-model="search_obj.info" class="filter-item" placeholder="根据任务信息模糊搜索"></el-input>
         </el-col>
         <el-col :span="7" :offset="1">
-          <el-switch
-            style="margin-top:7px"
-            v-model="search_obj.need_validate"
-            active-text="需要验证"
-            active-value=True
-            inactive-text="不需要验证"
-            inactive-value=False>
-          </el-switch>
+          验证状态： 
+          <el-select v-model="search_obj.need_validate" placeholder="请选择" clearable>
+            <el-option
+              key="True"
+              label="需要验证"
+              value="True">
+            </el-option>
+            <el-option
+              key="False"
+              label="不需要验证"
+              value="False">
+            </el-option>
+          </el-select>
         </el-col>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchMission" style="float:right;" :disabled="btnStatus">搜索</el-button>
       </el-row>
@@ -79,24 +84,44 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogMissionVisible" width="60%" top="20vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogMissionVisible" width="40%" top="20vh">
         <el-form ref="missionForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
-        <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_meta" filterable>
-          <el-option
-            v-for="item in group_options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+        <el-row :gutter="1">
+          <el-col :span="6">
+            <p>请选择操作的应用组:</p>
+          </el-col>
+          <el-col :span="10">
+            <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_meta" filterable>
+              <el-option
+                v-for="item in group_options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
 
-        <el-transfer v-model="commit_obj.metas" :data="metas" placeholder="请选择任务内的元操作" filterable>
-        </el-transfer>
-
-        <el-input placeholder="更新vote预发布代码" v-model="commit_obj.info">
-          <template slot="prepend">信息: </template>
-        </el-input>
+        <el-row :gutter="1">
+          <el-col :span="6">
+            <p>请选择操作的主机:</p>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-transfer v-model="commit_obj.metas" :data="metas" placeholder="请选择任务内的元操作" filterable>
+            </el-transfer>
+          </el-col>
+        </el-row>
+        
+        <el-row>
+          <el-col>
+            <el-input placeholder="更新vote预发布代码" v-model="commit_obj.info" style="width:600px">
+              <template slot="prepend">信息: </template>
+            </el-input>
+          </el-col>
+        </el-row>
 
         <el-checkbox v-model="commit_obj.need_validate">是否需要管理员验证</el-checkbox>
 

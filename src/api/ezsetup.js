@@ -12,3 +12,19 @@ export function fetch_EZSetupList(obj){
     method: 'GET'
   })
 }
+
+export function create_EZSetupRedis(obj){
+  return request({
+    url: '/api-ezsetup/v1/redis/create/',
+    method: 'POST',
+    data: obj
+  })
+}
+
+export function create_EZSetupMySQL(obj){
+  return request({
+    url: '/api-ezsetup/v1/mysql/create/',
+    method: 'POST',
+    data: obj
+  })
+}

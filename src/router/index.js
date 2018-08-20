@@ -3,7 +3,6 @@ import Router from 'vue-router'
 const _import = require('./_import_route')
 import layout from '@/views/deveops/layout'
 import dblayout from '@/views/zdb/layout'
-import dashboardlayout from '@/views/dashboard/layout'
 Vue.use(Router)
 
 export const defaultsRouterMap = [
@@ -17,6 +16,10 @@ export const defaultsRouterMap = [
     name: '404',
     component: _import('error/404'),
     hidden: true
+  },{
+    path: '/dashboard',
+    name: 'dashboard',
+    component: _import('dashboard/manager/index')
   }
 ]
 
@@ -201,21 +204,6 @@ export const devEopsRouterMap = [{
       component: _import('zdb/db/role'),
       name: 'DBer',
       meta: { title: 'DBer',icon:'terminal',hidden:false,cache:true}
-    }]
-  },{
-    path:'/dashboard',
-    component: dashboardlayout,
-    meta:{title: '',icon:'',types:'dashboard'},
-    children: [{
-      path: 'manager',
-      component: _import('dashboard/manager/index'),
-      name: 'manager',
-      meta: { title: '',icon:'',hidden:true,cache:true}
-    },{
-      path: 'manager',
-      component: _import('dashboard/manager/index'),
-      name: 'manager',
-      meta: { title: '',icon:'',hidden:true,cache:true}
     }]
   }
 ]

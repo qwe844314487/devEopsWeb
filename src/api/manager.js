@@ -70,44 +70,6 @@ export function selectHost_Group(obj,data){
 }
 
 /*
-* API_MODULE: POSITION
-* API_USE: FETCH,DATA
-* */
-export function fetch_PositionList(){
-  return request({
-    url: '/api-manager/v1/position/',
-    method: 'GET'
-  })
-}
-
-export function create_Position(obj){
-  return request({
-    url: '/api-manager/v1/position/create/',
-    method: 'POST',
-    data: obj
-  })
-}
-
-/*
-* API_MODULE: SYSTYPE
-* API_USE: FETCH,CREATE
-* */
-export function fetch_SystypeList(){
-  return request({
-    url: '/api-manager/v1/systype/',
-    method: 'GET'
-  })
-}
-
-export function create_Systype(obj){
-  return request({
-    url: '/api-manager/v1/systype/create/',
-    method: 'POST',
-    data: obj
-  })
-}
-
-/*
 * API_MODULE: HOST
 * API_USE: FETCH,CREATE,UPDATE,DELETE,PASSWD,DETAIL
 * */

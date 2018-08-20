@@ -180,7 +180,6 @@
         <el-button @click="createInstance" type="primary" :disabled="btnStatus">提交</el-button>
       </div>
 
-
     </el-dialog>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDBImport" width="40%" top="20vh">
       <el-form ref="importForm" :model="commit_obj" label-position="left" label-width="100px">

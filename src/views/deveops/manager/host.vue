@@ -53,7 +53,7 @@
 
       <el-table-column width="260px" align="center" label="Aliyun | VmWare">
         <template slot-scope="host">
-          <span>{{ host.row.detail| uuidFilter }}</span>
+          <span>{{ host.row| uuidFilter }}</span>
         </template>
       </el-table-column>
 
@@ -65,13 +65,13 @@
 
       <el-table-column width="150px" align="center" label="操作系统">
         <template slot-scope="host">
-          <span>{{ systype[host.row.detail.systemtype] }}</span>
+          <span>{{ host.row.systemtype }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="150px" align="center" label="环境">
         <template slot-scope="host">
-          <span>{{ postype[host.row.detail.position] }}</span>
+          <span>{{ host.row.position }}</span>
         </template>
       </el-table-column>
 
@@ -132,6 +132,42 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDetailVisible" width="80%" top="2vh" :fullscreen="true">
       <el-row>
+        <el-col :span="24">
+      <el-select v-model="detail_time" placeholder="请选择" @change="init_detail_aliyun">
+        <el-option
+        :key="1"
+        label="一小时"
+        :value="1"
+        ></el-option>
+        <el-option
+        :key="2"
+        label="六小时"
+        :value="2"
+        ></el-option>
+        <el-option
+        :key="3"
+        label="十二小时"
+        :value="3"
+        ></el-option>
+        <el-option
+        :key="4"
+        label="一天"
+        :value="4"
+        ></el-option>
+        <el-option
+        :key="5"
+        label="三天"
+        :value="5"
+        ></el-option>
+        <el-option
+        :key="6"
+        label="七天"
+        :value="6"
+        ></el-option>
+      </el-select>
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="12">
           <div class="cpu">
             <IEcharts
@@ -189,9 +225,9 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%" top="2vh">
       <el-form :rules="rules" ref="dataForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
-        <el-form-item label="主机信息" prop="detail.info">
+        <el-form-item label="主机信息" prop="info">
           <el-tooltip content="请输入该主机涉及的服务内容" placement="bottom" effect="light">
-            <el-input type="textarea" v-model="commit_obj.detail.info"></el-input>
+            <el-input type="textarea" v-model="commit_obj.info"></el-input>
           </el-tooltip>
         </el-form-item>
 
@@ -221,15 +257,15 @@
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="阿里云ID" prop="detail.aliyun_id">
+        <el-form-item label="阿里云ID" prop="aliyun_id">
           <el-tooltip content="请输入阿里云UUID" placement="bottom" effect="light">
-            <el-input v-model="commit_obj.detail.aliyun_id"></el-input>
+            <el-input v-model="commit_obj.aliyun_id"></el-input>
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="VMwareID" prop="detail.vmware_id">
+        <el-form-item label="VMwareID" prop="vmware_id">
           <el-tooltip content="请输入VMware-UUID" placement="bottom" effect="light">
-            <el-input v-model="commit_obj.detail.vmware_id"></el-input>
+            <el-input v-model="commit_obj.vmware_id"></el-input>
           </el-tooltip>
         </el-form-item>
 
@@ -239,22 +275,16 @@
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="位置" prop="detail.position">
+        <el-form-item label="位置" prop="position">
           <el-tooltip content="请输入该主机目前在什么位置" placement="top" effect="light">
-            <el-select v-model="commit_obj.detail.position" placeholder="请选择主机位置">
-              <el-option v-for="option in position" :key="option.id" :label="option.name" :value="option.id"></el-option>
-            </el-select>
+            <el-input v-model="commit_obj.position"></el-input>
           </el-tooltip>
-          <el-button @click="handleposition" :disabled="btnStatus">新增位置类型</el-button>
         </el-form-item>
 
-        <el-form-item label="系统类型" prop="detail.systemtype">
+        <el-form-item label="系统类型" prop="systemtype">
           <el-tooltip content="请输入该主机的操作系统" placement="top" effect="light">
-            <el-select v-model="commit_obj.detail.systemtype" placeholder="操作系统">
-              <el-option v-for="option in systemtype" :key="option.id" :label="option.name" :value="option.id"></el-option>
-            </el-select>
+            <el-input v-model="commit_obj.systemtype"></el-input>
           </el-tooltip>
-          <el-button @click="handlesystype" :disabled="btnStatus">新增系统类型</el-button>
         </el-form-item>
 
       </el-form>
@@ -263,42 +293,6 @@
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData" :disabled="btnStatus">提交</el-button>
         <el-button v-else type="primary" @click="updateData" :disabled="btnStatus">提交</el-button>
       </div>
-
-      <el-dialog
-        width="30%"
-        title="新增系统类型"
-        :visible.sync="dialogSystypeVisible"
-        append-to-body>
-        <el-form ref="systypeForm" :model="systype_item" label-position="left" label-width="100px">
-          <el-autocomplete
-            class="inline-input"
-            v-model="systype_item"
-            :fetch-suggestions="querySystypeSearch"
-            placeholder="请输入内容"
-            value-key="name"
-          ></el-autocomplete>
-          <el-button type="primary" @click="updateSystypeData" :disabled="btnStatus">提交</el-button>
-          <el-button @click="dialogSystypeVisible = false" :disabled="btnStatus">取消</el-button>
-        </el-form>
-      </el-dialog>
-
-      <el-dialog
-        width="30%"
-        title="新增位置类型"
-        :visible.sync="dialogPositionVisible"
-        append-to-body>
-        <el-form ref="positionForm" :model="position_item" label-position="left" label-width="100px">
-          <el-autocomplete
-            class="inline-input"
-            v-model="position_item"
-            :fetch-suggestions="queryPositionSearch"
-            placeholder="请输入内容"
-            value-key="name"
-          ></el-autocomplete>
-          <el-button type="primary" @click="updatePositionData" :disabled="btnStatus">提交</el-button>
-          <el-button @click="dialogPositionVisible = false" :disabled="btnStatus">取消</el-button>
-        </el-form>
-      </el-dialog>
 
     </el-dialog>
 
@@ -310,7 +304,7 @@
   import 'echarts/lib/chart/bar';
   import 'echarts/lib/chart/line';
   import 'echarts/lib/component/title';
-  import { fetch_HostListByPage,fetch_PositionList,fetch_SystypeList,delete_Host,create_Host,update_Host,create_Systype,create_Position,fetch_HostPasswd } from '@/api/manager';
+  import { fetch_HostListByPage,delete_Host,create_Host,update_Host,fetch_HostPasswd } from '@/api/manager';
   import { fetch_GroupList,selectHost_Group,selectGroup_Host } from "@/api/manager";
   import { fetch_MonitorHostAliyunCPU,fetch_MonitorHostAliyunMemory,fetch_MonitorHostAliyunDiskRead,fetch_MonitorHostAliyunInternetIn } from '@/api/monitor';
   export default {
@@ -322,8 +316,6 @@
           btnStatus: false,
           dialogDetailVisible: false,
           dialogFormVisible: false,                                     
-          dialogSystypeVisible: false,
-          dialogPositionVisible: false,
           dialogPasswdVisible: false,
           dialogGroupVisible: false,
           dialogSelectHostVisible: false,
@@ -332,12 +324,8 @@
           position: [],
           monitorFlag: null,
           temp_passwd: '',
-          systype_item: '',
-          position_item: '',
-          systype: [],
-          postype: [],
           groups: [],
-          details: [],
+          detail_time: 1,
           multipleSelection: [],                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
           pagination: {
             page: 1,
@@ -353,13 +341,10 @@
           },
           dialogStatus:'',
           monitor_obj:{
-
           },
           search_obj:{
           },
           commit_obj: {
-            detail:{
-            }
           },
           optionStateObj:{
             '-2': '关机',
@@ -378,15 +363,15 @@
               label: '正常'
             }],
           rules: {
-            'detail.info':[{ required: true, message: '主机信息是必须的', trigger: 'change' }],
+            info:[{ required: true, message: '主机信息是必须的', trigger: 'change' }],
             connect_ip: [
               { required: true, message: '连接IP是您管理主机的重要信息', trigger: 'change' },
               { pattern: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])(\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){3}$/, message: '您输入的IP地址有误',trigger:'blur'}
               ],
             sshport: [{ required: true, message: '连接端口是您管理主机的重要信息', trigger: 'change' }],
             _status: [{ required: true, message:'您未填写该主机目前的状态', trigger: 'blur'}],
-            'detail.position': [{ required: true, message:'请填写该主机目前所在的位置', trigger: 'blur'}],
-            'detail.systemtype': [{ required: true, message:'请填写该主机的操作系统类型', trigger: 'blur'}]
+            position: [{ required: true, message:'请填写该主机目前所在的位置', trigger: 'blur'}],
+            systemtype: [{ required: true, message:'请填写该主机的操作系统类型', trigger: 'blur'}]
           }
         }
       },
@@ -405,11 +390,11 @@
           }
           return statusMap[_status]
         },
-        uuidFilter(detail) {
-          if (detail.aliyun_id){
-            return detail.aliyun_id
-          }else if(detail.vmware_id){
-            return detail.vmware_id
+        uuidFilter(host) {
+          if (host.aliyun_id){
+            return host.aliyun_id
+          }else if(host.vmware_id){
+            return host.vmware_id
           }else{
             return 'None'
           }
@@ -419,8 +404,6 @@
         init(){
           this.list = null
           this.listLoading = true
-          this.init_position()
-          this.init_systype()
           this.init_hosts()
           this.init_groups()
         },
@@ -429,24 +412,6 @@
             this.pagination.count = response.data.count
             this.list=response.data.results
             this.listLoading = false
-          })
-        },
-        init_position(){
-          fetch_PositionList().then(response=>{
-            this.postype = []
-            for (const pos of response.data){
-              this.postype[pos.id] = pos.name
-            }
-            this.position = response.data
-          })
-        },
-        init_systype(){
-          fetch_SystypeList().then(response=>{
-            this.systype = []
-            for (const sys of response.data){
-              this.systype[sys.id] = sys.name
-            }
-            this.systemtype = response.data
           })
         },
         init_groups(){
@@ -464,8 +429,8 @@
             }
           })
         },
-        init_detail_aliyun(obj){
-          fetch_MonitorHostAliyunCPU(obj.uuid).then((response)=>{
+        init_detail_aliyun(){
+          fetch_MonitorHostAliyunCPU(this.commit_obj.uuid, this.detail_time).then((response)=>{
             this.monitor_obj.CPU = response.data
             this.monitorFlag = this.monitorFlag + 1
             if(this.monitorFlag >=4 ){
@@ -473,7 +438,7 @@
               this.monitorLoading = false
             }
           })
-          fetch_MonitorHostAliyunMemory(obj.uuid).then((response)=>{
+          fetch_MonitorHostAliyunMemory(this.commit_obj.uuid, this.detail_time).then((response)=>{
             this.monitor_obj.Memory = response.data
             this.monitorFlag = this.monitorFlag + 1
             if(this.monitorFlag >=4 ){
@@ -481,7 +446,7 @@
               this.monitorLoading = false
             }
           })
-          fetch_MonitorHostAliyunDiskRead(obj.uuid).then((response)=>{
+          fetch_MonitorHostAliyunDiskRead(this.commit_obj.uuid, this.detail_time).then((response)=>{
             this.monitor_obj.DiskRead = response.data
             this.monitorFlag = this.monitorFlag + 1
             if(this.monitorFlag >=4 ){
@@ -489,7 +454,7 @@
               this.monitorLoading = false
             }
           })
-          fetch_MonitorHostAliyunInternetIn(obj.uuid).then((response)=>{
+          fetch_MonitorHostAliyunInternetIn(this.commit_obj.uuid, this.detail_time).then((response)=>{
             this.monitor_obj.InternetIn = response.data
             this.monitorFlag = this.monitorFlag + 1
             if(this.monitorFlag >=4 ){
@@ -504,13 +469,10 @@
         },
         reset_commit(){
           this.commit_obj={
-            detail:{
-            }
           }
         },
         reset_search(){
           this.search_obj={
-
           }
         },
         changeGroup(){
@@ -554,9 +516,11 @@
           })
         },
         handleDetail(row){
+          this.commit_obj = Object.assign({}, row) // copy obj
           this.dialogStatus = 'detail'
           this.monitorFlag = 0
-          this.init_detail_aliyun(row)
+          this.detail_time = 1
+          this.init_detail_aliyun()
         },
         handleCreate(row){
           this.reset_commit()
@@ -715,74 +679,27 @@
         handleExpired(){
             this.$router.push({path:'/manager/expired'})
         },
-        updateSystypeData(){
-          this.$refs['systypeForm'].validate((valid) =>{
-            if(valid){
-              this.btnStatus=true
-              create_Systype({'name':this.systype_item}).then(()=>{
-                this.init()
-                this.dialogSystypeVisible = false
-                this.$message({
-                  showClose: true,
-                  message: '新添系统类型',
-                  type: 'success'
-                })
-                this.btnStatus=false
-              }).catch((error)=>{
-                this.dialogSystypeVisible = false
-                this.btnStatus=false
-              })
-            }
-          })
-        },
-        updatePositionData(){
-          this.$refs['positionForm'].validate((valid) =>{
-            if(valid){
-              this.btnStatus=true
-              create_Position({'name':this.position_item}).then(()=>{
-                this.init()
-                this.dialogPositionVisible = false
-                this.$message({
-                  showClose: true,
-                  message: '新添位置类型',
-                  type: 'success'
-                })
-                this.btnStatus=false
-              }).catch((error)=>{
-                this.dialogPositionVisible = false
-                this.btnStatus=false
-              })
-            }
-          })
-        },
-        handleposition(){
-          this.dialogPositionVisible = true
-          this.systype_item=''
-        },
-        handlesystype(){
-          this.dialogSystypeVisible = true
-          this.position_item=''
-        },
-        createSystypeFilter(queryString) {
-          return (systemtype) => {
-            return (systemtype.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-          };
-        },
-        createPositionFilter(queryString) {
-          return (position) => {
-            return (position.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-          };
-        },
-        queryPositionSearch(queryString,cb) {
-          const restaurants = this.position
-          const results = queryString ? restaurants.filter(this.createPositionFilter(queryString)) : restaurants
-          cb(results)
-        },
-        querySystypeSearch(queryString, cb) {
-          const restaurants = this.systemtype
-          const results = queryString ? restaurants.filter(this.createSystypeFilter(queryString)) : restaurants
-          cb(results)
-        }
+
+        // createSystypeFilter(queryString) {
+        //   return (systemtype) => {
+        //     return (systemtype.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        //   };
+        // },
+        // createPositionFilter(queryString) {
+        //   return (position) => {
+        //     return (position.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        //   };
+        // },
+        // queryPositionSearch(queryString,cb) {
+        //   const restaurants = this.position
+        //   const results = queryString ? restaurants.filter(this.createPositionFilter(queryString)) : restaurants
+        //   cb(results)
+        // },
+        // querySystypeSearch(queryString, cb) {
+        //   const restaurants = this.systemtype
+        //   const results = queryString ? restaurants.filter(this.createSystypeFilter(queryString)) : restaurants
+        //   cb(results)
+        // }
       }
     }
 </script>
