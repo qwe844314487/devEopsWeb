@@ -19,6 +19,13 @@
         <el-button class="filter-item" @click="handleExpired()" style="margin-left: 10px;" type="primary" icon="el-icon-time" :disabled="btnStatus">过期资源</el-button>
         <el-button class="filter-item" @click="handleCreate()" style="float:right;" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>
       </el-row>
+      <el-row>
+        <el-col>
+          <el-tag size="mini" type="info">未归类</el-tag>
+          <el-tag size="mini" type="success">可使用</el-tag>
+          <el-tag size="mini" type="warning">存在问题</el-tag>
+        </el-col>
+      </el-row>
       <el-row v-show="detailSearch" style="margin-bottom:5px;">
         <el-col :span="7" :offset="1">
           连接地址： <el-input size="medium" style="width: 200px;" v-model="search_obj.connect_ip" class="filter-item" placeholder="根据私网IP搜索"></el-input>
@@ -44,8 +51,8 @@
       ref="multipleTable"
       style="width: 100%"
       tooltip-effect="dark"
+      :row-class-name="tableRowClassName"
       @selection-change="handleSelectionChange">
-
       <el-table-column
       type="selection"
       width="55px">
@@ -99,7 +106,12 @@
     </el-table>
 
     <div class="pagination-container">
-      <el-pagination background layout="total, prev, pager, next, jumper" @current-change="handleCurrentChange" :total="pagination.count">
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" 
+      :total="pagination.count"
+      :page-sizes="[10, 20, 30, 40, 50, 60]"
+      >
       </el-pagination>
     </div>
 
@@ -252,7 +264,7 @@
         <el-form-item label="状态" prop="_status">
           <el-tooltip content="请输入该机器目前的状态" placement="top" effect="light">
             <el-select v-model="commit_obj._status" placeholder="请选择主机状态">
-              <el-option v-for="option in optionState" :key="option.label" :label="option.label" :value="option.value"></el-option>
+              <el-option v-for="option in optionState" :key="option.label" :label="option.label" :value="option.value" :disabled="option.disabled"></el-option>
             </el-select>
           </el-tooltip>
         </el-form-item>
@@ -329,7 +341,8 @@
           multipleSelection: [],                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
           pagination: {
             page: 1,
-            count: 0
+            count: 0,
+            page_size: 10
           },
           textMap:{
             detail: '主机详情',
@@ -347,20 +360,41 @@
           commit_obj: {
           },
           optionStateObj:{
+            '-4': '连接拒绝',
+            '-3': '未归类',
             '-2': '关机',
             '-1': '暂停',
-            '1': '正常'
+            '1': '正常',
+            '2': '根溢出',
+            '3': '负载高'
           },
           optionState: [
             {
+              value: '-4',
+              label: '连接拒绝',
+              disabled: true
+            }, {
+              value: '-3',
+              label: '未归类',
+              disabled: true
+            }, {
               value: '-2',
-              label: '关机'
+              label: '关机',
+              disabled: true
             }, {
               value: '-1',
               label: '暂停'
             },{
               value: '1',
               label: '正常'
+            },{
+              value: '2',
+              label: '根溢出',
+              disabled: true
+            },{
+              value: '3',
+              label: '负载高',
+              disabled: true
             }],
           rules: {
             info:[{ required: true, message: '主机信息是必须的', trigger: 'change' }],
@@ -384,9 +418,13 @@
       filters:{
         statusFilter(_status) {
           const statusMap = {
+            '-4': 'danger',
+            '-3': 'warning',
+            '-1': 'warning',
             '-2': 'danger',
             '1': 'success',
-            '-1': 'warning'
+            '2': 'danger',
+            '3': 'danger'
           }
           return statusMap[_status]
         },
@@ -430,6 +468,8 @@
           })
         },
         init_detail_aliyun(){
+          this.monitorFlag = 0
+          this.monitorLoading = true
           fetch_MonitorHostAliyunCPU(this.commit_obj.uuid, this.detail_time).then((response)=>{
             this.monitor_obj.CPU = response.data
             this.monitorFlag = this.monitorFlag + 1
@@ -463,9 +503,25 @@
             }
           })
         },
+        handleSizeChange(val) {
+          this.pagination.page_size = val
+          this.init_hosts()
+        },
         handleCurrentChange(val) {
           this.pagination.page = val
           this.init_hosts()
+        },
+        tableRowClassName({row, rowIndex}) {
+          if(row._status===-3){
+            return ''
+          }
+          if(row._status>1|| row._status<0){
+            return 'warning-row'
+          }else if(row._status===1){
+            return 'success-row'
+          }else{
+            return ''
+          }
         },
         reset_commit(){
           this.commit_obj={
@@ -478,21 +534,24 @@
         changeGroup(){
           this.pagination = {
             page: 1,
-            count: 0
+            count: 0,
+            page_size: 10
           }
           this.init_hosts()
         },
         clearGroup(){
           this.pagination = {
             page: 1,
-            count: 0
+            count: 0,
+            page_size: 10
           }
           this.init_hosts()
         },
         searchHost(){
           this.pagination = {
             page: 1,
-            count: 0
+            count: 0,
+            page_size: 10
           }
           this.init_hosts()
         },
@@ -703,6 +762,15 @@
       }
     }
 </script>
+
+<style>
+  .el-table .warning-row {
+    background: oldlace;
+  }
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
+</style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .manager-host-container {

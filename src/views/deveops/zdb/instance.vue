@@ -231,7 +231,7 @@
         </div>
 
         <div v-show="formselect==='vmware'">
-          <el-form-item label="所属应用组" prop="group" size="medium">
+          <el-form-item label="所属应用组" prop="temp_group" size="medium">
             <el-select v-model="temp_group" placeholder="请选择" @change="init_hosts" filterable clearable>
               <el-option
                 v-for="item in groups"
@@ -306,6 +306,7 @@
           dialogStatus:'',
           instancegroups: [],
           groups: [],
+          group: null,
           hosts:[],
           formselect: null,
           detailSearch: false,
@@ -511,7 +512,7 @@
           this.$refs['importForm'].validate((valid) => {
             if (valid) {
               this.btnStatus=true
-              console.log(this.commit_obj)
+              this.commit_obj._status = 1
               import_DBInstance(this.commit_obj).then(() => {
                 this.init()
                 this.dialogDBChoiceType = false

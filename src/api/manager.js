@@ -84,7 +84,7 @@ export function fetch_HostList(obj){
 export function fetch_HostListByPage(pagination,obj){
   let st = objectIterator(obj)
   return request({
-    url: '/api-manager/v1/host/bypage/'+st+'&page='+pagination.page,
+    url: '/api-manager/v1/host/bypage/'+st+'&page='+pagination.page + '&page_size='+pagination.page_size,
     method: 'GET'
   })
 }
