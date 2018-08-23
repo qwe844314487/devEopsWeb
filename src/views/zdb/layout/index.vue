@@ -1,6 +1,6 @@
 <template>
     <div class="app-wrapper">
-      <left-sidebar class="sidebar-container"></left-sidebar>
+      <!-- <left-sidebar class="sidebar-container"></left-sidebar> -->
       <div class="main-container">
         <top-sidebar></top-sidebar>
         <app></app>
@@ -9,13 +9,13 @@
 </template>
 
 <script>
-  import LeftSidebar from '@/views/zdb/sidebar/left/index'
+  // import LeftSidebar from '@/views/zdb/sidebar/left/index'
   import TopSidebar from '@/views/zdb/sidebar/top/index'
   import App from '@/views/zdb/app/index'
   export default {
     name: "dblayout",
     components: {
-      TopSidebar,LeftSidebar, App
+      TopSidebar, App
     }
   }
 </script>

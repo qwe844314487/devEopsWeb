@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import LeftSidebar from '@/views/deveops/sidebar/left/index'
+  import LeftSidebar from '@/views/zdb/sidebar/left/index'
   export default {
     name: 'AppMain',
     components: {

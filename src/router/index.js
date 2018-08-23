@@ -167,7 +167,7 @@ export const devEopsRouterMap = [{
     children: [{
       path: 'ezsetup',
       component: _import('deveops/ezsetup/index'),
-      name: 'file',
+      name: 'ezsetup',
       meta: { title: '装机宝',icon:'steam',hidden:true,cache:true}
     }]
   },{
@@ -195,15 +195,17 @@ export const devEopsRouterMap = [{
     component: dblayout,
     meta:{title: 'DBer',icon:'terminal',types:'zdb'},
     children: [{
-      path: 'instance',
-      component: _import('zdb/db/instance'),
-      name: 'DBer',
-      meta: { title: 'DBer',icon:'terminal',hidden:false,cache:true}
+      path: '1/:id',
+      component: _import('zdb/db/1'),
+      name: 'INSTANCE',
+      meta: { title: 'INSTANCE',icon:'terminal',hidden:false,cache:true}
     },{
-      path: 'role',
-      component: _import('zdb/db/role'),
-      name: 'DBer',
-      meta: { title: 'DBer',icon:'terminal',hidden:false,cache:true}
+      path: '2',
+      component: _import('zdb/db/2'),
+      name: 'ROLE',
+      meta: { title: 'ROLE',icon:'terminal',hidden:false,cache:true}
     }]
   }
 ]
+
+

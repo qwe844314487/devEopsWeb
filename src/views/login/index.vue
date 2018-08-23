@@ -75,7 +75,7 @@
             // }).toString()
             this.$store.dispatch('LoginByUsername',this.loginForm).then(()=>{
               this.loading = false
-              this.$router.push({path: '/dashboard' })
+              this.$router.push({path: '/zdb/instance' })
             }).catch(()=>{
               this.loading = false
             })

@@ -47,7 +47,7 @@
 
       <el-table-column width="150px" align="center" label="状态" class-name="status-col" >
         <template slot-scope="db">
-          <el-tag :type="db.row._status | statusFilter">{{ getOptionState(db.row._status) }}</el-tag>
+          <el-tag :type="db.row.status | statusFilter">{{ getOptionState(db.row.status) }}</el-tag>
         </template>
       </el-table-column>
 
@@ -512,7 +512,6 @@
           this.$refs['importForm'].validate((valid) => {
             if (valid) {
               this.btnStatus=true
-              this.commit_obj._status = 1
               import_DBInstance(this.commit_obj).then(() => {
                 this.init()
                 this.dialogDBChoiceType = false

@@ -226,6 +226,7 @@
         this.$refs['jumperForm'].validate((valid) => {
           if (valid) {
             this.btnStatus=true
+            this.status = 1
             create_Jumper(this.commit_obj).then(() => {
               this.init()
               this.dialogJumperVisible = false
