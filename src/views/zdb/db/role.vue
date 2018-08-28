@@ -212,7 +212,6 @@
 </template>
 
 <script>
-  import { fetch_DBRoleListByPage,create_DBRole,update_DBRole,delete_DBRole,fetch_DBInstanceList } from '@/api/zdb';
   import { fetch_GroupList } from '@/api/manager';
   export default {
       data(){
@@ -265,10 +264,10 @@
       },
       methods:{
         init(){
-          this.reset_search()
-          this.init_role()
-          this.init_instance()
-          this.init_group()
+          // this.reset_search()
+          // this.init_role()
+          // this.init_instance()
+          // this.init_group()
         },
         init_role(){
           fetch_DBRoleListByPage(this.pagination,this.search_obj).then((response)=>{

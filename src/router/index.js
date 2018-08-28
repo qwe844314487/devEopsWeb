@@ -17,7 +17,7 @@ export const defaultsRouterMap = [
     component: _import('error/404'),
     hidden: true
   },{
-    path: '/dashboard',
+    path: '/show',
     name: 'dashboard',
     component: _import('dashboard/manager/index')
   }
@@ -31,6 +31,16 @@ export default new Router({
 
 
 export const devEopsRouterMap = [{
+  path:'',
+  component: layout,
+  meta: {title:'dashboard', icon:'dashboard', types: 'deveops'},
+  children: [{
+    path: 'dashboard',
+    component: _import('deveops/dashboard/index'),
+    name: 'dashboard',
+    meta: { title: '仪表盘',icon:'dashboard',hidden:true,cache:true}
+  }]
+  },{
     path: '/authority',
     component: layout,
     meta:{title: '人员管理',icon:'address-card-o',types: 'deveops'},
@@ -195,15 +205,30 @@ export const devEopsRouterMap = [{
     component: dblayout,
     meta:{title: 'DBer',icon:'terminal',types:'zdb'},
     children: [{
-      path: '1/:id',
-      component: _import('zdb/db/1'),
-      name: 'INSTANCE',
-      meta: { title: 'INSTANCE',icon:'terminal',hidden:false,cache:true}
+      path: ':id/dashboard',
+      component: _import('zdb/db/dashboard'),
+      name: 'dashboard',
+      meta: { title: '仪表盘',icon:'dashboard',hidden:false,cache:true}
     },{
-      path: '2',
+      path: ':id/slowlog',
+      component: _import('zdb/db/1'),
+      name: 'slowlog',
+      meta: { title: '慢查询',icon:'terminal',hidden:false,cache:true}
+    },{
+      path: ':id/sqlcheck',
       component: _import('zdb/db/2'),
-      name: 'ROLE',
-      meta: { title: 'ROLE',icon:'terminal',hidden:false,cache:true}
+      name: 'sqlcheck',
+      meta: { title: 'SQL优化',icon:'terminal',hidden:false,cache:true}
+    },{
+      path: ':id/rollback',
+      component: _import('zdb/db/2'),
+      name: 'rollback',
+      meta: { title: '数据回滚',icon:'terminal',hidden:false,cache:true}
+    },{
+      path: ':id/query',
+      component: _import('zdb/db/2'),
+      name: 'query',
+      meta: { title: '数据查询',icon:'terminal',hidden:false,cache:true}
     }]
   }
 ]

@@ -1,6 +1,6 @@
 <template>
-    <section class="app-main" style="min-height: 100%">
-      <left-sidebar class="sidebar-container"></left-sidebar>
+    <section class="app-main" style="min-height: 100%;">
+      <!-- <left-sidebar class="sidebar-container"></left-sidebar> -->
       <router-view></router-view>
     </section>
 </template>
