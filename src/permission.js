@@ -3,13 +3,10 @@ import store from '@/store'
 import { Message } from 'element-ui'
 import { getToken } from "@/utils/auth"
 
-function hasPermission(roles,permissionRoles){
-  return true
-}
 router.beforeEach((to,from,next)=>{
   if(getToken()){//登陆
     if(to.path === '/login'){
-      next('/dashboard')
+      next('/manager/group')
     }else{
       if(!store.getters.islogin){
         store.dispatch('UserInfo').then(()=>{ //判断用戶权限
@@ -27,7 +24,7 @@ router.beforeEach((to,from,next)=>{
       }
     }
   }else{//未登陆
-    if(to.path=='/login'){
+    if(to.path === '/login'){
       next()
     }else{
       Message.error('请重新登陆')

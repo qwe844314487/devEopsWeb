@@ -70,44 +70,6 @@ export function selectHost_Group(obj,data){
 }
 
 /*
-* API_MODULE: POSITION
-* API_USE: FETCH,DATA
-* */
-export function fetch_PositionList(){
-  return request({
-    url: '/api-manager/v1/position/',
-    method: 'GET'
-  })
-}
-
-export function create_Position(obj){
-  return request({
-    url: '/api-manager/v1/position/create/',
-    method: 'POST',
-    data: obj
-  })
-}
-
-/*
-* API_MODULE: SYSTYPE
-* API_USE: FETCH,CREATE
-* */
-export function fetch_SystypeList(){
-  return request({
-    url: '/api-manager/v1/systype/',
-    method: 'GET'
-  })
-}
-
-export function create_Systype(obj){
-  return request({
-    url: '/api-manager/v1/systype/create/',
-    method: 'POST',
-    data: obj
-  })
-}
-
-/*
 * API_MODULE: HOST
 * API_USE: FETCH,CREATE,UPDATE,DELETE,PASSWD,DETAIL
 * */
@@ -122,7 +84,7 @@ export function fetch_HostList(obj){
 export function fetch_HostListByPage(pagination,obj){
   let st = objectIterator(obj)
   return request({
-    url: '/api-manager/v1/host/bypage/'+st+'&page='+pagination.page,
+    url: '/api-manager/v1/host/bypage/'+st+'&page='+pagination.page + '&page_size='+pagination.page_size,
     method: 'GET'
   })
 }
