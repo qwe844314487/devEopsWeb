@@ -193,6 +193,16 @@ export const devEopsRouterMap = [{
   },{
     path:'',
     component: layout,
+    meta:{title: 'CDN刷新',icon:'maxcdn',types: 'deveops'},
+    children: [{
+      path: 'cdn',
+      component: _import('deveops/cdn/index'),
+      name: 'cdn',
+      meta: { title: 'CDN刷新',icon:'maxcdn',hidden:true,cache:true}
+    }]
+  },{
+    path:'',
+    component: layout,
     meta:{title: '关于',icon:'dashboard',types: 'deveops'},
     children: [{
       path: 'about',
@@ -209,6 +219,11 @@ export const devEopsRouterMap = [{
       component: _import('zdb/db/dashboard'),
       name: 'dashboard',
       meta: { title: '仪表盘',icon:'dashboard',hidden:false,cache:true}
+    },{
+      path: ':id/monitor',
+      component: _import('zdb/db/monitor'),
+      name: 'monitor',
+      meta: { title: '监控',icon:'dashboard',hidden:false,cache:true}
     },{
       path: ':id/slowlog',
       component: _import('zdb/db/1'),

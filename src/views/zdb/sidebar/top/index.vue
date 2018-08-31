@@ -12,7 +12,7 @@
         </router-link>
     </el-menu-item>
     <el-menu-item index="2">
-        <router-link tag="a" :to="{path:'dashboard',params:$route.params}">
+        <router-link tag="a" :to="{path:'monitor',params:$route.params}">
         监控
         </router-link>
     </el-menu-item>
