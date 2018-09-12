@@ -28,6 +28,7 @@ Vue.component('icon', Icon)
 Vue.prototype.API_URL = process.env.API_URL
 Vue.prototype.API_WEBSOCKET = process.env.API_WEBSOCKET
 
+import './mock'
 
 /*i18来源*/
 const i18n = new VueI18n({

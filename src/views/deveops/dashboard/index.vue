@@ -184,13 +184,13 @@
 <script>
 // import echarts from 'echarts';
 // import Echarts from '@/components/Echarts/index';
-import IEcharts from 'vue-echarts-v3/src/lite.js';
-import 'echarts/lib/chart/bar';
-import 'echarts/lib/chart/line';
-import 'echarts/lib/component/title';
-import { fetch_SystemStatus } from '@/api/dashboard';
+import IEcharts from 'vue-echarts-v3/src/lite.js'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/line'
+import 'echarts/lib/component/title'
+import { fetch_SystemStatus } from '@/api/dashboard'
 import logo from '@/assets/wzz.jpg'
-import Awesome from "@/components/Awesome/index";
+import Awesome from "@/components/Awesome/index"
 export default {
   data () {
     return {

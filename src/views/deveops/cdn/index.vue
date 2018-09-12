@@ -2,9 +2,9 @@
   <div class="manager-host-container">
     <div class="filter-container">
       <el-row style="margin-bottom:20px;">
-        <el-select v-model="search_obj.group" placeholder="请选择" @change="changeGroup" filterable clearable style="width: 400px;">
+        <el-select v-model="search_obj.type" placeholder="请选择" @change="changeType" @clear="clearType" filterable clearable style="width: 400px;">
           <el-option
-            v-for="item in groups"
+            v-for="item in optionType"
             :key="item.value"
             :label="item.label"
             :value="item.value">
@@ -19,13 +19,37 @@
       </el-row>
       <el-row v-show="detailSearch" style="margin-bottom:20px;">
         <el-col :span="7" :offset="1">
-          外网解析： <el-input style="width: 200px;" v-model="search_obj.dig" class="filter-item" placeholder="精准搜索外网解析"></el-input>
+          当前状态： 
+          <el-select v-model="search_obj.status" placeholder="请选择" clearable>
+            <el-option
+              key="-1"
+              label="错误"
+              value="-1">
+            </el-option>
+            <el-option
+              key="1"
+              label="运行中"
+              value="1">
+            </el-option>
+            <el-option
+              key="2"
+              label="成功"
+              value="2">
+            </el-option>
+          </el-select>
         </el-col>
         <el-col :span="7">
-          内网解析： <el-input style="width: 200px;" v-model="search_obj.inner_dig" class="filter-item" placeholder="精准搜索内网解析"></el-input>
-        </el-col>
-        <el-col :span="7">
-          域名： <el-input style="width: 200px;" v-model="search_obj.url" class="filter-item" placeholder="模糊搜索域名"></el-input>
+          时间筛选：         <el-date-picker
+          v-model="select_time"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+          @change="selectTime">
+        </el-date-picker>
         </el-col>
         <el-button class="filter-item" type="primary" icon="el-icon-search" style="float:right;" @click="searchDNS" :disabled="btnStatus">搜索</el-button>
       </el-row>
@@ -66,45 +90,59 @@
 
     </el-table>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDNSVisible" width="60%" top="2vh">
-      <el-form :rules="rules" ref="cdnForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
+    <el-form ref="cdnForm" :model="commit_obj" label-position="left" label-width="100px">
+      <el-dialog
+        width="70%"
+        :title="textMap[dialogStatus]"
+        :visible.sync="dialogCDNVisible">
+            <el-table :data="commit_obj.cdns" border fit highlight-current-row
+                      style="width: 100%">
+              <el-table-column width="700px" align="center" label="刷新路径">
+                <template slot-scope="cdn">
+                  <span>{{ cdn.row.url }}</span>
+                </template>
+              </el-table-column>
 
-        <el-form-item label="域名" prop="url">
-          <el-tooltip content="请输入该域名 如op.8531.cn" placement="top" effect="light">
-            <el-input v-model="commit_obj.url"></el-input>
-          </el-tooltip>
-        </el-form-item>
+              <el-table-column width="200px" align="center" label="刷新类型">
+                <template slot-scope="cdn">
+                  <el-tag>{{ optionTypeObj[cdn.row.type] }}</el-tag>
+                </template>
+              </el-table-column>
 
-        <el-form-item label="公网解析" prop="dig">
-          <el-tooltip content="请输入该域名的公网解析" placement="top" effect="light">
-            <el-input v-model="commit_obj.dig"></el-input>
-          </el-tooltip>
-        </el-form-item>
+              <el-table-column width="250px" align="center" label="工具">
+                <template slot-scope="cdn">
+                  <el-button type="primary" size="mini" @click="handleCDNDelete(cdn.row)" :disabled="btnStatus">刪除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
 
-        <el-form-item label="私网解析" prop="inner_dig">
-          <el-tooltip content="请输入该域名的私网解析" placement="top" effect="light">
-            <el-input v-model="commit_obj.inner_dig"></el-input>
-          </el-tooltip>
-        </el-form-item>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="warning" @click="handleCDNCreate" :disabled="btnStatus">新增CDN</el-button>
+          <el-button type="primary" @click="createCDN" :disabled="btnStatus">提交</el-button>
+          <el-button @click="dialogCDNVisible = false" :disabled="btnStatus">取消</el-button>
+        </div>
 
-        <el-form-item label="所属应用组" prop="group">
-          <el-select v-model="commit_obj.group" placeholder="请选择" filterable clearable>
-            <el-option
-              v-for="item in groups"
-              :key="item.label"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
+        <el-dialog
+          width="30%"
+          title="新增刷新"
+          :visible.sync="dialogAppendCDNVisible"
+          append-to-body>
+            <div :model="cdn">
+                <el-input placeholder="https://stc-new.8531.cn/android/zjnews_huajishijie.apk" v-model="cdn.url">
+                  <template slot="prepend">刷新路径:</template>
+                </el-input>
+                <el-select v-model="cdn.type" placeholder="请选择刷新的类型">
+                  <el-option v-for="option in optionType" :key="option.label" :label="option.label" :value="option.value" :disabled="option.disabled"></el-option>
+                </el-select>
+            </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="createCDNRow" :disabled="btnStatus">提交</el-button>
+            <el-button @click="dialogAppendCDNVisible = false" :disabled="btnStatus">取消</el-button>
+          </div>
+        </el-dialog>
+      </el-dialog>
 
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogDNSVisible = false" :disabled="btnStatus">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createDNS" :disabled="btnStatus">创建</el-button>
-        <el-button v-else type="primary" @click="updateDNS" :disabled="btnStatus">更新</el-button>
-      </div>
-    </el-dialog>
+    </el-form>
 
     <div class="pagination-container">
       <el-pagination background layout="total, prev, pager, next, jumper">
@@ -121,13 +159,14 @@ export default {
       list: null,
       listLoading: true,
       btnStatus: false,
-      dialogDNSVisible: false,
+      dialogCDNVisible: false,
+      dialogAppendCDNVisible: false,
       pagination: {
         page: 1,
         count: 0
       },
       textMap: {
-        create: "新建CDN刷新"
+        create: "新建CDNs刷新"
       },
       dialogStatus: "",
       optionStateObj: {
@@ -141,13 +180,28 @@ export default {
         "3": "阿里云"
       },
       search_obj: {},
-      commit_obj: {},
+      commit_obj: { cdns: [] },
       detailSearch: null,
-      rules: {
-        name: [
-          { required: true, message: "分域名名称是必须的", trigger: "blur" }
-        ]
-      }
+      cdn: {},
+      select_time: "",
+      optionType: [
+        {
+          value: "1",
+          label: "七牛",
+          disabled: false
+        },
+        {
+          value: "2",
+          label: "网宿",
+          disabled: false
+        },
+        {
+          value: "3",
+          label: "阿里云",
+          disabled: false
+        }
+      ],
+      rules: {}
     };
   },
   filters: {
@@ -183,7 +237,10 @@ export default {
       this.search_obj = {};
     },
     reset_commit() {
-      this.commit_obj = {};
+      this.commit_obj = { cdns: [] };
+    },
+    reset_cdn() {
+      this.cdn = {};
     },
     init() {
       fetch_CDNListByPage(this.pagination, this.search_obj).then(response => {
@@ -207,17 +264,17 @@ export default {
       this.reset_search();
       this.reset_commit();
       this.dialogStatus = "create";
-      this.dialogDNSVisible = true;
+      this.dialogCDNVisible = true;
     },
     createCDN() {
-      this.$refs["dnsForm"].validate(valid => {
+      this.$refs["cdnForm"].validate(valid => {
         if (valid) {
           this.btnStatus = true;
-          create_DNS(this.commit_obj)
+          create_CDN(this.commit_obj)
             .then(() => {
               this.reset_search();
               this.init();
-              this.dialogDNSVisible = false;
+              this.dialogCDNVisible = false;
               this.$message({
                 showClose: true,
                 message: "创建成功",
@@ -227,10 +284,44 @@ export default {
             })
             .catch(error => {
               this.btnStatus = false;
-              this.dialogDNSVisible = false;
+              this.dialogCDNVisible = false;
             });
         }
       });
+    },
+    selectTime() {
+      this.search_obj.time = this.select_time[0] + "to" + this.select_time[1];
+    },
+    createCDNRow() {
+      this.commit_obj.cdns.push(this.cdn);
+      this.dialogAppendCDNVisible = false;
+    },
+    handleCDNDelete(row) {
+      for (var i = 0; i < this.commit_obj.cdns.length; i++) {
+        if (this.commit_obj.cdns[i].url == row.url) {
+          this.commit_obj.cdns.splice(i, 1);
+        }
+      }
+    },
+    handleCDNCreate() {
+      this.dialogAppendCDNVisible = true;
+      this.reset_cdn();
+    },
+    changeType() {
+      this.pagination = {
+        page: 1,
+        count: 0,
+        page_size: 10
+      };
+      this.init();
+    },
+    clearType() {
+      this.pagination = {
+        page: 1,
+        count: 0,
+        page_size: 10
+      };
+      this.init();
     }
   }
 };

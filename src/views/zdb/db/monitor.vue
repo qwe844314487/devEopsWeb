@@ -1,10 +1,10 @@
 <template>
   <div class="dashboard-editor-container">
-    <el-row :gutter="20">
-      <el-col :span="8">
+    <el-row>
+      <el-col :offset="1" :span="22">
           <el-card>
           <div slot="header" class="clearfix">
-            <span>CPU使用率</span>
+            <span>监控项</span>
           </div>
           <div class="cpu">
             <IEcharts
@@ -13,13 +13,6 @@
               :loading="monitorLoading"
             />
           </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-          <el-card>
-          <div slot="header" class="clearfix">
-            <span>QPS</span>
-          </div>
           <div class="cpu">
             <IEcharts
               group="123"
@@ -27,100 +20,12 @@
               :loading="monitorLoading"
             />
           </div>
-        </el-card>
-      </el-col>
-            <el-col :span="8">
-          <el-card>
-          <div slot="header" class="clearfix">
-            <span>内存</span>
-          </div>
           <div class="cpu">
             <IEcharts
               group="123"
               :option="monitor_obj.CPU"
               :loading="monitorLoading"
             />
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-        <el-row :gutter="20">
-      <el-col :span="8">
-          <el-card>
-          <div slot="header" class="clearfix">
-            <span>CPU使用率</span>
-          </div>
-          <div class="cpu">
-            <IEcharts
-              group="123"
-              :option="monitor_obj.CPU"
-              :loading="monitorLoading"
-            />
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-          <el-card>
-          <div slot="header" class="clearfix">
-            <span>QPS</span>
-          </div>
-          <div class="cpu">
-            <IEcharts
-              group="123"
-              :option="monitor_obj.CPU"
-              :loading="monitorLoading"
-            />
-          </div>
-        </el-card>
-      </el-col>
-            <el-col :span="8">
-          <el-card>
-          <div slot="header" class="clearfix">
-            <span>内存</span>
-          </div>
-          <div class="cpu">
-            <IEcharts
-              group="123"
-              :option="monitor_obj.CPU"
-              :loading="monitorLoading"
-            />
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-        <el-row :gutter="20">
-      <el-col :span="8">
-          <el-card>
-          <div slot="header" class="clearfix">
-            <span>CPU使用率</span>
-          </div>
-          <div class="cpu">
-            <IEcharts
-              group="123"
-              :option="monitor_obj.CPU"
-              :loading="monitorLoading"
-            />
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-          <el-card>
-          <div slot="header" class="clearfix">
-            <span>QPS</span>
-          </div>
-          <div class="cpu">
-            <IEcharts
-              group="123"
-              :option="monitor_obj.CPU"
-              :loading="monitorLoading"
-            />
-          </div>
-        </el-card>
-      </el-col>
-            <el-col :span="8">
-          <el-card>
-          <div slot="header" class="clearfix">
-            <span>内存</span>
           </div>
           <div class="cpu">
             <IEcharts
@@ -203,6 +108,9 @@ export default {
       ],
       monitor_obj: {
         CPU: {
+          title: {
+            text: "监控项"
+          },
           tooltip: {
             trigger: "axis"
           },
@@ -238,11 +146,11 @@ export default {
       let dataList = this.data.map(function(item) {
         return item[1];
       });
-      let valueList = this.data.map(function (item) {
-          return item[1];
+      let valueList = this.data.map(function(item) {
+        return item[1];
       });
-      this.monitor_obj.CPU.series.data = valueList
-      this.monitor_obj.CPU.xAxis.data = dataList
+      this.monitor_obj.CPU.series.data = valueList;
+      this.monitor_obj.CPU.xAxis.data = dataList;
       this.monitorLoading = false;
     }
   }
@@ -255,11 +163,11 @@ export default {
   height: 100%;
   background-color: rgb(240, 242, 245);
 }
-.el-row{
+.el-row {
   margin-bottom: 20px;
 }
 .cpu {
-  width: 540px;
+  width: 1600px;
   height: 400px;
 }
 </style>

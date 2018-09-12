@@ -156,6 +156,16 @@ export const devEopsRouterMap = [{
       meta: { title: '工单',icon:'dashboard',hidden:true,cache:true}
     }]
   },{
+    path:'',
+    component: layout,
+    meta:{title: 'IP检索',icon:'bath', types: 'deveops'},
+    children: [{
+      path: 'ipool',
+      component: _import('deveops/ipool/index'),
+      name: 'ipool',
+      meta: { title: 'IP检索',icon:'bath',hidden:true,cache:true}
+    }]
+  },{
     path:'/console',
     component: layout,
     meta:{title: '控制台',icon:'terminal',types: 'deveops'},
@@ -225,23 +235,8 @@ export const devEopsRouterMap = [{
       name: 'monitor',
       meta: { title: '监控',icon:'dashboard',hidden:false,cache:true}
     },{
-      path: ':id/slowlog',
-      component: _import('zdb/db/1'),
-      name: 'slowlog',
-      meta: { title: '慢查询',icon:'terminal',hidden:false,cache:true}
-    },{
-      path: ':id/sqlcheck',
-      component: _import('zdb/db/2'),
-      name: 'sqlcheck',
-      meta: { title: 'SQL优化',icon:'terminal',hidden:false,cache:true}
-    },{
-      path: ':id/rollback',
-      component: _import('zdb/db/2'),
-      name: 'rollback',
-      meta: { title: '数据回滚',icon:'terminal',hidden:false,cache:true}
-    },{
       path: ':id/query',
-      component: _import('zdb/db/2'),
+      component: _import('zdb/db/query'),
       name: 'query',
       meta: { title: '数据查询',icon:'terminal',hidden:false,cache:true}
     }]

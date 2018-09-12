@@ -1,21 +1,35 @@
 import axios from 'axios'
+import '@/mock'
 import store from '@/store'
 import { getToken } from "@/utils/auth"
 import { Message } from 'element-ui'
 
 // baseURL: process.env.API_URL,
-const service = axios.create({
-  baseURL: process.env.API_URL,
-  timeout: process.env.API_TIMEOUT
-})
+axios.defaults.headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+}
+
+// const service = axios.create({
+//   baseURL: process.env.API_URL,
+//   timeout: process.env.API_TIMEOUT
+// })
+
+const service = axios
+
 
 service.interceptors.request.use(config => {
   if(store.getters.token){
-      config.headers['authorization'] = 'JWT '+getToken()
+      config.headers['authorization'] = 'JWT '+ getToken()
   }
   return config
 }, error => {
   Promise.reject(error)
+})
+
+axios.interceptors.response.use(function(response) {
+  return response;
+}, function(error) {
+  return Promise.reject(error);
 })
 
 function findError(error){
