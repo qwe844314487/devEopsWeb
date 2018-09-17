@@ -5,16 +5,16 @@ import { getToken } from "@/utils/auth"
 import { Message } from 'element-ui'
 
 // baseURL: process.env.API_URL,
-axios.defaults.headers = {
-  'Content-Type':'application/x-www-form-urlencoded'
-}
+// axios.defaults.headers = {
+//   'Content-Type':'application/x-www-form-urlencoded'
+// }
 
-// const service = axios.create({
-//   baseURL: process.env.API_URL,
-//   timeout: process.env.API_TIMEOUT
-// })
+const service = axios.create({
+  baseURL: process.env.API_URL,
+  timeout: process.env.API_TIMEOUT
+})
 
-const service = axios
+// const service = axios
 
 
 service.interceptors.request.use(config => {

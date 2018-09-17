@@ -64,20 +64,21 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="500px" align="center" label="URL">
+      <el-table-column width="600px" align="center" label="URL">
         <template slot-scope="cdn">
           <span>{{ cdn.row.url }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="115" align="center" label="类型" class-name="status-col" >
+      <el-table-column width="150px" align="center" label="类型" class-name="status-col" >
         <template slot-scope="cdn">
           <el-tag>{{optionTypeObj[cdn.row.type]}}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column width="115" align="center" label="状态" class-name="status-col" >
+      <el-table-column width="250px" align="center" label="状态" class-name="status-col" >
         <template slot-scope="cdn">
+          <el-tag :type="cdn.row.status | statusFilter">{{cdn.row.process}}%</el-tag>
           <el-tag :type="cdn.row.status | statusFilter">{{optionStateObj[cdn.row.status]}}</el-tag>
         </template>
       </el-table-column>
@@ -102,13 +103,6 @@
                   <span>{{ cdn.row.url }}</span>
                 </template>
               </el-table-column>
-
-              <el-table-column width="200px" align="center" label="刷新类型">
-                <template slot-scope="cdn">
-                  <el-tag>{{ optionTypeObj[cdn.row.type] }}</el-tag>
-                </template>
-              </el-table-column>
-
               <el-table-column width="250px" align="center" label="工具">
                 <template slot-scope="cdn">
                   <el-button type="primary" size="mini" @click="handleCDNDelete(cdn.row)" :disabled="btnStatus">刪除</el-button>
@@ -131,9 +125,6 @@
                 <el-input placeholder="https://stc-new.8531.cn/android/zjnews_huajishijie.apk" v-model="cdn.url">
                   <template slot="prepend">刷新路径:</template>
                 </el-input>
-                <el-select v-model="cdn.type" placeholder="请选择刷新的类型">
-                  <el-option v-for="option in optionType" :key="option.label" :label="option.label" :value="option.value" :disabled="option.disabled"></el-option>
-                </el-select>
             </div>
           <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click="createCDNRow" :disabled="btnStatus">提交</el-button>
@@ -145,7 +136,7 @@
     </el-form>
 
     <div class="pagination-container">
-      <el-pagination background layout="total, prev, pager, next, jumper">
+      <el-pagination background layout="total, prev, pager, next, jumper" @current-change="handleCurrentChange" :total="pagination.count">
       </el-pagination>
     </div>
   </div>
