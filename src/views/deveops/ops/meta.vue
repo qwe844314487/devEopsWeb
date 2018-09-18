@@ -87,25 +87,25 @@
             <el-table :data="commit_obj.contents" border fit highlight-current-row
                       style="width: 100%"
                       :default-sort="{prop: 'sort', order: 'ascending'}">
-              <el-table-column width="120px" align="center" label="名称">
+              <el-table-column width="150px" align="center" label="名称">
                 <template slot-scope="content">
                   <span>{{ content.row.name }}</span>
                 </template>
               </el-table-column>
 
-              <el-table-column width="130px" align="center" label="模块">
+              <el-table-column width="150px" align="center" label="模块">
                 <template slot-scope="content">
                   <span>{{ content.row.module }}</span>
                 </template>
               </el-table-column>
 
-              <el-table-column width="250px" align="center" label="参数">
+              <el-table-column width="540px" align="center" label="参数">
                 <template slot-scope="content">
                   <span>{{ content.row.args }}</span>
                 </template>
               </el-table-column>
 
-              <el-table-column width="100px" align="center" label="排序" prop="sort">
+              <el-table-column width="140px" align="center" label="排序" prop="sort">
                 <template slot-scope="content">
                   <span>{{ content.row.sort }}</span>
                 </template>
@@ -157,18 +157,34 @@
         width="40%"
         title="确定操作范围Step2"
         :visible.sync="dialogAssetVisible">
-        <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_host" filterable>
-          <el-option
-            v-for="item in group_options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-
-        <el-transfer v-model="commit_obj.hosts" :data="hosts" placeholder="请选择应用主机IP" filterable>
-        </el-transfer>
-
+        <el-row :gutter="1">
+          <el-col :span="6">
+            <p>请选择操作的应用组:</p>
+          </el-col>
+          <el-col :span="10">
+            <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_host" filterable>
+              <el-option
+                v-for="item in group_options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="1">
+          <el-col :span="6">
+            <p>请选择操作的主机:</p>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-transfer v-model="commit_obj.hosts" :data="hosts" placeholder="请选择应用主机IP" filterable>
+            </el-transfer>
+          </el-col>
+        </el-row>
+        
         <div slot="footer" class="dialog-footer">
           <el-button @click="handleAssetBack" :disabled="btnStatus">上一步</el-button>
           <el-button type="primary" @click="handleQRCode" :disabled="btnStatus">下一步</el-button>
