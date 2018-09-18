@@ -93,7 +93,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogUserVisible" width="60%" top="2vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogUserVisible" width="45%" top="2vh">
       <el-form :rules="rules" ref="userForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
         <el-form-item label="Phone" prop="phone">
@@ -111,7 +111,6 @@
         <el-form-item label="电子邮箱" prop="email">
           <el-input v-model="commit_obj.email"></el-input>
         </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogUserVisible = false" :disabled="btnStatus">取消</el-button>
