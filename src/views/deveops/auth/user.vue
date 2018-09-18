@@ -93,7 +93,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogUserVisible" width="45%" top="2vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogUserVisible" width="45%" top="20vh">
       <el-form :rules="rules" ref="userForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
         <el-form-item label="Phone" prop="phone">

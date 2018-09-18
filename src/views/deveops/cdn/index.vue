@@ -83,6 +83,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column width="120px" align="center" label="提交用户">
+        <template slot-scope="cdn">
+          <span>{{ cdn.row.username }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column width="200px" align="center" label="刷新时间">
         <template slot-scope="setup">
           <span>{{ setup.row.create_time | timeFilter }}</span>

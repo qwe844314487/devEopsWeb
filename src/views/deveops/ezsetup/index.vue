@@ -55,11 +55,11 @@
       </el-row>
     </el-dialog>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogRedisVisible" width="40%" top="5vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogRedisVisible" width="43%" top="8vh">
       <el-form ref="redisForm" :model="commit_obj" label-position="left" label-width="100px">
 
         <el-form-item label="所属应用组" prop="detail.group" size="medium">
-          <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_hosts" clearable filterable>
+          <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_hosts" filterable>
             <el-option
               v-for="item in groups"
               :key="item.value"
@@ -75,14 +75,14 @@
         </el-form-item>
 
       <el-row>
-        <el-col :span="11">
+        <el-col :span="10">
           <el-form-item label="部署端口" prop="detail.redis_port" size="medium">
             <el-tooltip content="请输入部署端口" placement="bottom" effect="light">
               <el-input v-model="commit_obj.detail.redis_port"></el-input>
             </el-tooltip>
           </el-form-item>
         </el-col>
-        <el-col :offset="1" :span="11">
+        <el-col :offset="1" :span="10">
           <el-form-item label="实例密码" prop="detail.redis_passwd" size="medium">
             <el-tooltip content="请输入实例密码" placement="bottom" effect="light">
               <el-input type="password" v-model="commit_obj.detail.redis_passwd"></el-input>
@@ -115,7 +115,7 @@
     </el-dialog>
 
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogMySQLVisible" width="40%" top="5vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogMySQLVisible" width="43%" top="5vh">
       <el-form ref="mysqlForm" :model="commit_obj" label-position="left" label-width="100px">
 
         <el-form-item label="实例名称" prop="name" size="medium">
@@ -136,7 +136,7 @@
         </el-form-item>
 
         <el-form-item label="所属应用组" prop="detail.group" size="medium">
-          <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_hosts" clearable filterable>
+          <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_hosts" filterable>
             <el-option
               v-for="item in groups"
               :key="item.value"
@@ -152,14 +152,14 @@
         </el-form-item>
 
       <el-row>
-        <el-col :span="11">
+        <el-col :span="10">
           <el-form-item label="实例内存" prop="detail.memory" size="medium">
             <el-tooltip content="请输入该实例内存" placement="bottom" effect="light">
               <el-input v-model="commit_obj.detail.memory"></el-input>
             </el-tooltip>
           </el-form-item>
         </el-col>
-        <el-col :offset="1" :span="11">
+        <el-col :offset="1" :span="10">
           <el-form-item label="部署端口" prop="detail.port" size="medium">
             <el-tooltip content="请输入部署端口" placement="bottom" effect="light">
               <el-input v-model="commit_obj.detail.port"></el-input>

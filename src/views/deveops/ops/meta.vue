@@ -135,15 +135,30 @@
           :visible.sync="dialogCreateContentVisible"
           append-to-body>
             <div :model="content">
-                <el-input placeholder="检出代码" v-model="content.name">
-                  <template slot="prepend">名称:</template>
-                </el-input>
-                <el-input placeholder="copy" v-model="content.module">
-                  <template slot="prepend">模块:  </template>
-                </el-input>
-                <el-input placeholder="src=/etc/hosts dest=/tmp/hosts" v-model="content.args">
-                  <template slot="prepend">参数:  </template>
-                </el-input>
+              <el-row :gutter="5">
+          <el-col offset="1" :span="4">
+            <p>名称： </p> 
+          </el-col>
+          <el-col :span="16">
+            <el-input placeholder="检出代码" v-model="content.name"></el-input>
+          </el-col>
+        </el-row>
+        <el-row :gutter="15">
+          <el-col offset="1" :span="4">
+            <p>模块： </p> 
+          </el-col>
+          <el-col :span="16">
+            <el-input placeholder="copy" v-model="content.module"></el-input>
+          </el-col>
+        </el-row>
+        <el-row :gutter="15">
+          <el-col offset="1" :span="4">
+            <p>参数：  </p> 
+          </el-col>
+          <el-col :span="16">
+             <el-input placeholder="src=/etc/hosts dest=/tmp/hosts" v-model="content.args"></el-input>
+          </el-col>
+        </el-row>
             </div>
           <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click="createContent" :disabled="btnStatus">提交</el-button>
@@ -154,7 +169,7 @@
       </el-dialog>
 
       <el-dialog
-        width="40%"
+        width="38%"
         title="确定操作范围Step2"
         :visible.sync="dialogAssetVisible">
         <el-row :gutter="1">
@@ -481,7 +496,6 @@
     }
   }
 </script>
-
 <style rel="stylesheet/scss" lang="scss" scoped>
   .manager-meta-container {
     padding: 32px;
@@ -491,5 +505,8 @@
     margin-left: 10px;
     margin-bottom: 5px;
     font-size: 15px;
+  }
+  .el-table {
+    margin-bottom: 5px;
   }
 </style>
