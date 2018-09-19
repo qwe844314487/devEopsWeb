@@ -34,6 +34,6 @@ export function fetch_MonitorHostAliyunInternetIn(uuid, time){
 
 export function fetch_MonitorHostAliyunDiskUse(uuid, time){
   return request({
-    url: '/api-monitor/v1/host/'+ uuid + '/disk/use/',
+    url: '/api-monitor/v1/host/'+ uuid + '/disk/use/aliyun/byuuid/'+time+'/',
   })
 }
