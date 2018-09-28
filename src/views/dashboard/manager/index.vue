@@ -9,8 +9,8 @@
             </el-col>
             <el-col :span="11" class="col-title">
               <!-- <span style="vertical-align: bottom;">123</span> -->
-              <div class="p-name">信息安全与运维中心 开发自运维平台 监控中心</div>
-              <div class="p-who">本页面基于资产信息整合、任务执行以及巡检结果</div>
+              <div class="p-name">早安，汪子哲，祝你身体健康，再见！(Demo)</div>
+              <div class="p-who">运维工程师 | 浙报集团－信息安全与运维中心－系统运维－301－ops</div>
             </el-col>
             <el-col :span="10" class="col-level">
               <el-row>
@@ -23,7 +23,7 @@
                   <p class="p-level-number">17</p>
                 </el-col>
                 <el-col :span="5" class="p-level">
-                  <p class="p-level-title">虚拟平台</p>
+                  <p class="p-level-title">虚拟化平台</p>
                   <p class="p-level-number">2</p>
                 </el-col>
               </el-row>
@@ -97,34 +97,130 @@
             <div slot="header" class="clearfix">
               <span>平台事件</span>
             </div>
-            <template v-for="e in event">
-              <div class="row-work-list" :key="e.uuid">
+            <div key="1" class="row-work-list">
               <el-row>
                 <el-col :span="1">
                   <img class="p-logo" :src="logo" alt="logo">
                 </el-col>
                 <el-col :span="23">
-                  <div class="p-name" v-if="e.type===1">{{ e.user }} 修改了 <span>{{ e.host }}</span> 资产信息</div>
-                  <div class="p-name" v-else-if="e.type===2">{{ e.user }} 在 <span>{{ e.group }}</span> 发起工单 <span>{{ e.work }}</span></div>
-                  <div class="p-name" v-else-if="e.type===3">{{ e.user }} 巡检发现 <span>{{ e.group }}</span> 的主机 <span>{{ e.host }}</span> 出现问题</div>
-                  <div class="p-time">{{ e.time }}</div>
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Task</span> 并执行成功</div>
+                  <div class="p-time">2018-8-24 17:09</div>
                 </el-col>
               </el-row>
             </div>
-            </template>
+            <div key="2" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">徐晨亮 在 <span>[测试]新媒体云服务平台</span> 修改了资产信息</div>
+                  <div class="p-time">2018-8-24 17:09</div>   
+                </el-col>
+              </el-row>
+            </div>
+            <div key="3" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">devEops平台 巡检发现 <span>[预发布]24小时APP</span> 的主机出现<span>磁盘溢出</span></div>
+                  <div class="p-time">2018-8-24 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="4" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">devEops平台 巡检发现 <span>[测试]24小时APP</span> 的主机出现<span>磁盘溢出</span></div>
+                  <div class="p-time">2018-8-24 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="5" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2018-8-24 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="6" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2018-5-24 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="7" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2017-8-24 17:11</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="7" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2017-4-11 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="7" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2017-1-24 23:09</div>
+                </el-col>
+              </el-row>
+            </div>
           </el-card>
         </el-row>
       </el-col>
       
       <el-col :span="8">
-        <el-card >
-            <div class="systype" stype="width: 600px;height: 400px;">
+        <el-row>
+          <el-card>
+             <div class="systype">
             <IEcharts
               :option="systype"
               :loading="loading"
             />
           </div>
         </el-card>
+        </el-row>
+        <el-row style="padding-top: 30px;">
+          <el-card>
+              <div class="test">
+              <IEcharts
+                :option="test"
+                :loading="loading"
+              />
+            </div>
+          </el-card>
+        </el-row>
       </el-col>
     </el-row>
 
@@ -166,144 +262,134 @@
 <script>
 // import echarts from 'echarts';
 // import Echarts from '@/components/Echarts/index';
-import IEcharts from 'vue-echarts-v3/src/lite.js'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/chart/line'
-import 'echarts/lib/component/title'
-import { fetch_SystemStatus } from '@/api/dashboard'
-import logo from '@/assets/show.png'
-import Awesome from "@/components/Awesome/index"
+import IEcharts from "vue-echarts-v3/src/lite.js";
+import "echarts/lib/chart/bar";
+import "echarts/lib/chart/line";
+import "echarts/lib/component/title";
+import { fetch_SystemStatus } from "@/api/dashboard";
+import logo from "@/assets/wzz.jpg";
+import Awesome from "@/components/Awesome/index";
 export default {
-  data () {
+  data() {
     return {
       loading: false,
-      systype: {
-      },
-      event:[
-        {
-          type: 1, //信息修改类
-          uuid: '4064a7e3ff99410a951d575aac8d7e10',
-          user: '徐晨亮',
-          host: 'act3.xmtCloudProd.com',
-          info: '修改了资产信息',
-          time: '2018-8-24 17:09'
-        },{
-          type: 2, //工单类
-          uuid: 'e45799a0aa444c288fe516e42b0fe402',
-          user: '汪子哲',
-          group: '[预发布]浙江新闻',
-          info: '发起了工单',
-          work: '[预发布]更新浙江新闻Task',
-          time: '2018-8-24 17:09'
-        },{
-          type: 3,
-          uuid: "93f0f0deb7014f1fab796a44f5eda648",
-          user: 'devEops平台',
-          host: 'act3.xmtCloudProd.com',
-          time: '2018-8-24 17:09'
-        },{
-          type: 3,
-          uuid: "93f0f0deb7014f1fab796a44f5eda648",
-          user: 'devEops平台',
-          host: 'act3.xmtCloudProd.com',
-          time: '2018-8-24 17:09'
-        },{
-          type: 3,
-          uuid: "93f0f0deb7014f1fab796a44f5eda648",
-          user: 'devEops平台',
-          host: 'act3.xmtCloudProd.com',
-          time: '2018-8-24 17:09'
-        },{
-          type: 3,
-          uuid: "93f0f0deb7014f1fab796a44f5eda648",
-          user: 'devEops平台',
-          host: 'act3.xmtCloudProd.com',
-          time: '2018-8-24 17:09'
-        },{
-          type: 3,
-          uuid: "93f0f0deb7014f1fab796a44f5eda648",
-          user: 'devEops平台',
-          host: 'act3.xmtCloudProd.com',
-          time: '2018-8-24 17:09'
-        },{
-          type: 3,
-          uuid: "93f0f0deb7014f1fab796a44f5eda648",
-          user: 'devEops平台',
-          host: 'act3.xmtCloudProd.com',
-          time: '2018-8-24 17:09'
-        }
-      ],
-      logo,
-    }
+      systype: {},
+      logo
+    };
   },
   components: {
-    IEcharts,Awesome
+    IEcharts,
+    Awesome
   },
-  created(){
-    this.init_systype()
+  created() {
+    this.init_systype();
+    this.init_test();
   },
-  methods:{
-    init_systype(){
-      this.systype= {
-    xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+  methods: {
+    init_systype() {
+      this.systype = {
+        title: {
+          text: "一周内工单执行"
+        },
+        xAxis: {
+          type: "category",
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        },
+        yAxis: {
+          type: "value"
+        },
+        series: [
+          {
+            data: [5, 5, 3, 8, 17, 3, 0],
+            type: "bar"
+          }
+        ]
+      };
     },
-    yAxis: {
-        type: 'value'
-    },
-    series: [{
-        data: [120, 200, 150, 80, 70, 110, 130],
-        type: 'bar'
-    }]
-}
-    }                                                                       
+    init_test() {
+      this.test = {
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        legend: {
+          orient: "vertical",
+          x: "left",
+          data: [
+            "浙江新闻",
+            "新媒体云服务平台",
+            "微媒宝",
+            "新闻24小时",
+            "天目云"
+          ]
+        },
+        series: [
+          {
+            name: "主机个数",
+            type: "pie",
+            radius: ["50%", "70%"],
+            avoidLabelOverlap: false,
+            labelLine: {
+              normal: {
+                show: false
+              }
+            },
+            data: [
+              { value: 36, name: "浙江新闻" },
+              { value: 28, name: "新媒体云服务平台" },
+              { value: 4, name: "微媒宝" },
+              { value: 17, name: "新闻24小时" },
+              { value: 23, name: "天目云" }
+            ]
+          }
+        ]
+      };
+    }
   }
-}
+};
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.col-logo{
+.col-logo {
   height: 100%;
-  .p-logo{
-  height: 150px;
+  .p-logo {
+    height: 150px;
     width: 150px;
-    border-radius:50%;
+    border-radius: 50%;
   }
 }
-.col-title{
+.col-title {
   height: 100%;
   position: relative;
   line-height: 100%;
-  .p-name{
+  .p-name {
     font-family: "Helvetica Neue";
     font-size: 25px;
     padding-top: 50px;
     padding-bottom: 25px;
     display: block;
   }
-  .p-who{
+  .p-who {
     font-family: "Helvetica Neue";
     font-variant: tabular-nums;
     background-color: #fff;
-    color: rgba(0,0,0,.45);
+    color: rgba(0, 0, 0, 0.45);
     display: block;
   }
 }
-.col-level{
+.col-level {
   height: 100%;
-  .p-level{
+  .p-level {
     padding-top: 30px;
     float: right;
-    .p-level-title{
-          color: rgba(0,0,0,.45);
+    .p-level-title {
+      color: rgba(0, 0, 0, 0.45);
     }
-    .p-level-number{
+    .p-level-number {
       font-weight: bold;
       font-size: 30px;
-      
     }
-    p{
+    p {
       text-align: center;
       margin-top: 0;
       margin-bottom: 1em;
@@ -313,53 +399,63 @@ export default {
 
 .box-card {
   height: 180px;
+  // background-color: rgb(39, 50, 56);
   // border: 5px solid #ebeef5;
 }
-.row-system{
-  padding-top:20px;
-  .number-card{
-    .fa-icon{
+.row-system {
+  padding-top: 20px;
+  .number-card {
+    .fa-icon {
       font-size: 50px;
-      color:#409EFF;
-      padding-top:15px;
+      color: #409eff;
+      padding-top: 15px;
     }
     // background: #409EFF;
   }
-  .p-level-number{
+  .p-level-number {
     font-weight: bold;
     font-size: 20px;
   }
 }
-.row-work{
+.row-work {
   padding-top: 30px;
-  .p-logo{
+  .p-logo {
     height: 30px;
     width: 30px;
-    border-radius:50%;
+    border-radius: 50%;
   }
-  .p-name{
+  .p-name {
     font-family: "Helvetica Neue";
     font-size: 15px;
     display: block;
   }
-  .p-time{
+  .p-time {
     font-family: "Helvetica Neue";
     font-variant: tabular-nums;
     background-color: #fff;
-    color: rgba(0,0,0,.45);
+    color: rgba(0, 0, 0, 0.45);
     display: block;
   }
-  .row-work-list{
-    border-bottom:1px solid #e8e8e8;
-    padding-left:20px;
-    padding-top:10px;
-    span{
-      color:#409EFF;
+  .row-work-list {
+    border-bottom: 1px solid #e8e8e8;
+    padding-left: 20px;
+    padding-top: 10px;
+    span {
+      color: #409eff;
     }
   }
 }
-  .dashboard-editor-container {
-    padding: 15px;
-    background-color: rgb(240, 242, 245);
-  }
+.dashboard-editor-container {
+  padding: 15px;
+  // background-color: rgb(240, 242, 245);
+  background-color: rgb(39, 50, 56);
+  color: #fff;
+}
+.systype {
+  // width: 600px;
+  height: 400px;
+}
+.test {
+  height: 180px;
+}
 </style>

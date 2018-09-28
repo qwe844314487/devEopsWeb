@@ -221,7 +221,7 @@
         users:[],
         pagination: {
           page: 1,
-          count: 0
+          count: 0,
         },
         textMap: {
           update: '编辑应用组',

@@ -3,7 +3,7 @@
        <!-- :collapse="isCollapse"> -->
       <template>
         <el-menu-item index="" class="submenu-title-noDropdown">
-          <h2>devEops 2.0</h2>
+          <h2>devEops 3.0</h2>
         </el-menu-item>
       </template>
       <sidebar-item :routes="routers" :types="'zdb'"></sidebar-item>

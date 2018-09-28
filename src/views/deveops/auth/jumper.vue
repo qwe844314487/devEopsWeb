@@ -134,6 +134,8 @@
             label: '正常'
           }],
         optionStateObj:{
+            '-3': '错误密钥',
+            '-2': '无对应密钥',
             '-1': '不可达',
             '1': '可达'
         },
@@ -157,6 +159,8 @@
     filters:{
       statusFilter(status) {
         const statusMap = {
+          '-3': 'danger',
+          '-2': 'danger',
           '-1': 'danger',
           '1': 'success'
         }

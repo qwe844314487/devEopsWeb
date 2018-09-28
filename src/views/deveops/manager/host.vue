@@ -456,7 +456,8 @@ export default {
         "-1": "暂停",
         "1": "正常",
         "2": "根溢出",
-        "3": "负载高"
+        "3": "负载高",
+        "4": "根点溢出"
       },
       optionState: [
         {
@@ -490,6 +491,11 @@ export default {
         {
           value: "3",
           label: "负载高",
+          disabled: true
+        },
+        {
+          value: "4",
+          label: "根点溢出",
           disabled: true
         }
       ],
@@ -555,7 +561,8 @@ export default {
         "-2": "danger",
         "1": "success",
         "2": "danger",
-        "3": "danger"
+        "3": "danger",
+        "4": "danger",
       };
       return statusMap[_status];
     },

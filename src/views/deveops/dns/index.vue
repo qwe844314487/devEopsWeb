@@ -19,10 +19,10 @@
       </el-row>
       <el-row v-show="detailSearch" style="margin-bottom:20px;">
         <el-col :span="7" :offset="1">
-          外网解析： <el-input style="width: 200px;" v-model="search_obj.dig" class="filter-item" placeholder="精准搜索外网解析"></el-input>
+          外网解析： <el-input style="width: 200px;" v-model="search_obj.external_dig" class="filter-item" placeholder="精准搜索外网解析"></el-input>
         </el-col>
         <el-col :span="7">
-          内网解析： <el-input style="width: 200px;" v-model="search_obj.inner_dig" class="filter-item" placeholder="精准搜索内网解析"></el-input>
+          内网解析： <el-input style="width: 200px;" v-model="search_obj.internal_dig" class="filter-item" placeholder="精准搜索内网解析"></el-input>
         </el-col>
         <el-col :span="7">
           域名： <el-input style="width: 200px;" v-model="search_obj.url" class="filter-item" placeholder="模糊搜索域名"></el-input>
@@ -81,15 +81,15 @@
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="公网解析" prop="dig">
+        <el-form-item label="公网解析" prop="external_dig">
           <el-tooltip content="请输入该域名的公网解析" placement="top" effect="light">
-            <el-input v-model="commit_obj.dig"></el-input>
+            <el-input v-model="commit_obj.external_dig"></el-input>
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="私网解析" prop="inner_dig">
+        <el-form-item label="私网解析" prop="internal_dig">
           <el-tooltip content="请输入该域名的私网解析" placement="top" effect="light">
-            <el-input v-model="commit_obj.inner_dig"></el-input>
+            <el-input v-model="commit_obj.internal_dig"></el-input>
           </el-tooltip>
         </el-form-item>
 
@@ -234,6 +234,7 @@
         },
         handleUpdate(row){
           this.commit_obj = Object.assign({}, row) // copy obj
+          this.dialogStatus = "update"
           this.dialogDNSVisible = true
           this.init_group()
         },

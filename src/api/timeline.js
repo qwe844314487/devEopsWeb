@@ -2,11 +2,11 @@ import request from '@/utils/request'
 
 /*
 * API_MODULE: TIMELINE
-* API_USE: FETCH,CREATE,UPDATE,DELETE
+* API_USE: FETCH
 * */
-export function fetch_MonitorHostAliyunCPU(uuid, time){
-    return request({
-      url: '/api-monitor/v1/host/'+uuid+'/cpu/aliyun/byuuid/'+time+'/',
-      method: 'GET'
-    })
+export function fetch_TimelineByPage(pagination){
+  return request({
+    url: '/api-timeline/v1/bypage/?page='+pagination.page,
+    method: 'GET'
+  })
 }

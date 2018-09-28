@@ -194,6 +194,7 @@
       <el-dialog
       width="70%"
       title="错误信息"
+      top="7vh"
       :visible.sync="dialogResultsVisible">
       <textarea v-model="error" style="height: 700px;width: 1200px;resize: none;"></textarea>
     </el-dialog>
