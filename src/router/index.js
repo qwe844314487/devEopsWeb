@@ -144,11 +144,6 @@ export const devEopsRouterMap = [{
       component: _import('deveops/ops/mission'),
       name: 'mission',
       meta: { title: '任务',icon:'superpowers',hidden:false,cache:true}
-    },{
-      path: 'testttt',
-      component: _import('deveops/test/index'),
-      name: 'testttt',
-      meta: { title: 'test',icon:'superpowers',hidden:false,cache:true}
     }]
   },{
     path:'',

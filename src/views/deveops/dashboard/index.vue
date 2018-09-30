@@ -9,18 +9,18 @@
             </el-col>
             <el-col :span="11" class="col-title">
               <!-- <span style="vertical-align: bottom;">123</span> -->
-              <div class="p-name">早安，汪子哲，祝你身体健康，再见！(Demo)</div>
+              <div class="p-name">早安，{{ name }}，祝你身体健康，再见！(Demo)</div>
               <div class="p-who">运维工程师 | 浙报集团－信息安全与运维中心－系统运维－301－ops</div>
             </el-col>
             <el-col :span="10" class="col-level">
               <el-row>
                 <el-col :span="5" class="p-level">
                   <p class="p-level-title">主机数</p>
-                  <p class="p-level-number">257</p>
+                  <p class="p-level-number">{{ count.HOST_COUNT }}</p>
                 </el-col>
                 <el-col :span="5" class="p-level">
                   <p class="p-level-title">项目数</p>
-                  <p class="p-level-number">17</p>
+                  <p class="p-level-number">{{ count.GROUP_COUNT }}</p>
                 </el-col>
                 <el-col :span="5" class="p-level">
                   <p class="p-level-title">虚拟化平台</p>
@@ -45,7 +45,7 @@
                       </el-col>
                     <el-col :span="12">
                       <p class="p-level-title">接管域名</p>
-                      <p class="p-level-number">39</p>
+                      <p class="p-level-number">{{ count.DNS_COUNT }}</p>
                     </el-col>
                     </el-row>
                   </el-card>
@@ -58,7 +58,7 @@
                       </el-col>
                     <el-col :span="12">
                       <p class="p-level-title">数据库实例</p>
-                      <p class="p-level-number">18</p>
+                      <p class="p-level-number">{{ count.DBINSTANCE_COUNT }}</p>
                     </el-col>
                     </el-row>
                   </el-card>
@@ -71,7 +71,7 @@
                       </el-col>
                     <el-col :span="12">
                       <p class="p-level-title">分发文件</p>
-                      <p class="p-level-number">182</p>
+                      <p class="p-level-number">{{ count.FILE_COUNT }}</p>
                     </el-col>
                     </el-row>
                   </el-card>
@@ -84,7 +84,7 @@
                       </el-col>
                     <el-col :span="12">
                       <p class="p-level-title">用户</p>
-                      <p class="p-level-number">19</p>
+                      <p class="p-level-number">{{ count.USER_COUNT }}</p>
                     </el-col>
                     </el-row>
                   </el-card>
@@ -121,7 +121,7 @@
               </el-pagination> -->
               <el-pagination background layout="total, prev, pager, next, jumper" 
               @current-change="handleCurrentChange" 
-              page-size="6"
+              :page-size="6"
               :total="pagination.count">
               </el-pagination>
           </el-card>
@@ -133,7 +133,7 @@
           <el-card>
              <div class="systype">
             <IEcharts
-              :option="systype"
+              :option="week_obj"
               :loading="loading"
             />
           </div>
@@ -143,7 +143,7 @@
           <el-card>
               <div class="test">
               <IEcharts
-                :option="test"
+                :option="group_obj"
                 :loading="loading"
               />
             </div>
@@ -162,22 +162,86 @@ import "echarts/lib/chart/bar";
 import "echarts/lib/chart/line";
 import "echarts/lib/component/title";
 import { fetch_TimelineByPage } from "@/api/timeline";
-import { fetch_SystemStatus } from "@/api/dashboard";
+import { fetch_Count, fetch_Work, fetch_Group } from "@/api/dashboard";
 import logo from "@/assets/wzz.jpg";
 import Awesome from "@/components/Awesome/index";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
       loading: false,
       timelines: [],
-      systype: {},
       logo,
+      count: {},
       pagination: {
         page: 1,
         count: 0,
         page_size: 5
+      },
+      week_obj: {},
+      group_obj: {},
+      week_option: {
+        title: {
+          text: ""
+        },
+        tooltip: {
+          textStyle: {
+            fontSize: 14
+          },
+          borderColor: "#333",
+          trigger: "axis",
+          triggerOn: "mousemove|click",
+          backgroundColor: "rgba(50,50,50,0.7)",
+          borderWidth: 0,
+          axisPointer: {
+            type: "line"
+          }
+        },
+        dataset: {
+          dimensions: ["time", "执行次数"],
+          source: [
+            { time: "周一", 执行次数: 43.3 },
+            { time: "周二", 执行次数: 83.1 },
+            { time: "周四", 执行次数: 86.4 },
+            { time: "周五", 执行次数: 72.4 }
+          ]
+        },
+        xAxis: { type: "category" },
+        yAxis: [{ scale: true }],
+        series: [
+          {
+            type: "bar",
+            smooth: true,
+            seriesLayoutBy: "row"
+          }
+        ]
+      },
+      group_option: {
+        title: {
+          text: ""
+        },
+        tooltip: {
+          trigger: 'item'
+        },
+        dataset: {
+          source: [
+            ['product', '2012',],
+            ['Matcha Latte', 41.1,],
+            ['Milk Tea', 86.5,],
+            ['Cheese Cocoa', 24.1, ],
+            ['Walnut Brownie', 55.2,]
+          ]
+        },
+        series: [
+          {
+            type: "pie"
+          }
+        ]
       }
     };
+  },
+  computed: {
+    ...mapGetters(["name"])
   },
   components: {
     IEcharts,
@@ -185,101 +249,66 @@ export default {
   },
   created() {
     this.init_timelines()
+    this.init_work()
+    this.init_count()
+    this.init_group()
     this.init_systype()
     this.init_test()
   },
   filters: {
     timeFilter(timeformat) {
       if (timeformat) {
-        const date = timeformat.split("T");
-        const time = date[1].split(".");
-        return date[0] + " " + time[0];
+        const date = timeformat.split("T")
+        const time = date[1].split(".")
+        return date[0] + " " + time[0]
       } else {
-        return "";
+        return ""
       }
     }
   },
   methods: {
     init_timelines() {
       fetch_TimelineByPage(this.pagination).then(response => {
-        this.pagination.count = response.data.count;
-        this.timelines = response.data.results;
-      });
+        this.pagination.count = response.data.count
+        this.timelines = response.data.results
+      })
     },
-    init_systype() {
-      this.systype = {
-        title: {
-          text: "一周内工单执行"
-        },
-        xAxis: {
-          type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        },
-        yAxis: {
-          type: "value"
-        },
-        series: [
-          {
-            data: [5, 5, 3, 8, 17, 3, 0],
-            type: "bar"
-          }
-        ]
-      };
+    init_group(){
+      fetch_Group().then(response => {
+        this.group_obj = JSON.parse(JSON.stringify(this.group_option))
+        this.group_obj.dataset.source = response.data.dataset
+        this.group_obj.title.text = response.data.title
+      })
     },
-    init_test() {
-      this.test = {
-        tooltip: {
-          trigger: "item",
-          formatter: "{a} <br/>{b}: {c} ({d}%)"
-        },
-        legend: {
-          orient: "vertical",
-          x: "left",
-          data: [
-            "浙江新闻",
-            "新媒体云服务平台",
-            "微媒宝",
-            "新闻24小时",
-            "天目云"
-          ]
-        },
-        series: [
-          {
-            name: "主机个数",
-            type: "pie",
-            radius: ["50%", "70%"],
-            avoidLabelOverlap: false,
-            labelLine: {
-              normal: {
-                show: false
-              }
-            },
-            data: [
-              { value: 36, name: "浙江新闻" },
-              { value: 28, name: "新媒体云服务平台" },
-              { value: 4, name: "微媒宝" },
-              { value: 17, name: "新闻24小时" },
-              { value: 23, name: "天目云" }
-            ]
-          }
-        ]
-      }
+    init_work() {
+      fetch_Work().then(response => {
+        this.week_obj = JSON.parse(JSON.stringify(this.week_option))
+        this.week_obj.dataset.source = response.data.dataset
+        this.week_obj.title.text = response.data.title
+      })
     },
-    timelineFilter(timeline){
-      return timeline.replace(/%1/g,'<span class="blue">').replace(/%2/g,'</span>')
-    },    
+    init_count() {
+      fetch_Count().then(response => {
+        this.count = response.data
+      })
+    },
+    timelineFilter(timeline) {
+      return timeline
+        .replace(/%1/g, '<span class="blue">')
+        .replace(/%2/g, "</span>")
+    },
     handleCurrentChange(val) {
       this.pagination.page = val
       this.init_timelines()
-    },
+    }
   }
 };
 </script>
 <style>
-  .row-work-list .blue{
-      color: #409eff;
-      font-size: 17px;
-  }
+.row-work-list .blue {
+  color: #409eff;
+  font-size: 17px;
+}
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

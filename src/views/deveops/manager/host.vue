@@ -395,7 +395,7 @@ export default {
           }
         },
         dataset: {
-          dimensions: ["timestamp","Minimum","Maximum"],
+          dimensions: ["timestamp","Maximum","Minimum"],
           source: []
         },
         xAxis: { type: "category" },
