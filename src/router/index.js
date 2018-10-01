@@ -144,6 +144,11 @@ export const devEopsRouterMap = [{
       component: _import('deveops/ops/mission'),
       name: 'mission',
       meta: { title: '任务',icon:'superpowers',hidden:false,cache:true}
+    },{
+      path: 'quick',
+      component: _import('deveops/ops/quick'),
+      name: 'quick',
+      meta: { title: '快速创建',icon:'fighter-jet',hidden:false,cache:true}
     }]
   },{
     path:'',

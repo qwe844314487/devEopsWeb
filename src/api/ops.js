@@ -111,3 +111,17 @@ export function delete_Mission(data){
     data: data
   })
 }
+
+
+
+/*
+* API_MODULE: Quick
+* API_USE: CREATE
+* */
+export function create_Quick(data){
+  return request({
+    url: '/api-ops/v1/quick/create/',
+    method: 'POST',
+    data: data
+  })
+}
