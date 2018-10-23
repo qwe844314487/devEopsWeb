@@ -95,27 +95,29 @@ export const devEopsRouterMap = [{
       name: 'expired',  
       meta: { title: 'ECS过期列表',icon:'clock-o',hidden:true,cache:true}
     }]
-  },{
-    path: '/expired',
-    component: layout,
-    meta:{title: '过期列表(暂时)',icon:'clock-o',types: 'deveops'},
-    children: [{
-      path: 'kvstore',
-      component: _import('deveops/expired/kvstore'),
-      name: 'instance',
-      meta: { title: 'KVStore',icon:'database',hidden:false,cache:true}
-    },{
-      path: 'mongodb',
-      component: _import('deveops/expired/mongodb'),
-      name: 'role',
-      meta: { title: 'MongoDB',icon:'database',hidden:false,cache:true}
-    },{
-      path: 'rds',
-      component: _import('deveops/expired/db'),
-      name: 'user',
-      meta: { title: 'RDS',icon:'database',hidden:false,cache:true}
-    }]
-  },{
+  },
+  // ,{
+  //   path: '/expired',
+  //   component: layout,
+  //   meta:{title: '过期列表(暂时)',icon:'clock-o',types: 'deveops'},
+  //   children: [{
+  //     path: 'kvstore',
+  //     component: _import('deveops/expired/kvstore'),
+  //     name: 'instance',
+  //     meta: { title: 'KVStore',icon:'database',hidden:false,cache:true}
+  //   },{
+  //     path: 'mongodb',
+  //     component: _import('deveops/expired/mongodb'),
+  //     name: 'role',
+  //     meta: { title: 'MongoDB',icon:'database',hidden:false,cache:true}
+  //   },{
+  //     path: 'rds',
+  //     component: _import('deveops/expired/db'),
+  //     name: 'user',
+  //     meta: { title: 'RDS',icon:'database',hidden:false,cache:true}
+  //   }]
+  // },
+  {
     path: '/db',
     component: layout,
     meta:{title: 'ZDB',icon:'database',types: 'deveops'},
@@ -214,6 +216,16 @@ export const devEopsRouterMap = [{
       component: _import('deveops/cdn/index'),
       name: 'cdn',
       meta: { title: 'CDN刷新',icon:'maxcdn',hidden:true,cache:true}
+    }]
+  },{
+    path:'',
+    component: layout,
+    meta:{title: '工序',icon:'fast-forward',types: 'deveops'},
+    children: [{
+      path: 'process',
+      component: _import('deveops/process/index'),
+      name: 'process',
+      meta: { title: 'Process工序',icon:'fast-forward',hidden:true,cache:true}
     }]
   },{
     path:'',

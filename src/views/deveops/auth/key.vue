@@ -47,7 +47,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="520px" align="center" label="创建密钥时间">
+      <el-table-column width="400px" align="center" label="创建密钥时间">
         <template slot-scope="key">
           <span>{{ key.row.fetch_time | filter_time }}</span>
         </template>

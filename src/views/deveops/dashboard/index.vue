@@ -10,7 +10,7 @@
             <el-col :span="11" class="col-title">
               <!-- <span style="vertical-align: bottom;">123</span> -->
               <div class="p-name">早安，{{ name }}，祝你身体健康，再见！(Demo)</div>
-              <div class="p-who">运维工程师 | 浙报集团－信息安全与运维中心－系统运维－301－ops</div>
+              <div class="p-who">{{ info }}</div>
             </el-col>
             <el-col :span="10" class="col-level">
               <el-row>
@@ -24,7 +24,7 @@
                 </el-col>
                 <el-col :span="5" class="p-level">
                   <p class="p-level-title">虚拟化平台</p>
-                  <p class="p-level-number">2</p>
+                  <p class="p-level-number">3</p>
                 </el-col>
               </el-row>
             </el-col>
@@ -241,7 +241,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["name"])
+    ...mapGetters(["name","info"])
   },
   components: {
     IEcharts,

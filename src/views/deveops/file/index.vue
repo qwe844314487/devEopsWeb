@@ -11,7 +11,7 @@
       </el-row>
       <el-row style="margin-bottom:20px;" v-show="detailSearch">
         <el-col :span="7" :offset="1">
-          密钥名称： <el-input size="medium" style="width: 200px;" v-model="search_obj.name" class="filter-item" placeholder="模糊查找密钥名称"></el-input>
+          文件名称： <el-input size="medium" style="width: 200px;" v-model="search_obj.name" class="filter-item" placeholder="模糊查找密钥名称"></el-input>
         </el-col>
         <el-button class="filter-item" type="primary" @click="searchFile" icon="el-icon-search" :disabled="btnStatus" style="float:right;">搜索</el-button>
       </el-row>
@@ -63,7 +63,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFileVisible" width="60%" top="2vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFileVisible" width="50%" top="15vh">
       <el-form :rules="rules" ref="fileForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
         <el-form-item label="ID" prop="id">
@@ -121,7 +121,7 @@
           create: '新增分发文件',
         },
         rules: {
-            name:[{ required: true, message: '密钥的名称是必须的', trigger: 'blur' }],
+            name:[{ required: true, message: '文件的名称是必须的', trigger: 'blur' }],
         }
       }
     },

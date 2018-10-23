@@ -55,7 +55,7 @@
       </el-row>
     </el-dialog>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogRedisVisible" width="43%" top="8vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogRedisVisible" width="53%" top="8vh">
       <el-form ref="redisForm" :model="commit_obj" label-position="left" label-width="100px">
 
         <el-form-item label="所属应用组" prop="detail.group" size="medium">

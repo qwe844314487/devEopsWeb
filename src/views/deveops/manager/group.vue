@@ -25,6 +25,11 @@
 
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchGroup" style="float:right;" :disabled="btnStatus">搜索</el-button>
       </el-row>
+            <el-row style="margin-bottom:20px;" v-show="detailSearch">
+        <el-col :span="7" :offset="1">
+          UID： <el-input size="medium" style="width: 300px;" v-model="search_obj.uuid" class="filter-item" placeholder="根据UUID搜索"></el-input>
+        </el-col>
+        </el-row>
     </div>
 
     <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -118,8 +123,8 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="commit_obj.name+textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="50%" top="2vh">
-      <el-form ref="permissionForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
+    <el-dialog :title="commit_obj.name+textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="50%" top="15vh">
+      <el-form ref="permissionForm" :model="commit_obj" label-position="left" label-width="90px" style='width: 700px; margin-left:30px;'>
 
         <el-form-item label="所属权限组" prop="pmn_groups">
           <el-transfer v-model="commit_obj.pmn_groups" :data="pmn_groups" placeholder="请选择所属用户组" filterable>
@@ -133,7 +138,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogVariableVisible" width="60%" top="2vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogVariableVisible" width="60%" top="17vh">
         <el-table :data="var_data" border fit highlight-current-row
                       style="width: 100%">
           <el-table-column width="120px" align="center" label="ID">
@@ -153,7 +158,7 @@
               <span>{{ vars.row.value }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="220px" align="center" label="删除">
+          <el-table-column width="220px" align="center" label="删除" fixed="right">
             <template slot-scope="vars">
               <el-button type="danger" size="mini" @click="handleVariableDelete(vars.row)" :disabled="btnStatus">刪除</el-button>
             </template>
@@ -164,20 +169,22 @@
           <el-button type="warning" @click="handleVariableCreate" :disabled="btnStatus">新增操作</el-button>
           <el-button @click="dialogVariableVisible = false" :disabled="btnStatus">关闭</el-button>
         </div>
-        <el-form ref="variableForm" :model="tempvar" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
+        <el-form ref="variableForm" :model="tempvar" label-position="left" label-width="50px" style='width: 700px;'>
           <el-dialog
             width="30%"
             title="新增参数"
             :visible.sync="dialogCreateVariableVisible"
             append-to-body>
-              <div :model="tempvar">
-                  <el-input placeholder="NGINX_HOME" v-model="tempvar.key">
-                    <template slot="prepend">Key</template>
-                  </el-input>
-                  <el-input placeholder="/usr/local/nginx" v-model="tempvar.value">
-                    <template slot="prepend">Value</template>
-                  </el-input>
-              </div>
+              <el-form-item label="Key" prop="key">
+                <el-tooltip content="请输入该组参数名称" placement="top" effect="light">
+                  <el-input v-model="tempvar.key" placeholder="NGINX_HOME"></el-input>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="Value" prop="value">
+                <el-tooltip content="请输入该组参数名称" placement="top" effect="light">
+                  <el-input v-model="tempvar.value" placeholder="/usr/local/nginx"></el-input>
+                </el-tooltip>
+              </el-form-item>
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="createVariable" :disabled="btnStatus">提交</el-button>
               <el-button @click="dialogCreateVariableVisible = false" :disabled="btnStatus">关闭</el-button>

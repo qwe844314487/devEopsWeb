@@ -132,7 +132,7 @@
   <el-row>
     <el-col :span="24" :offset="16">
         <el-button v-show="step!=0" type="primary" @click="handleStepUp">上一步</el-button>
-        <el-button type="primary" @click="handleStepDown">下一步</el-button>
+        <el-button v-show="step!=0" type="primary" @click="handleStepDown">下一步</el-button>
     </el-col>
   </el-row>
   <el-row>

@@ -70,15 +70,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="150px" align="center" label="操作系统">
+      <el-table-column width="115" align="center" label="状态" class-name="status-col" >
         <template slot-scope="host">
-          <span>{{ host.row.systemtype }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="150px" align="center" label="环境">
-        <template slot-scope="host">
-          <span>{{ host.row.position }}</span>
+          <el-tag :type="host.row._status | statusFilter">{{optionStateObj[host.row._status]}}</el-tag>
         </template>
       </el-table-column>
 
@@ -88,9 +82,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="115" align="center" label="状态" class-name="status-col" >
+      <el-table-column width="150px" align="center" label="环境">
         <template slot-scope="host">
-          <el-tag :type="host.row._status | statusFilter">{{optionStateObj[host.row._status]}}</el-tag>
+          <span>{{ host.row.position }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="150px" align="center" label="操作系统">
+        <template slot-scope="host">
+          <span>{{ host.row.systemtype }}</span>
         </template>
       </el-table-column>
 

@@ -19,10 +19,7 @@
       </el-row>
       <el-row style="margin-bottom:20px;" v-show="detailSearch">
         <el-col :span="5" :offset="1">
-          模块： <el-input size="medium" style="width: 200px;" v-model="search_obj.mdle" class="filter-item" placeholder="根据使用模块模糊搜索"></el-input>
-        </el-col>
-        <el-col :span="7" :offset="1">
-          参数： <el-input size="medium" style="width: 200px;" v-model="search_obj.args" class="filter-item" placeholder="根据使用参数模糊搜索"></el-input>
+          信息： <el-input size="medium" style="width: 200px;" v-model="search_obj.info" class="filter-item" placeholder="根据元操作名称模糊搜索"></el-input>
         </el-col>
         <el-col :span="7" :offset="1">
           主机： <el-input size="medium" style="width: 250px;" v-model="search_obj.host" class="filter-item" placeholder="根据主机连接IP或主机名模糊搜索"></el-input>
@@ -97,11 +94,16 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="10">
+            <el-form-item label="操作信息" prop="info">
+              <el-input v-model="commit_obj.info" placeholder="填写操作信息"></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="操作内容" prop="contents">
-              <editor v-model="commit_obj.contents" @init="editorInit" lang="yaml" theme="github" height="500"></editor>
+            <el-form-item label="操作内容" prop="_tasks">
+              <editor v-model="commit_obj._tasks" @init="editorInit" lang="yaml" theme="github" height="500"></editor>
             </el-form-item>
           </el-col>
           <el-col :span="11" :offset="1">
@@ -120,13 +122,16 @@
                 <div>以上参数可以直接在Task内容中引入;</div>
               </el-collapse-item>
               <el-collapse-item title="文件分发与分发中心 DispenseCenter" name="3">
-                <div v-text="dispense.mission"></div>
-                <div v-text="dispense.example"></div>
+                <div v-text="collapse.mission"></div>
+                <div v-text="collapse.example"></div>
                 <div>分发中心将会依据来源文件的关键词分配文件 请保持一个任务中的分发文件名唯一;</div>
               </el-collapse-item>
-              <el-collapse-item title="可控 Controllability" name="4">
-                <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-                <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+              <el-collapse-item title="代码同步 CodeRsync" name="4">
+                <div>代码同步仅限于前端与php代码 暂时不接受其余类型代码部署;</div>
+                <div>请注意源地址与目标地址之前的对应关系;</div>
+                <div>举例：synchronize: src=/tmp/A/ dest=/tmp/B</div>
+                <div>以上含义为将A目录下的所有文件移动到B目录下;</div>
+                <div v-text="collapse.workspace"></div>
               </el-collapse-item>
             </el-collapse>
           </el-col>
@@ -221,9 +226,10 @@ export default {
         update: "修改元操作",
         delete: "删除元操作"
       },
-      dispense:{
+      collapse:{
         example: '举例：copy: src=file:{{HOSTS}} dest=/etc/hosts;',
-        mission: '上传文件的任务 请在文件来源填写file:{{文件名}};'
+        mission: '上传文件的任务 请在文件来源填写file:{{文件名}};',
+        workspace: '工作目录请填写{{BASE}}/'
       },
       pagination: {
         page: 1,
@@ -233,53 +239,11 @@ export default {
       group_options: [],
       hosts: [],
       group_args: [
-        {
-          id: 2,
-          key: "NGINX_CONF",
-          value: "/usr/local/nginx/conf/vhost",
-          group: 11,
-          uuid: "4a85748d-1197-406f-a64a-4d8cb9b9c03b"
-        },
-        {
-          id: 3,
-          key: "PHP_CONF",
-          value: "/usr/local/php/etc",
-          group: 11,
-          uuid: "39b19e70-12ec-40dc-8d1d-31c3a71fc3c3"
-        },{
-          id: 2,
-          key: "NGINX_CONF",
-          value: "/usr/local/nginx/conf/vhost",
-          group: 11,
-          uuid: "4a85748d-1197-406f-a64a-4d8cb9b9c03b"
-        },
-        {
-          id: 3,
-          key: "PHP_CONF",
-          value: "/usr/local/php/etc",
-          group: 11,
-          uuid: "39b19e70-12ec-40dc-8d1d-31c3a71fc3c3"
-        },{
-          id: 2,
-          key: "NGINX_CONF",
-          value: "/usr/local/nginx/conf/vhost",
-          group: 11,
-          uuid: "4a85748d-1197-406f-a64a-4d8cb9b9c03b"
-        },
-        {
-          id: 3,
-          key: "PHP_CONF",
-          value: "/usr/local/php/etc",
-          group: 11,
-          uuid: "39b19e70-12ec-40dc-8d1d-31c3a71fc3c3"
-        }
       ],
       dialogMetaVisible: false,
       dialogAssetVisible: false,
       dialogQRCodeVisible: false,
       dialogFileVisible: false,
-      meta_id: null,
-      content: {},
       commit_obj: {},
       search_obj: {},
       activeNames: ["1"]
@@ -339,60 +303,60 @@ export default {
       });
     },
     searchMeta() {
-      this.init();
+      this.init()
     },
     handleCurrentChange(val) {
-      this.pagination.page = val;
-      this.init();
+      this.pagination.page = val
+      this.init()
     },
     reset_commit() {
-      this.commit_obj = { contents: "" };
-      this.hosts = [];
+      this.commit_obj = {_tasks:''}
+      this.hosts = []
     },
     reset_search() {
-      this.search_obj = {};
+      this.search_obj = {}
     },
     resetSearch() {
-      this.reset_search();
-      this.init();
-      this.init_group();
+      this.reset_search()
+      this.init()
+      this.init_group()
     },
     changeGroup() {
       this.pagination = {
         page: 1,
         count: 0
-      };
-      this.init();
+      }
+      this.init()
     },
     clearGroup() {
       this.pagination = {
         page: 1,
         count: 0
-      };
-      this.init_group();
+      }
+      this.init_group()
     },
     handleCreate() {
-      this.reset_commit();
-      this.dialogMetaVisible = true;
+      this.reset_commit()
+      this.dialogMetaVisible = true
       this.$nextTick(() => {
-        this.$refs["metaForm"].clearValidate();
-      });
+        this.$refs["metaForm"].clearValidate()
+      })
     },
     handleUpdate(row) {
-      this.commit_obj = Object.assign({}, row); // copy obj
-      this.dialogMetaVisible = true;
-      this.init_host_args(this.commit_obj.group);
+      this.commit_obj = Object.assign({}, row) // copy obj
+      this.dialogMetaVisible = true
+      this.init_host_args(this.commit_obj.group)
       this.$nextTick(() => {
-        this.$refs["metaForm"].clearValidate();
-      });
+        this.$refs["metaForm"].clearValidate()
+      })
     },
     handleDelete(row) {
-      this.commit_obj = Object.assign({}, row);
-      this.btnStatus = false;
-      this.dialogQRCodeVisible = true;
+      this.commit_obj = Object.assign({}, row)
+      this.btnStatus = false
+      this.dialogQRCodeVisible = true
     },
     deleteMeta() {
-      this.deleteConfirm();
+      this.deleteConfirm()
     },
     deleteConfirm() {
       this.$confirm("此操作将删除元操作, 是否继续?", "提示", {
@@ -405,60 +369,61 @@ export default {
             showClose: true,
             message: "删除成功",
             type: "success"
-          });
-          this.dialogQRCodeVisible = false;
-          this.init();
+          })
+          this.dialogQRCodeVisible = false
+          this.init()
         });
       });
     },
     handleAsset() {
-      this.init_group();
-      this.dialogMetaVisible = false;
-      this.dialogAssetVisible = true;
+      this.init_group()
+      this.dialogMetaVisible = false
+      this.dialogAssetVisible = true
     },
     handleAssetBack() {
-      this.dialogAssetVisible = false;
-      this.dialogMetaVisible = true;
+      this.dialogAssetVisible = false
+      this.dialogMetaVisible = true
     },
     handleQRCode() {
-      this.dialogAssetVisible = false;
-      this.dialogQRCodeVisible = true;
+      this.dialogAssetVisible = false
+      this.dialogQRCodeVisible = true
     },
     handleQRCodeBack() {
-      this.dialogAssetVisible = true;
-      this.dialogQRCodeVisible = false;
+      this.dialogAssetVisible = true
+      this.dialogQRCodeVisible = false
     },
     editorInit(editor) {
-      require("brace/ext/language_tools");
-      require("brace/theme/github");
-      require("brace/mode/yaml");
-      editor.setFontSize(17);
+      require("brace/ext/language_tools")
+      require("brace/theme/github")
+      require("brace/mode/yaml")
+      editor.setFontSize(17)
       editor.setOptions({
         enableBasicAutocompletion: true,
         enableSnippets: true,
         enableLiveAutocompletion: true,
         wrap: "free"
-      });
+      })
     },
     createMeta() {
       this.$refs["metaForm"].validate(valid => {
         if (valid) {
-          this.btnStatus = true;
+          this.btnStatus = true
+          console.log(this.commit_obj)
           create_Meta(this.commit_obj)
             .then(() => {
-              this.init();
-              this.dialogQRCodeVisible = false;
+              this.init()
+              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: "创建元操作成功",
                 type: "success"
-              });
-              this.btnStatus = false;
+              })
+              this.btnStatus = false
             })
             .catch(error => {
-              this.btnStatus = false;
-              this.dialogQRCodeVisible = false;
-              console.log(error);
+              this.btnStatus = false
+              this.dialogQRCodeVisible = false
+              console.log(error)
             });
         }
       });

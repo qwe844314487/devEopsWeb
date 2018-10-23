@@ -26,14 +26,19 @@
           电子邮箱： <el-input size="medium" style="width: 200px;" v-model="search_obj.email" class="filter-item" placeholder="根据邮箱精准搜索"></el-input>
         </el-col>
         <el-col :span="7" :offset="1">
-          <el-switch
-            style="margin-top:7px"
-            v-model="search_obj.is_active"
-            active-text="可使用"
-            active-value=True
-            inactive-text="禁用"
-            inactive-value=False>
-          </el-switch>
+          状态： 
+          <el-select v-model="search_obj.is_active" placeholder="请选择" clearable>
+            <el-option
+              key="True"
+              label="可使用"
+              value="True">
+            </el-option>
+            <el-option
+              key="False"
+              label="禁用"
+              value="False">
+            </el-option>
+          </el-select>
         </el-col>
       </el-row>
       <!--<el-button class="filter-item" @click="handleCreate()" style="margin-left: 10px;" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>-->
@@ -96,20 +101,24 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogUserVisible" width="45%" top="20vh">
       <el-form :rules="rules" ref="userForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
-        <el-form-item label="Phone" prop="phone">
-          <el-input v-model="commit_obj.phone"></el-input>
-        </el-form-item>
-
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="commit_obj.username"></el-input>
+          <el-input v-model="commit_obj.username" disabled></el-input>
         </el-form-item>
 
         <el-form-item label="姓名" prop="full_name">
           <el-input v-model="commit_obj.full_name"></el-input>
         </el-form-item>
 
+        <el-form-item label="Phone" prop="phone">
+          <el-input v-model="commit_obj.phone"></el-input>
+        </el-form-item>
+        
         <el-form-item label="电子邮箱" prop="email">
           <el-input v-model="commit_obj.email"></el-input>
+        </el-form-item>
+
+        <el-form-item label="头衔与位置" prop="info">
+          <el-input v-model="commit_obj.info"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

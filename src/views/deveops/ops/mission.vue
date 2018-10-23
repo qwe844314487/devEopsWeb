@@ -73,6 +73,7 @@
 
       <el-table-column align="center" label="操作" width="230" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="mission">
+          <el-button type="primary" size="mini" @click="handleDetail(mission.row)" :disabled="btnStatus">简览</el-button>
           <el-button type="warning" size="mini" @click="handleUpdate(mission.row)" :disabled="btnStatus">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(mission.row)" :disabled="btnStatus">删除</el-button>
         </template>
@@ -84,6 +85,14 @@
       </el-pagination>
     </div>
 
+    <el-dialog
+      :title="commit_obj.info+'  任务简览'"
+      :visible.sync="dialogMissionDetailVisible"
+      width="40%"
+      top="15vh">
+      <editor v-model="commit_obj.playbook" @init="editorInit" lang="yaml" theme="github" height="500"></editor>
+    </el-dialog>
+    
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogMissionVisible" width="40%" top="20vh">
         <el-form ref="missionForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
@@ -151,6 +160,7 @@
 <script>
   import { fetch_MissionListByPage,create_Mission,update_Mission,delete_Mission,fetch_MetaList } from '@/api/ops';
   import { fetch_GroupOpsList } from '@/api/manager';
+  import editor from "vue2-ace-editor";
   export default {
     data(){
       return{
@@ -159,12 +169,14 @@
         btnStatus: false,
         dialogStatus:'',
         dialogMissionVisible: false,
+        dialogMissionDetailVisible: false,
         dialogQRCodeVisible: false,
         metas:[],
         detailSearch: false,
         textMap:{
           create: '新建任务',
-          update: '修改任务'
+          update: '修改任务',
+          detail: '任务简览'
         },
         pagination: {
           page: 1,
@@ -178,6 +190,7 @@
       }
     },
     components: {
+      editor
     },
     created(){
       this.init()
@@ -266,6 +279,23 @@
         this.dialogMissionVisible = true
         this.$nextTick(() => {
           this.$refs['missionForm'].clearValidate()
+        })
+      },
+      handleDetail(row) {
+        this.commit_obj = Object.assign({}, row)
+        this.dialogStatus = 'detail'
+        this.dialogMissionDetailVisible = true
+      },
+      editorInit(editor) {
+        require("brace/ext/language_tools")
+        require("brace/theme/github")
+        require("brace/mode/yaml")
+        editor.setFontSize(17)
+        editor.setOptions({
+          enableBasicAutocompletion: true,
+          enableSnippets: true,
+          enableLiveAutocompletion: true,
+          wrap: "free"
         })
       },
       handleUpdate(row){

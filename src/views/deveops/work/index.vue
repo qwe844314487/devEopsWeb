@@ -45,19 +45,19 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="250px" align="center" label="关联任务内容">
+      <el-table-column width="270px" align="center" label="关联任务内容">
         <template slot-scope="work">
           <span>{{ work.row.mission_info }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" align="center" label="提交用户">
+      <el-table-column width="130px" align="center" label="提交用户">
         <template slot-scope="work">
           <span>{{ work.row.username }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="280px" align="center" label="工单信息">
+      <el-table-column width="380px" align="center" label="工单信息">
         <template slot-scope="work">
           <span>{{ work.row.info }}</span>
         </template>
@@ -75,11 +75,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="100px" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column align="center" label="操作" width="150px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="work">      
           <el-button size="mini" v-if="work.row.status<0" type="danger" @click="resultsWork(work.row)">失败</el-button>    
           <el-button size="mini" v-else-if="work.row.status==1" type="warning" @click="checkWork(work.row)" :disabled="btnStatus">审核</el-button>
-          <el-button size="mini" v-else-if="work.row.status==2" type="warning" @click="uploadWork(work.row)" :disabled="btnStatus">上传文件</el-button>
+          <el-button size="mini" v-else-if="work.row.status==2" type="warning" @click="uploadWork(work.row)" :disabled="btnStatus">上传</el-button>
           <el-button size="mini" v-else-if="work.row.status==3" type="danger" @click="handleQRCode(work.row)" :disabled="btnStatus">执行</el-button>
           <el-button size="mini" v-else-if="work.row.status==4" type="warning" disabled>执行中</el-button>
           <el-button size="mini" v-else-if="work.row.status==5" type="primary" disabled>执行完毕</el-button>

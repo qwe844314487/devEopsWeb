@@ -25,6 +25,9 @@ const user = {
     },
     SET_DBER: (state) => {
       state.dber = !state.dber
+    },
+    SET_INFO: (state, info) => {
+      state.info = info
     }
   },
 
@@ -39,6 +42,7 @@ const user = {
           commit('SET_LOGIN', true)
           commit('SET_USERNAME', response.data.username)
           commit('SET_NAME', response.data.name)
+          commit('SET_INFO', response.data.info)
           resolve()
         }).catch((error) => {
           reject(error)

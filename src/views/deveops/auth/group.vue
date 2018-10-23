@@ -23,7 +23,7 @@
     <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
               style="width: 100%">
 
-      <el-table-column width="120px" align="center" label="ID">
+      <el-table-column width="110px" align="center" label="ID">
         <template slot-scope="group">
           <span>{{ group.row.id }}</span>
         </template>
@@ -44,7 +44,7 @@
         </div>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="220" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column align="center" label="操作" width="160px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="group">
           <el-button type="primary" size="medium" @click="handleUpdate(group.row)" :disabled="btnStatus">编辑</el-button>
           <!--<el-button type="warning" @click="" size="mini" :disabled="btnStatus">编辑</el-button>-->
