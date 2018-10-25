@@ -136,7 +136,29 @@
             </el-collapse>
           </el-col>
         </el-row>
-        
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="操作等级" prop="level">
+              <el-input-number v-model="commit_obj.level" placeholder="填写操作等级" :min="1" :max="99" label="操作等级"></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="变量检索" prop="facts">
+              <el-select v-model="commit_obj.facts" placeholder="请选择" >
+                <el-option
+                  key="true"
+                  label="true"
+                  value="true">
+                </el-option>
+                <el-option
+                  key="false"
+                  label="false"
+                  value="false">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="handleAsset" :disabled="btnStatus">下一步</el-button>
@@ -310,7 +332,7 @@ export default {
       this.init()
     },
     reset_commit() {
-      this.commit_obj = {_tasks:''}
+      this.commit_obj = {_tasks:'',facts:false}
       this.hosts = []
     },
     reset_search() {

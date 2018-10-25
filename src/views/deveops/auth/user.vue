@@ -7,7 +7,7 @@
         inactive-text="详细检索">
         </el-switch>
         <el-button class="filter-item" @click="resetSearch()" style="margin-left: 10px;" type="primary" icon="el-icon-refresh" :disabled="btnStatus">清除</el-button>
-        <el-button class="filter-item" @click="handleCreate()" style="float:right;" type="primary" icon="el-icon-edit" :disabled="btnStatus">新增</el-button>
+        <el-button class="filter-item" @click="handleCreate()" style="float:right;" type="primary" icon="el-icon-edit" disabled>新增</el-button>
       </el-row>
       <el-row style="margin-bottom:5px;" v-show="detailSearch">
          <el-col :span="7" :offset="1">
@@ -83,10 +83,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="500px" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column align="center" label="操作" width="550px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="user">
           <el-button type="primary" size="medium" @click="handleGroup(user.row)" :disabled="btnStatus">管理组</el-button>
           <el-button type="warning" size="medium" @click="handleUpdate(user.row)" :disabled="btnStatus">编辑</el-button>
+          <el-button type="danger" size="medium" @click="handleReset(user.row)" :disabled="btnStatus">重置</el-button>
           <el-button type="danger" size="medium" @click="handleStatus(user.row)" :disabled="btnStatus">改变状态</el-button>
           <el-button type="primary" size="medium" @click="handleDetail(user.row)" disabled="">操作详情</el-button>
         </template>
@@ -102,7 +103,7 @@
       <el-form :rules="rules" ref="userForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="commit_obj.username" disabled></el-input>
+          <el-input v-model="commit_obj.username"></el-input>
         </el-form-item>
 
         <el-form-item label="姓名" prop="full_name">
@@ -260,6 +261,24 @@
           this.$refs['userForm'].clearValidate()
         })
         this.dialogUserVisible = true
+      },
+      handleReset(row){
+        this.commit_obj = Object.assign({},row)
+        this.$confirm('此操作将重置用户二次验证, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+          this.commit_obj.have_qrcode = false
+          update_User(this.commit_obj).then((response) => {
+            this.$message({
+              showClose: true,
+              message: '重置成功',
+              type: 'success'
+            })
+            this.init()
+          })
+        })
       },
       handleStatus(row){
         this.commit_obj = Object.assign({},row)
