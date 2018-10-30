@@ -100,8 +100,17 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogJumperVisible = false" :disabled="btnStatus">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData" :disabled="btnStatus">提交</el-button>
-        <el-button v-else type="primary" @click="updateData" :disabled="btnStatus">提交</el-button>
+        <el-button type="primary" @click="handleQRCode" :disabled="btnStatus">提交</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="QRCode二次验证" :visible.sync="dialogQRCodeVisible" width="30%" top="20vh">
+      <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
+      <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData" :disabled="btnStatus">创建</el-button>
+        <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateData" :disabled="btnStatus">更新</el-button>
+        <el-button v-else-if="dialogStatus=='delete'" type="primary" @click="deleteData" :disabled="btnStatus">删除</el-button>
       </div>
     </el-dialog>
 
@@ -117,6 +126,7 @@
         listLoading: true,
         btnStatus:false,
         dialogJumperVisible: false,
+        dialogQRCodeVisible: false,
         detailSearch: false,
         dialogStatus:'',
         commit_obj: {},
@@ -206,6 +216,10 @@
           console.log(error)
         })
       },
+      handleQRCode(){
+        this.dialogJumperVisible = false
+        this.dialogQRCodeVisible = true
+      },
       handleCreate(row){
         this.reset_commit()
         this.dialogStatus = 'create'
@@ -230,10 +244,9 @@
         this.$refs['jumperForm'].validate((valid) => {
           if (valid) {
             this.btnStatus=true
-            this.status = 1
             create_Jumper(this.commit_obj).then(() => {
               this.init()
-              this.dialogJumperVisible = false
+              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: '创建成功',
@@ -242,7 +255,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogJumperVisible = false
+              this.dialogQRCodeVisible = false
               console.log(error)
             })
           }
@@ -254,7 +267,7 @@
             this.btnStatus=true
             update_Jumper(this.commit_obj).then(() => {
               this.init()
-              this.dialogJumperVisible = false
+              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: '更新成功',
@@ -263,7 +276,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogJumperVisible = false
+              this.dialogQRCodeVisible = false
               console.log(error)
             })
           }
@@ -271,9 +284,13 @@
       },
       handleDelete(row){
         this.commit_obj = Object.assign({},row)
-        this.btnStatus=true
+        this.dialogQRCodeVisible = true
+        this.dialogStatus = 'delete'
+      },
+      deleteData(){
+        this.btnStatus = true
         this.deleteConfirm()
-        this.btnStatus=false
+        this.btnStatus = false
       },
       deleteConfirm() {
         this.$confirm('此操作将删除跳板机, 是否继续?', '提示', {
@@ -282,12 +299,17 @@
           type: 'warning'
         }).then(()=>{
           delete_Jumper(this.commit_obj).then((response) => {
+            this.dialogQRCodeVisible = false
             this.$message({
               showClose: true,
               message: '删除成功',
               type: 'success'
             })
             this.init()
+          }).catch((error)=>{
+              this.btnStatus=false
+              this.dialogQRCodeVisible = false
+              console.log(error)
           })
         })
       },

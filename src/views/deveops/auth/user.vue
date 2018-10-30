@@ -83,6 +83,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column width="180px" align="center" label="二次验证时间">
+        <template slot-scope="user">
+          <span>{{ user.row.expire }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="操作" width="550px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="user">
           <el-button type="primary" size="medium" @click="handleGroup(user.row)" :disabled="btnStatus">管理组</el-button>
@@ -120,6 +126,10 @@
 
         <el-form-item label="头衔与位置" prop="info">
           <el-input v-model="commit_obj.info"></el-input>
+        </el-form-item>
+
+        <el-form-item label="二次验证时间" prop="expire">
+          <el-input-number v-model="commit_obj.expire"></el-input-number>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

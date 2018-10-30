@@ -249,8 +249,8 @@ export default {
         delete: "删除元操作"
       },
       collapse:{
-        example: '举例：copy: src=file:{{HOSTS}} dest=/etc/hosts;',
-        mission: '上传文件的任务 请在文件来源填写file:{{文件名}};',
+        example: '举例：copy: src=<file>{{HOSTS}} dest=/etc/hosts;',
+        mission: '上传文件的任务 请在文件来源填写<file>{{文件名}};',
         workspace: '工作目录请填写{{BASE}}/'
       },
       pagination: {

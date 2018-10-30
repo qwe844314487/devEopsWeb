@@ -18,7 +18,7 @@ export const defaultsRouterMap = [
     hidden: true
   },{
     path: '/show',
-    name: 'dashboard',
+    name: 'showdashboard',
     component: _import('dashboard/manager/index')
   }
 ]
@@ -244,7 +244,7 @@ export const devEopsRouterMap = [{
     children: [{
       path: ':id/dashboard',
       component: _import('zdb/db/dashboard'),
-      name: 'dashboard',
+      name: 'zdbdashboard',
       meta: { title: '仪表盘',icon:'dashboard',hidden:false,cache:true}
     },{
       path: ':id/monitor',

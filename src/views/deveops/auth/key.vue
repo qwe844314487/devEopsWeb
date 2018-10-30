@@ -81,10 +81,20 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogKeyVisible = false" :disabled="btnStatus">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData" :disabled="btnStatus">提交</el-button>
-        <el-button v-else type="primary" @click="updateData" :disabled="btnStatus">提交</el-button>
+        <el-button @click="handleQRCode" :disabled="btnStatus">下一步</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="QRCode二次验证" :visible.sync="dialogQRCodeVisible" width="30%" top="20vh">
+      <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
+      <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData" :disabled="btnStatus">创建</el-button>
+        <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateData" :disabled="btnStatus">更新</el-button>
+        <el-button v-else-if="dialogStatus=='delete'" type="primary" @click="deleteData" :disabled="btnStatus">删除</el-button>
+      </div>
+    </el-dialog>
+
 
   </div>
 </template>
@@ -98,6 +108,7 @@
         listLoading: true,
         btnStatus:false,
         dialogKeyVisible: false,
+        dialogQRCodeVisible: false,
         dialogStatus:'',
         detailSearch: false,
         commit_obj: {
@@ -173,7 +184,7 @@
       handleUpdate(row){
         this.commit_obj = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'
-        this.dialogKeyVisible = true
+        this.dialogQRCodeVisible = true
         this.$nextTick(() => {
           this.$refs['keyForm'].clearValidate()
         })
@@ -184,7 +195,7 @@
             this.btnStatus=true
             create_Key(this.commit_obj).then(() => {
               this.init()
-              this.dialogKeyVisible = false
+              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: '创建成功',
@@ -193,7 +204,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogKeyVisible = false
+              this.dialogQRCodeVisible = false
             })
           }
         })
@@ -204,7 +215,7 @@
             this.btnStatus=true
             update_Key(this.commit_obj).then(() => {
               this.init()
-              this.dialogKeyVisible = false
+              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: '更新成功',
@@ -213,13 +224,22 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogKeyVisible = false
+              this.dialogQRCodeVisible = false
             })
           }
         })
       },
+      handleQRCode(){
+        this.dialogKeyVisible = false
+        this.dialogQRCodeVisible = true
+      },
       handleDelete(row){
+        this.dialogStatus = 'delete'
         this.commit_obj = Object.assign({},row)
+        this.dialogKeyVisible = false
+        this.dialogQRCodeVisible = true
+      },
+      deleteData(){
         this.btnStatus=true
         this.deleteConfirm()
         this.btnStatus=false
@@ -231,6 +251,7 @@
           type: 'warning'
         }).then(()=>{
           delete_Key(this.commit_obj).then((response) => {
+            this.dialogQRCodeVisible = false
             this.$message({
               showClose: true,
               message: '删除成功',

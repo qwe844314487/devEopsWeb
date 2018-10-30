@@ -252,8 +252,6 @@ export default {
     this.init_work()
     this.init_count()
     this.init_group()
-    this.init_systype()
-    this.init_test()
   },
   filters: {
     timeFilter(timeformat) {
