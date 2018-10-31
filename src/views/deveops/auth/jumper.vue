@@ -118,7 +118,7 @@
 </template>
 
 <script>
-  import { fetch_JumperListByPage,create_Jumper,update_Jumper,delete_Jumper,status_Jumper } from '@/api/auth'
+  import { fetch_JumperListByPage,create_Jumper,update_Jumper,delete_Jumper,status_Jumper,is_expire_User } from '@/api/auth'
   export default {
     data(){
       return {
@@ -142,7 +142,8 @@
           }, {
             value: 1,
             label: '正常'
-          }],
+          }
+        ],
         optionStateObj:{
             '-3': '错误密钥',
             '-2': '无对应密钥',
@@ -156,10 +157,11 @@
         },
         rules: {
           connect_ip: [
-            { required: true, message: '连接IP是您操作跳板机的重要信息', trigger: 'change' },
+            { required: true, message: '连接IP是您操作跳板机的重要信息', trigger: 'blur' },
             { pattern: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])(\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){3}$/, message: '您输入的IP地址有误',trigger:'blur'}
           ],
-          sshport: [{ required: true, message: '连接端口是您管理主机的重要信息', trigger: 'change' }]
+          sshport: [{ required: true, message: '连接端口是您管理主机的重要信息', trigger: 'blur' }],
+          name: [{ required: true, message: '跳板机名称是必须的', trigger: 'blur' }]
         }
       }
     },
@@ -192,6 +194,10 @@
       reset_search(){
         this.search_obj = {}
       },
+      reset_dialog() {
+        this.dialogJumperVisible = false
+        this.dialogQRCodeVisible = false
+      },
       resetSearch(){
         this.reset_search()
         this.init()
@@ -199,11 +205,42 @@
       searchJumper(){
         this.init()
       },
+      handleQRCode() {
+        is_expire_User()
+          .then(response => {
+            if (response.data.isexpire) {
+              this.reset_dialog()
+              this.dialogQRCodeVisible = true
+            } else {
+              if (this.dialogStatus === "create") {
+                this.createData()
+              } else if (this.dialogStatus === "update") {
+                this.updateData()
+              } else if (this.dialogStatus === "status"){
+                this.statusData()
+              } else if (this.dialogStatus === "delete"){
+                this.deleteData()
+              }
+            }
+          }).catch((error) => {
+            console.log(error)
+            this.$message({
+              showClose: true,
+              message: "过期时间确定失败",
+              type: "danger"
+            })
+          })
+      },
       handleStatus(row){
-        status_Jumper(row).then(()=>{
+        this.commit_obj = Object.assign({}, row) // copy obj
+        this.dialogStatus = 'status'
+        this.handleQRCode()
+      },
+      statusData(){
+        status_Jumper(this.commit_obj).then(()=>{
           this.$message({
             showClose: true,
-            message: '刷新成功',
+            message: '刷新任务推出',
             type: 'success'
           })
           this.init()
@@ -213,12 +250,7 @@
             message: '刷新失败',
             type: 'success'
           })
-          console.log(error)
         })
-      },
-      handleQRCode(){
-        this.dialogJumperVisible = false
-        this.dialogQRCodeVisible = true
       },
       handleCreate(row){
         this.reset_commit()
@@ -246,7 +278,7 @@
             this.btnStatus=true
             create_Jumper(this.commit_obj).then(() => {
               this.init()
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               this.$message({
                 showClose: true,
                 message: '创建成功',
@@ -255,7 +287,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               console.log(error)
             })
           }
@@ -267,7 +299,7 @@
             this.btnStatus=true
             update_Jumper(this.commit_obj).then(() => {
               this.init()
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               this.$message({
                 showClose: true,
                 message: '更新成功',
@@ -276,7 +308,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               console.log(error)
             })
           }
@@ -284,8 +316,8 @@
       },
       handleDelete(row){
         this.commit_obj = Object.assign({},row)
-        this.dialogQRCodeVisible = true
         this.dialogStatus = 'delete'
+        this.handleQRCode()
       },
       deleteData(){
         this.btnStatus = true
@@ -299,7 +331,7 @@
           type: 'warning'
         }).then(()=>{
           delete_Jumper(this.commit_obj).then((response) => {
-            this.dialogQRCodeVisible = false
+            this.reset_dialog()
             this.$message({
               showClose: true,
               message: '删除成功',
@@ -308,7 +340,7 @@
             this.init()
           }).catch((error)=>{
               this.btnStatus=false
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               console.log(error)
           })
         })

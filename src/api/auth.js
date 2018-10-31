@@ -58,6 +58,12 @@ export function qrcode_User(){
   })
 }
 
+export function is_expire_User(){
+  return request({
+    url: '/api-auth/v1/user/expire/',
+    method: 'GET'
+  })
+}
 
 /*
 * API_MODULE: PmnList

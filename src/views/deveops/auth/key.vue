@@ -100,7 +100,7 @@
 </template>
 
 <script>
-  import { fetch_KeyListByPage,create_Key,update_Key,delete_Key } from '@/api/auth'
+  import { fetch_KeyListByPage,create_Key,update_Key,delete_Key,is_expire_User } from '@/api/auth'
   export default {
     data(){
       return {
@@ -162,6 +162,10 @@
       reset_search(){
         this.search_obj = {}
       },
+      reset_dialog() {
+        this.dialogKeyVisible = false
+        this.dialogQRCodeVisible = false
+      },
       searchKey(){
         this.init()
       },
@@ -195,7 +199,7 @@
             this.btnStatus=true
             create_Key(this.commit_obj).then(() => {
               this.init()
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               this.$message({
                 showClose: true,
                 message: '创建成功',
@@ -204,7 +208,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
             })
           }
         })
@@ -215,7 +219,7 @@
             this.btnStatus=true
             update_Key(this.commit_obj).then(() => {
               this.init()
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               this.$message({
                 showClose: true,
                 message: '更新成功',
@@ -224,20 +228,38 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
             })
           }
         })
       },
       handleQRCode(){
-        this.dialogKeyVisible = false
-        this.dialogQRCodeVisible = true
+      is_expire_User()
+        .then(response => {
+          if (response.data.isexpire) {
+            this.reset_dialog()
+            this.dialogQRCodeVisible = true
+          } else {
+            if (this.dialogStatus === "create") {
+              this.createData()
+            } else if (this.dialogStatus === "update") {
+              this.updateData()
+            } else if (this.dialogStatus === "delete"){
+              this.deleteData()
+            }
+          }
+        }).catch(error => {
+          this.$message({
+            showClose: true,
+            message: "过期时间确定失败",
+            type: "danger"
+          })
+        })
       },
       handleDelete(row){
         this.dialogStatus = 'delete'
         this.commit_obj = Object.assign({},row)
-        this.dialogKeyVisible = false
-        this.dialogQRCodeVisible = true
+        this.handleQRCode()
       },
       deleteData(){
         this.btnStatus=true
@@ -251,7 +273,7 @@
           type: 'warning'
         }).then(()=>{
           delete_Key(this.commit_obj).then((response) => {
-            this.dialogQRCodeVisible = false
+            this.reset_dialog()
             this.$message({
               showClose: true,
               message: '删除成功',
