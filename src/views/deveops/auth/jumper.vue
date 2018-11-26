@@ -111,6 +111,7 @@
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData" :disabled="btnStatus">创建</el-button>
         <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateData" :disabled="btnStatus">更新</el-button>
         <el-button v-else-if="dialogStatus=='delete'" type="primary" @click="deleteData" :disabled="btnStatus">删除</el-button>
+        <el-button v-else-if="dialogStatus=='status'" type="primary" @click="statusData" :disabled="btnStatus">刷新</el-button>
       </div>
     </el-dialog>
 
@@ -161,7 +162,8 @@
             { pattern: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])(\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){3}$/, message: '您输入的IP地址有误',trigger:'blur'}
           ],
           sshport: [{ required: true, message: '连接端口是您管理主机的重要信息', trigger: 'blur' }],
-          name: [{ required: true, message: '跳板机名称是必须的', trigger: 'blur' }]
+          name: [{ required: true, message: '跳板机名称是必须的', trigger: 'blur' }],
+          qrcode: [{ required: true, message: 'QRCode是必须的', trigger: 'blur'}],
         }
       }
     },
@@ -243,8 +245,10 @@
             message: '刷新任务推出',
             type: 'success'
           })
+          this.reset_dialog()
           this.init()
         }).catch((error)=>{
+          this.reset_dialog()
           this.$message({
             showClose: true,
             message: '刷新失败',

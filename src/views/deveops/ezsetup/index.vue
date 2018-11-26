@@ -197,9 +197,7 @@
         <el-button @click="createRedis" type="primary" :disabled="btnStatus">提交</el-button>
       </div>
     </el-dialog>
-
-
-
+    
   </div>
 </template>
 

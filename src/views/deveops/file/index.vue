@@ -52,7 +52,7 @@
 
       <el-table-column align="center" label="操作" width="200px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="file">
-          <el-button type="danger"  size="medium" @click="handleDispense(file.row)" :disabled="btnStatus">快速分发</el-button>
+          <!-- <el-button type="danger"  size="medium" @click="handleDispense(file.row)" :disabled="btnStatus">快速分发</el-button> -->
           <el-button type="danger"  size="medium" @click="handleDelete(file.row)" :disabled="btnStatus">删除</el-button>
         </template>
       </el-table-column>
@@ -143,10 +143,8 @@
       <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
       <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogStatus!='delete'" @click="handleQRCodeBack" :disabled="btnStatus">上一步</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createMeta" :disabled="btnStatus">创建</el-button>
-        <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateMeta" :disabled="btnStatus">更新</el-button>
-        <el-button v-else type="primary" @click="deleteMeta" :disabled="btnStatus">删除</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="updateData" :disabled="btnStatus">创建</el-button>
+        <el-button v-else-if="dialogStatus=='delete'" @click="deleteConfirm" :disabled="btnStatus">删除</el-button>
       </div>
     </el-dialog>
 

@@ -59,7 +59,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="70px" align="center" label="次数">
+      <el-table-column width="90px" align="center" label="使用次数">
         <template slot-scope="mission">
           <span>{{ mission.row.counts }}</span>
         </template>
@@ -71,7 +71,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="230" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column align="center" label="操作" width="320px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="mission">
           <el-button type="primary" size="mini" @click="handleDetail(mission.row)" :disabled="btnStatus">简览</el-button>
           <el-button type="warning" size="mini" @click="handleUpdate(mission.row)" :disabled="btnStatus">编辑</el-button>
@@ -160,6 +160,7 @@
 <script>
   import { fetch_MissionListByPage,create_Mission,update_Mission,delete_Mission,fetch_MetaList } from '@/api/ops';
   import { fetch_GroupOpsList } from '@/api/manager';
+  import { is_expire_User } from '@/api/auth';
   import editor from "vue2-ace-editor";
   export default {
     data(){
@@ -247,6 +248,11 @@
       reset_search(){
         this.search_obj = {}
       },
+      reset_dialog(){
+        this.dialogMissionVisible = false
+        this.dialogMissionDetailVisible = false
+        this.dialogQRCodeVisible = false
+      },
       resetSearch(){
         this.reset_search()
         this.init()
@@ -308,13 +314,29 @@
           this.$refs['missionForm'].clearValidate()
         })
       },
-      handleQRCode(){
-        this.dialogMissionVisible = false
-        this.dialogQRCodeVisible = true
-      },
-      handleQRCodeBack(){
-        this.dialogMissionVisible = true
-        this.dialogQRCodeVisible = false
+      handleQRCode() {
+        is_expire_User()
+          .then(response => {
+            if (response.data.isexpire) {
+              this.reset_dialog()
+              this.dialogQRCodeVisible = true
+            } else {
+              if (this.dialogStatus === "create") {
+                this.createMission()
+              } else if (this.dialogStatus === "update") {
+                this.updateMission()
+              } else if (this.dialogStatus === "delete"){
+                this.deleteMission()
+              }
+            }
+          }).catch((error) => {
+            console.log(error)
+            this.$message({
+              showClose: true,
+              message: "过期时间确定失败",
+              type: "danger"
+            })
+          })
       },
       deleteMission(){
         this.deleteConfirm()
@@ -325,7 +347,7 @@
             this.btnStatus=true
             create_Mission(this.commit_obj).then(() => {
               this.resetSearch()
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               this.$message({
                 showClose: true,
                 message: '创建任务成功',
@@ -334,7 +356,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
             })
           }
         })
@@ -345,7 +367,7 @@
             this.btnStatus=true
             update_Mission(this.commit_obj).then(() => {
               this.resetSearch()
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               this.$message({
                 showClose: true,
                 message: '更新任务成功',
@@ -354,7 +376,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogQRCodeVisible = false
+              this.reset_dialog()
               console.log(error)
             })
           }
@@ -364,7 +386,7 @@
         this.commit_obj = Object.assign({},row)
         this.btnStatus=false
         this.dialogStatus = 'delete'
-        this.dialogQRCodeVisible = true
+        this.handleQRCode()
       },
       deleteConfirm() {
         this.$confirm('此操作将删除任务, 是否继续?', '提示', {
@@ -378,7 +400,7 @@
               message: '删除成功',
               type: 'success'
             })
-            this.dialogQRCodeVisible = false
+            this.reset_dialog()
             this.init()
           })
         })

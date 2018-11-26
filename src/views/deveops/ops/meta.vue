@@ -148,12 +148,12 @@
                 <el-option
                   key="true"
                   label="true"
-                  value="true">
+                  :value="true">
                 </el-option>
                 <el-option
                   key="false"
                   label="false"
-                  value="false">
+                  :value="false">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -170,24 +170,6 @@
         width="50%"
         title="确定操作范围Step2"
         :visible.sync="dialogAssetVisible">
-        <!-- <el-row :gutter="1">
-          <el-col :span="6">
-            <p>请选择操作的应用组:</p>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="所属权限组" prop="group">
-              <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_host" filterable>
-                <el-option
-                  v-for="item in group_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row> -->
-
         <el-row>
           <el-col :span="6">
             <p>请选择操作的主机:</p>
@@ -212,10 +194,9 @@
         <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
         <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
         <div slot="footer" class="dialog-footer">
-          <el-button v-if="dialogStatus!='delete'" @click="handleQRCodeBack" :disabled="btnStatus">上一步</el-button>
           <el-button v-if="dialogStatus=='create'" type="primary" @click="createMeta" :disabled="btnStatus">创建</el-button>
           <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateMeta" :disabled="btnStatus">更新</el-button>
-          <el-button v-else type="primary" @click="deleteMeta" :disabled="btnStatus">删除</el-button>
+          <el-button v-else-if="dialogStatus=='delete'" type="primary" @click="deleteMeta" :disabled="btnStatus">删除</el-button>
         </div>
       </el-dialog>
 
@@ -232,6 +213,7 @@ import {
   delete_Meta,
   checkFile_Meta
 } from "@/api/ops";
+import { is_expire_User } from '@/api/auth'
 import { fetch_GroupOpsList, fetch_HostList } from "@/api/manager";
 import { fetch_VariableList } from "@/api/variable";
 import Xterm from "@/components/Xterm/index";
@@ -260,12 +242,10 @@ export default {
       detailSearch: false,
       group_options: [],
       hosts: [],
-      group_args: [
-      ],
+      group_args: [],
       dialogMetaVisible: false,
       dialogAssetVisible: false,
       dialogQRCodeVisible: false,
-      dialogFileVisible: false,
       commit_obj: {},
       search_obj: {},
       activeNames: ["1"]
@@ -338,6 +318,11 @@ export default {
     reset_search() {
       this.search_obj = {}
     },
+    reset_dialog(){
+      this.dialogMetaVisible = false
+      this.dialogAssetVisible = false
+      this.dialogQRCodeVisible = false
+    },
     resetSearch() {
       this.reset_search()
       this.init()
@@ -360,6 +345,7 @@ export default {
     handleCreate() {
       this.reset_commit()
       this.dialogMetaVisible = true
+      this.dialogStatus = 'create'
       this.$nextTick(() => {
         this.$refs["metaForm"].clearValidate()
       })
@@ -367,15 +353,16 @@ export default {
     handleUpdate(row) {
       this.commit_obj = Object.assign({}, row) // copy obj
       this.dialogMetaVisible = true
+      this.dialogStatus = 'update'
       this.init_host_args(this.commit_obj.group)
       this.$nextTick(() => {
         this.$refs["metaForm"].clearValidate()
       })
     },
     handleDelete(row) {
+      this.dialogStatus = 'delete'
       this.commit_obj = Object.assign({}, row)
-      this.btnStatus = false
-      this.dialogQRCodeVisible = true
+      this.handleQRCode()
     },
     deleteMeta() {
       this.deleteConfirm()
@@ -392,10 +379,10 @@ export default {
             message: "删除成功",
             type: "success"
           })
-          this.dialogQRCodeVisible = false
           this.init()
-        });
-      });
+        })
+      })
+      this.reset_dialog()
     },
     handleAsset() {
       this.init_group()
@@ -407,12 +394,28 @@ export default {
       this.dialogMetaVisible = true
     },
     handleQRCode() {
-      this.dialogAssetVisible = false
-      this.dialogQRCodeVisible = true
-    },
-    handleQRCodeBack() {
-      this.dialogAssetVisible = true
-      this.dialogQRCodeVisible = false
+      is_expire_User()
+        .then(response => {
+          if (response.data.isexpire) {
+            this.reset_dialog()
+            this.dialogQRCodeVisible = true
+          } else {
+            if (this.dialogStatus === "create") {
+              this.createMeta()
+            } else if (this.dialogStatus === "update") {
+              this.updateMeta()
+            } else if (this.dialogStatus === "delete"){
+              this.deleteMeta()
+            }
+          }
+        }).catch((error) => {
+          console.log(error)
+          this.$message({
+            showClose: true,
+            message: "过期时间确定失败",
+            type: "danger"
+          })
+        })
     },
     editorInit(editor) {
       require("brace/ext/language_tools")
@@ -430,11 +433,9 @@ export default {
       this.$refs["metaForm"].validate(valid => {
         if (valid) {
           this.btnStatus = true
-          console.log(this.commit_obj)
           create_Meta(this.commit_obj)
             .then(() => {
               this.init()
-              this.dialogQRCodeVisible = false
               this.$message({
                 showClose: true,
                 message: "创建元操作成功",
@@ -444,11 +445,11 @@ export default {
             })
             .catch(error => {
               this.btnStatus = false
-              this.dialogQRCodeVisible = false
               console.log(error)
-            });
+            })
         }
-      });
+        this.reset_dialog()
+      })
     },
     updateMeta() {
       this.$refs["metaForm"].validate(valid => {
@@ -457,7 +458,6 @@ export default {
           update_Meta(this.commit_obj)
             .then(() => {
               this.init();
-              this.dialogQRCodeVisible = false;
               this.$message({
                 showClose: true,
                 message: "更新元操作成功",
@@ -466,11 +466,11 @@ export default {
               this.btnStatus = false;
             })
             .catch(error => {
-              this.btnStatus = false;
-              this.dialogQRCodeVisible = false;
-              console.log(error);
-            });
+              this.btnStatus = false
+              console.log(error)
+            })
         }
+        this.reset_dialog()
       });
     }
   }

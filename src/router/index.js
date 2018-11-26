@@ -117,22 +117,23 @@ export const devEopsRouterMap = [{
   //     meta: { title: 'RDS',icon:'database',hidden:false,cache:true}
   //   }]
   // },
+  // {
+  //   path: '/db',
+  //   component: layout,
+  //   meta:{title: 'ZDB',icon:'database',types: 'deveops'},
+  //   children: [{
+  //     path: 'instancegroup',
+  //     component: _import('deveops/zdb/instancegroup'),
+  //     name: 'instancegroup',
+  //     meta: { title: '实例组',icon:'database',hidden:false,cache:true}
+  //   },{
+  //     path: 'instance',
+  //     component: _import('deveops/zdb/instance'),
+  //     name: 'instance',
+  //     meta: { title: '实例',icon:'database',hidden:false,cache:true}
+  //   }]
+  // },
   {
-    path: '/db',
-    component: layout,
-    meta:{title: 'ZDB',icon:'database',types: 'deveops'},
-    children: [{
-      path: 'instancegroup',
-      component: _import('deveops/zdb/instancegroup'),
-      name: 'instancegroup',
-      meta: { title: '实例组',icon:'database',hidden:false,cache:true}
-    },{
-      path: 'instance',
-      component: _import('deveops/zdb/instance'),
-      name: 'instance',
-      meta: { title: '实例',icon:'database',hidden:false,cache:true}
-    }]
-  },{
     path: '/ops',
     component: layout,
     meta:{title: '运维操作',icon:'newspaper-o',types: 'deveops'},
@@ -172,32 +173,35 @@ export const devEopsRouterMap = [{
       name: 'ipool',
       meta: { title: 'IP检索',icon:'bath',hidden:true,cache:true}
     }]
-  },{
-    path:'/console',
-    component: layout,
-    meta:{title: '控制台',icon:'terminal',types: 'deveops'},
-    children: [{
-      path: 'terminal',
-      component: _import('deveops/console/terminal'),
-      name: '终端',
-      meta: { title: '终端',icon:'terminal',hidden:false,cache:true}
-    },{
-      path: 'enumerate',
-      component: _import('deveops/console/enumerate'),
-      name: '列举',
-      meta: { title: '列举',icon:'terminal',hidden:false,cache:true}
-    }]
-  },{
-    path:'',
-    component: layout,
-    meta:{title: '装机宝',icon:'steam',types: 'deveops'},
-    children: [{
-      path: 'ezsetup',
-      component: _import('deveops/ezsetup/index'),
-      name: 'ezsetup',
-      meta: { title: '装机宝',icon:'steam',hidden:true,cache:true}
-    }]
-  },{
+  },
+  // {
+  //   path:'/console',
+  //   component: layout,
+  //   meta:{title: '控制台',icon:'terminal',types: 'deveops'},
+  //   children: [{
+  //     path: 'terminal',
+  //     component: _import('deveops/console/terminal'),
+  //     name: '终端',
+  //     meta: { title: '终端',icon:'terminal',hidden:false,cache:true}
+  //   },{
+  //     path: 'enumerate',
+  //     component: _import('deveops/console/enumerate'),
+  //     name: '列举',
+  //     meta: { title: '列举',icon:'terminal',hidden:false,cache:true}
+  //   }]
+  // },
+  // {
+  //   path:'',
+  //   component: layout,
+  //   meta:{title: '装机宝',icon:'steam',types: 'deveops'},
+  //   children: [{
+  //     path: 'ezsetup',
+  //     component: _import('deveops/ezsetup/index'),
+  //     name: 'ezsetup',
+  //     meta: { title: '装机宝',icon:'steam',hidden:true,cache:true}
+  //   }]
+  // },
+  {
     path:'',
     component: layout,
     meta:{title: '分发中心',icon:'file-code-o',types: 'deveops'},
@@ -217,17 +221,19 @@ export const devEopsRouterMap = [{
       name: 'cdn',
       meta: { title: 'CDN刷新',icon:'maxcdn',hidden:true,cache:true}
     }]
-  },{
-    path:'',
-    component: layout,
-    meta:{title: '工序',icon:'fast-forward',types: 'deveops'},
-    children: [{
-      path: 'process',
-      component: _import('deveops/process/index'),
-      name: 'process',
-      meta: { title: 'Process工序',icon:'fast-forward',hidden:true,cache:true}
-    }]
-  },{
+  },
+  // {
+  //   path:'',
+  //   component: layout,
+  //   meta:{title: '工序',icon:'fast-forward',types: 'deveops'},
+  //   children: [{
+  //     path: 'process',
+  //     component: _import('deveops/process/index'),
+  //     name: 'process',
+  //     meta: { title: 'Process工序',icon:'fast-forward',hidden:true,cache:true}
+  //   }]
+  // },
+  {
     path:'',
     component: layout,
     meta:{title: '关于',icon:'dashboard',types: 'deveops'},

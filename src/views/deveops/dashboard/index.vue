@@ -9,7 +9,7 @@
             </el-col>
             <el-col :span="11" class="col-title">
               <!-- <span style="vertical-align: bottom;">123</span> -->
-              <div class="p-name">早安，{{ name }}，祝你身体健康，再见！(Demo)</div>
+              <div class="p-name">您好，{{ name }}，欢迎来到devEops开发自运维平台！</div>
               <div class="p-who">{{ info }}</div>
             </el-col>
             <el-col :span="10" class="col-level">
@@ -163,7 +163,7 @@ import "echarts/lib/chart/line";
 import "echarts/lib/component/title";
 import { fetch_TimelineByPage } from "@/api/timeline";
 import { fetch_Count, fetch_Work, fetch_Group } from "@/api/dashboard";
-import logo from "@/assets/wzz.jpg";
+import logo from "@/assets/dashboard.png";
 import Awesome from "@/components/Awesome/index";
 import { mapGetters } from "vuex";
 export default {

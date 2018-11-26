@@ -366,6 +366,7 @@ export default {
             type: "success"
           });
           this.init()
+          this.reset_dialog()
         })
     },
     statusUser(){
