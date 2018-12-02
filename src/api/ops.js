@@ -81,9 +81,10 @@ export function fetch_MissionListByPage(pagination,obj){
   })
 }
 
-export function fetch_MissionListByUser(){
+export function fetch_MissionListByUser(obj){
+  let st = objectIterator(obj)
   return request({
-    url: '/api-ops/v1/mission/byuser/',
+    url: '/api-ops/v1/mission/byuser/'+ st,
     method: 'GET' 
   })
 }

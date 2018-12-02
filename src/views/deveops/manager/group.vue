@@ -157,6 +157,12 @@
               <span>{{ vars.row.value }}</span>
             </template>
           </el-table-column>
+
+          <el-table-column width="430px" align="center" label="Info">
+            <template slot-scope="vars">
+              <span>{{ vars.row.info }}</span>
+            </template>
+          </el-table-column>
           <el-table-column width="220px" align="center" label="删除" fixed="right">
             <template slot-scope="vars">
               <el-button type="danger" size="mini" @click="handleVariableDelete(vars.row)" :disabled="btnStatus">刪除</el-button>
@@ -182,6 +188,11 @@
               <el-form-item label="Value" prop="value">
                 <el-tooltip content="请输入该组参数名称" placement="top" effect="light">
                   <el-input v-model="tempvar.value" placeholder="/usr/local/nginx"></el-input>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="Info" prop="info">
+                <el-tooltip content="请输入该组参数备注" placement="top" effect="light">
+                  <el-input v-model="tempvar.info" placeholder="Nginx家目录"></el-input>
                 </el-tooltip>
               </el-form-item>
             <div slot="footer" class="dialog-footer">

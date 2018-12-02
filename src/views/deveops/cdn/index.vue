@@ -109,7 +109,7 @@
                   <span>{{ cdn.row.url }}</span>
                 </template>
               </el-table-column>
-              <el-table-column width="450px" align="center" label="工具">
+              <el-table-column width="700px" align="center" label="工具">
                 <template slot-scope="cdn">
                   <el-button type="primary" @click="handleCDNDelete(cdn.row)" :disabled="btnStatus">刪除</el-button>
                 </template>
