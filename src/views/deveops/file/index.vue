@@ -11,7 +11,7 @@
       </el-row>
       <el-row style="margin-bottom:20px;" v-show="detailSearch">
         <el-col :span="7" :offset="1">
-          密钥名称： <el-input size="medium" style="width: 200px;" v-model="search_obj.name" class="filter-item" placeholder="模糊查找密钥名称"></el-input>
+          文件名称： <el-input size="medium" style="width: 200px;" v-model="search_obj.name" class="filter-item" placeholder="模糊查找密钥名称"></el-input>
         </el-col>
         <el-button class="filter-item" type="primary" @click="searchFile" icon="el-icon-search" :disabled="btnStatus" style="float:right;">搜索</el-button>
       </el-row>
@@ -52,6 +52,7 @@
 
       <el-table-column align="center" label="操作" width="200px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="file">
+          <!-- <el-button type="danger"  size="medium" @click="handleDispense(file.row)" :disabled="btnStatus">快速分发</el-button> -->
           <el-button type="danger"  size="medium" @click="handleDelete(file.row)" :disabled="btnStatus">删除</el-button>
         </template>
       </el-table-column>
@@ -63,7 +64,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFileVisible" width="60%" top="2vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFileVisible" width="50%" top="15vh">
       <el-form :rules="rules" ref="fileForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
         <el-form-item label="ID" prop="id">
@@ -91,11 +92,69 @@
       </div>
     </el-dialog>
 
+    <el-dialog :title="commit_obj.name+'  快速分发'" :visible.sync="dialogDispenseVisible" width="40%" top="20vh">
+        <el-form ref="dispenseForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
+
+        <el-row :gutter="1">
+          <el-col :span="6">
+            <p>请选择操作的应用组:</p>
+          </el-col>
+          <el-col :span="10">
+            <el-select v-model="commit_obj.group" placeholder="请选择" @change="init_host" filterable>
+              <el-option
+                v-for="item in group_options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="1">
+          <el-col :span="6">
+            <p>请选择操作的主机:</p>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-transfer v-model="commit_obj.hosts" :data="host_options" placeholder="请选择分发的主机" filterable>
+            </el-transfer>
+          </el-col>
+        </el-row>
+        
+        <el-row>
+          <el-col>
+            <el-input placeholder="更新vote预发布代码" v-model="commit_obj.info" style="width:600px">
+              <template slot="prepend">信息: </template>
+            </el-input>
+          </el-col>
+        </el-row>
+
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogDispenseVisible = false" :disabled="btnStatus">取消</el-button>
+        <el-button type="primary" @click="handleQRCode" :disabled="btnStatus">下一步</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="QRCode二次验证" :visible.sync="dialogQRCodeVisible" width="30%" top="20vh">
+      <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
+      <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="updateData" :disabled="btnStatus">创建</el-button>
+        <el-button v-else-if="dialogStatus=='delete'" @click="deleteConfirm" :disabled="btnStatus">删除</el-button>
+      </div>
+    </el-dialog>
+
+
   </div>
 </template>
 
 <script>
   import { fetch_FileListByPage,create_File,delete_File,update_File } from '@/api/utils';
+  import { fetch_GroupOpsList, fetch_HostList } from "@/api/manager";
   export default {
     data(){
       return {
@@ -104,14 +163,16 @@
         loading: null,
         btnStatus:false,
         dialogFileVisible: false,
+        dialogDispenseVisible: false,
+        dialogQRCodeVisible: false,
         dialogStatus:'',
         detailSearch: false,
         fileList: [],
-        percentage: 70,
+        host_options: [],
+        group_options: [],
         commit_obj: {
         },
         search_obj: {
-
         },
         pagination: {
           page: 1,
@@ -121,7 +182,7 @@
           create: '新增分发文件',
         },
         rules: {
-            name:[{ required: true, message: '密钥的名称是必须的', trigger: 'blur' }],
+            name:[{ required: true, message: '文件的名称是必须的', trigger: 'blur' }],
         }
       }
     },
@@ -143,6 +204,30 @@
           this.list = response.data.results
           this.listLoading = false
         })
+      },
+      init_group() {
+        fetch_GroupOpsList().then(response => {
+          this.group_options = [];
+          for (const group of response.data) {
+            this.group_options.push({
+              value: group.id,
+              label: group.name,
+              disabled: false
+            });
+          }
+        });
+      },
+      init_host(value) {
+        fetch_HostList({ groups: value }).then(response => {
+          this.hosts = [];
+          for (const host of response.data) {
+            this.hosts.push({
+              key: host.id,
+              label: host.hostname,
+              disabled: false
+            });
+          }
+        });
       },
       reset_commit(){
         this.fileList = []
@@ -216,6 +301,15 @@
             })
           }
         })
+      },
+      handleDispense(row){
+        this.reset_commit()
+        this.dialogDispenseVisible = true
+        this.init_group()
+      },
+      handleQRCode() {
+        this.dialogDispenseVisible = false
+        this.dialogQRCodeVisible = true
       },
       handleDelete(row){
         this.commit_obj = Object.assign({},row)

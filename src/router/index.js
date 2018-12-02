@@ -18,7 +18,7 @@ export const defaultsRouterMap = [
     hidden: true
   },{
     path: '/show',
-    name: 'dashboard',
+    name: 'showdashboard',
     component: _import('dashboard/manager/index')
   }
 ]
@@ -95,42 +95,45 @@ export const devEopsRouterMap = [{
       name: 'expired',  
       meta: { title: 'ECS过期列表',icon:'clock-o',hidden:true,cache:true}
     }]
-  },{
-    path: '/expired',
-    component: layout,
-    meta:{title: '过期列表(暂时)',icon:'clock-o',types: 'deveops'},
-    children: [{
-      path: 'kvstore',
-      component: _import('deveops/expired/kvstore'),
-      name: 'instance',
-      meta: { title: 'KVStore',icon:'database',hidden:false,cache:true}
-    },{
-      path: 'mongodb',
-      component: _import('deveops/expired/mongodb'),
-      name: 'role',
-      meta: { title: 'MongoDB',icon:'database',hidden:false,cache:true}
-    },{
-      path: 'rds',
-      component: _import('deveops/expired/db'),
-      name: 'user',
-      meta: { title: 'RDS',icon:'database',hidden:false,cache:true}
-    }]
-  },{
-    path: '/db',
-    component: layout,
-    meta:{title: 'ZDB',icon:'database',types: 'deveops'},
-    children: [{
-      path: 'instancegroup',
-      component: _import('deveops/zdb/instancegroup'),
-      name: 'instancegroup',
-      meta: { title: '实例组',icon:'database',hidden:false,cache:true}
-    },{
-      path: 'instance',
-      component: _import('deveops/zdb/instance'),
-      name: 'instance',
-      meta: { title: '实例',icon:'database',hidden:false,cache:true}
-    }]
-  },{
+  },
+  // ,{
+  //   path: '/expired',
+  //   component: layout,
+  //   meta:{title: '过期列表(暂时)',icon:'clock-o',types: 'deveops'},
+  //   children: [{
+  //     path: 'kvstore',
+  //     component: _import('deveops/expired/kvstore'),
+  //     name: 'instance',
+  //     meta: { title: 'KVStore',icon:'database',hidden:false,cache:true}
+  //   },{
+  //     path: 'mongodb',
+  //     component: _import('deveops/expired/mongodb'),
+  //     name: 'role',
+  //     meta: { title: 'MongoDB',icon:'database',hidden:false,cache:true}
+  //   },{
+  //     path: 'rds',
+  //     component: _import('deveops/expired/db'),
+  //     name: 'user',
+  //     meta: { title: 'RDS',icon:'database',hidden:false,cache:true}
+  //   }]
+  // },
+  // {
+  //   path: '/db',
+  //   component: layout,
+  //   meta:{title: 'ZDB',icon:'database',types: 'deveops'},
+  //   children: [{
+  //     path: 'instancegroup',
+  //     component: _import('deveops/zdb/instancegroup'),
+  //     name: 'instancegroup',
+  //     meta: { title: '实例组',icon:'database',hidden:false,cache:true}
+  //   },{
+  //     path: 'instance',
+  //     component: _import('deveops/zdb/instance'),
+  //     name: 'instance',
+  //     meta: { title: '实例',icon:'database',hidden:false,cache:true}
+  //   }]
+  // },
+  {
     path: '/ops',
     component: layout,
     meta:{title: '运维操作',icon:'newspaper-o',types: 'deveops'},
@@ -144,6 +147,11 @@ export const devEopsRouterMap = [{
       component: _import('deveops/ops/mission'),
       name: 'mission',
       meta: { title: '任务',icon:'superpowers',hidden:false,cache:true}
+    },{
+      path: 'quick',
+      component: _import('deveops/ops/quick'),
+      name: 'quick',
+      meta: { title: '快速创建',icon:'fighter-jet',hidden:false,cache:true}
     }]
   },{
     path:'',
@@ -156,31 +164,44 @@ export const devEopsRouterMap = [{
       meta: { title: '工单',icon:'dashboard',hidden:true,cache:true}
     }]
   },{
-    path:'/console',
-    component: layout,
-    meta:{title: '控制台',icon:'terminal',types: 'deveops'},
-    children: [{
-      path: 'terminal',
-      component: _import('deveops/console/terminal'),
-      name: '终端',
-      meta: { title: '终端',icon:'terminal',hidden:false,cache:true}
-    },{
-      path: 'enumerate',
-      component: _import('deveops/console/enumerate'),
-      name: '列举',
-      meta: { title: '列举',icon:'terminal',hidden:false,cache:true}
-    }]
-  },{
     path:'',
     component: layout,
-    meta:{title: '装机宝',icon:'steam',types: 'deveops'},
+    meta:{title: 'IP检索',icon:'bath', types: 'deveops'},
     children: [{
-      path: 'ezsetup',
-      component: _import('deveops/ezsetup/index'),
-      name: 'ezsetup',
-      meta: { title: '装机宝',icon:'steam',hidden:true,cache:true}
+      path: 'ipool',
+      component: _import('deveops/ipool/index'),
+      name: 'ipool',
+      meta: { title: 'IP检索',icon:'bath',hidden:true,cache:true}
     }]
-  },{
+  },
+  // {
+  //   path:'/console',
+  //   component: layout,
+  //   meta:{title: '控制台',icon:'terminal',types: 'deveops'},
+  //   children: [{
+  //     path: 'terminal',
+  //     component: _import('deveops/console/terminal'),
+  //     name: '终端',
+  //     meta: { title: '终端',icon:'terminal',hidden:false,cache:true}
+  //   },{
+  //     path: 'enumerate',
+  //     component: _import('deveops/console/enumerate'),
+  //     name: '列举',
+  //     meta: { title: '列举',icon:'terminal',hidden:false,cache:true}
+  //   }]
+  // },
+  // {
+  //   path:'',
+  //   component: layout,
+  //   meta:{title: '装机宝',icon:'steam',types: 'deveops'},
+  //   children: [{
+  //     path: 'ezsetup',
+  //     component: _import('deveops/ezsetup/index'),
+  //     name: 'ezsetup',
+  //     meta: { title: '装机宝',icon:'steam',hidden:true,cache:true}
+  //   }]
+  // },
+  {
     path:'',
     component: layout,
     meta:{title: '分发中心',icon:'file-code-o',types: 'deveops'},
@@ -200,7 +221,19 @@ export const devEopsRouterMap = [{
       name: 'cdn',
       meta: { title: 'CDN刷新',icon:'maxcdn',hidden:true,cache:true}
     }]
-  },{
+  },
+  // {
+  //   path:'',
+  //   component: layout,
+  //   meta:{title: '工序',icon:'fast-forward',types: 'deveops'},
+  //   children: [{
+  //     path: 'process',
+  //     component: _import('deveops/process/index'),
+  //     name: 'process',
+  //     meta: { title: 'Process工序',icon:'fast-forward',hidden:true,cache:true}
+  //   }]
+  // },
+  {
     path:'',
     component: layout,
     meta:{title: '关于',icon:'dashboard',types: 'deveops'},
@@ -217,7 +250,7 @@ export const devEopsRouterMap = [{
     children: [{
       path: ':id/dashboard',
       component: _import('zdb/db/dashboard'),
-      name: 'dashboard',
+      name: 'zdbdashboard',
       meta: { title: '仪表盘',icon:'dashboard',hidden:false,cache:true}
     },{
       path: ':id/monitor',
@@ -225,23 +258,8 @@ export const devEopsRouterMap = [{
       name: 'monitor',
       meta: { title: '监控',icon:'dashboard',hidden:false,cache:true}
     },{
-      path: ':id/slowlog',
-      component: _import('zdb/db/1'),
-      name: 'slowlog',
-      meta: { title: '慢查询',icon:'terminal',hidden:false,cache:true}
-    },{
-      path: ':id/sqlcheck',
-      component: _import('zdb/db/2'),
-      name: 'sqlcheck',
-      meta: { title: 'SQL优化',icon:'terminal',hidden:false,cache:true}
-    },{
-      path: ':id/rollback',
-      component: _import('zdb/db/2'),
-      name: 'rollback',
-      meta: { title: '数据回滚',icon:'terminal',hidden:false,cache:true}
-    },{
       path: ':id/query',
-      component: _import('zdb/db/2'),
+      component: _import('zdb/db/query'),
       name: 'query',
       meta: { title: '数据查询',icon:'terminal',hidden:false,cache:true}
     }]

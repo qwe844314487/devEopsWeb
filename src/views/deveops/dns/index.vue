@@ -19,10 +19,10 @@
       </el-row>
       <el-row v-show="detailSearch" style="margin-bottom:20px;">
         <el-col :span="7" :offset="1">
-          外网解析： <el-input style="width: 200px;" v-model="search_obj.dig" class="filter-item" placeholder="精准搜索外网解析"></el-input>
+          外网解析： <el-input style="width: 200px;" v-model="search_obj.external_dig" class="filter-item" placeholder="精准搜索外网解析"></el-input>
         </el-col>
         <el-col :span="7">
-          内网解析： <el-input style="width: 200px;" v-model="search_obj.inner_dig" class="filter-item" placeholder="精准搜索内网解析"></el-input>
+          内网解析： <el-input style="width: 200px;" v-model="search_obj.internal_dig" class="filter-item" placeholder="精准搜索内网解析"></el-input>
         </el-col>
         <el-col :span="7">
           域名： <el-input style="width: 200px;" v-model="search_obj.url" class="filter-item" placeholder="模糊搜索域名"></el-input>
@@ -72,7 +72,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDNSVisible" width="60%" top="2vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogDNSVisible" width="48%" top="20vh">
       <el-form :rules="rules" ref="dnsForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
 
         <el-form-item label="域名" prop="url">
@@ -81,15 +81,15 @@
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="公网解析" prop="dig">
+        <el-form-item label="公网解析" prop="external_dig">
           <el-tooltip content="请输入该域名的公网解析" placement="top" effect="light">
-            <el-input v-model="commit_obj.dig"></el-input>
+            <el-input v-model="commit_obj.external_dig"></el-input>
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="私网解析" prop="inner_dig">
+        <el-form-item label="私网解析" prop="internal_dig">
           <el-tooltip content="请输入该域名的私网解析" placement="top" effect="light">
-            <el-input v-model="commit_obj.inner_dig"></el-input>
+            <el-input v-model="commit_obj.internal_dig"></el-input>
           </el-tooltip>
         </el-form-item>
 
@@ -107,8 +107,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDNSVisible = false" :disabled="btnStatus">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createDNS" :disabled="btnStatus">创建</el-button>
-        <el-button v-else type="primary" @click="updateDNS" :disabled="btnStatus">更新</el-button>
+        <el-button type="primary" @click="handleQRCode" :disabled="btnStatus">创建</el-button>
       </div>
     </el-dialog>
 
@@ -116,12 +115,23 @@
       <el-pagination background layout="total, prev, pager, next, jumper">
       </el-pagination>
     </div>
+
+    <el-dialog title="QRCode二次验证" :visible.sync="dialogQRCodeVisible" width="30%" top="20vh">
+      <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
+      <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createDNS" :disabled="btnStatus">创建</el-button>
+        <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateDNS" :disabled="btnStatus">更新</el-button>
+        <el-button v-else-if="dialogStatus=='delete'" type="primary" @click="deleteConfirm" :disabled="btnStatus">删除</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import { fetch_DNSListByPage,fetch_DNSList,create_DNS,update_DNS,delete_DNS } from "@/api/dns";
   import { fetch_GroupList } from '@/api/manager';
+  import { is_expire_User } from "@/api/auth";
   export default {
       data(){
         return{
@@ -129,6 +139,7 @@
           listLoading: true,
           btnStatus: false,
           dialogDNSVisible: false,
+          dialogQRCodeVisible: false,
           pagination: {
             page: 1,
             count: 0
@@ -136,6 +147,7 @@
           textMap:{
             update: '编辑DNS',
             create: '新建DNS',
+            delete: '删除DNS'
           },
           dialogStatus:'',
           groups: [],
@@ -166,6 +178,10 @@
         reset_commit(){
           this.commit_obj = {}
         },
+        reset_dialog(){
+          this.dialogDNSVisible = false
+          this.dialogQRCodeVisible = false
+        },
         init(){
           fetch_DNSListByPage(this.pagination,this.search_obj).then((response)=>{
             this.pagination.count = response.data.count
@@ -189,6 +205,29 @@
               })
             }
           })
+        },
+        handleQRCode() {
+          is_expire_User()
+            .then(response => {
+              if (response.data.isexpire) {
+                this.reset_dialog()
+                this.dialogQRCodeVisible = true
+              } else {
+                if (this.dialogStatus === "create") {
+                  this.createDNS()
+                } else if (this.dialogStatus === "update") {
+                  this.updateDNS()
+                } else if (this.dialogStatus === "delete"){
+                  this.deleteConfirm()
+                }
+              }
+            }).catch(error => {
+              this.$message({
+                showClose: true,
+                message: "过期时间确定失败",
+                type: "danger"
+              })
+            })
         },
         changeGroup(){
           this.pagination = {
@@ -218,7 +257,7 @@
               create_DNS(this.commit_obj).then(() => {
                 this.reset_search()
                 this.init()
-                this.dialogDNSVisible = false
+                this.reset_dialog()
                 this.$message({
                   showClose: true,
                   message: '创建成功',
@@ -227,13 +266,14 @@
                 this.btnStatus=false
               }).catch((error)=>{
                 this.btnStatus=false
-                this.dialogDNSVisible = false
+                this.reset_dialog()
               })
             }
           })
         },
         handleUpdate(row){
           this.commit_obj = Object.assign({}, row) // copy obj
+          this.dialogStatus = "update"
           this.dialogDNSVisible = true
           this.init_group()
         },
@@ -243,7 +283,7 @@
               this.btnStatus=true
               update_DNS(this.commit_obj).then(() => {
                 this.init()
-                this.dialogDNSVisible = false
+                this.reset_dialog()
                 this.$message({
                   showClose: true,
                   message: '更新成功',
@@ -252,16 +292,15 @@
                 this.btnStatus=false
               }).catch((error)=>{
                 this.btnStatus=false
-                this.dialogDNSVisible = false
+                this.reset_dialog()
               })
             }
           })
         },
         handleDelete(row){
           this.commit_obj = Object.assign({},row)
-          this.btnStatus=true
-          this.deleteConfirm()
-          this.btnStatus=false
+          this.dialogStatus = 'delete'
+          this.handleQRCode()
         },
         deleteConfirm() {
           this.$confirm('此操作将删除该域名记录, 是否继续?', '提示', {
@@ -276,6 +315,7 @@
                 type: 'success'
               })
               this.init()
+              this.reset_dialog()
             })
           })
         },

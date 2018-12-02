@@ -1,135 +1,461 @@
 <template>
-    <div class="login-container">
-        <el-row>
-            <el-col :span="6">
-                <el-card class="number-card">
-                <el-row>
-                    <el-col :span="12">
-                        <awesome :awesclass="'codepen'"></awesome>
-                    </el-col>
-                    <el-col :span="12">
-                        <p class="p-level-title">接管域名</p>
-                        <p class="p-level-number">39</p>
-                    </el-col>
-                </el-row>
-                </el-card>
+  <div class="dashboard-editor-container">
+    <el-row class="row-person">
+      <el-col :span="24">
+        <el-card class="box-card" shadow="always">
+          <el-row>
+            <el-col :span="3" class="col-logo">
+              <img class="p-logo" :src="logo" alt="logo">
             </el-col>
+            <el-col :span="11" class="col-title">
+              <!-- <span style="vertical-align: bottom;">123</span> -->
+              <div class="p-name">早安，汪子哲，祝你身体健康，再见！(Demo)</div>
+              <div class="p-who">运维工程师 | 浙报集团－信息安全与运维中心－系统运维－301－ops</div>
+            </el-col>
+            <el-col :span="10" class="col-level">
+              <el-row>
+                <el-col :span="5" class="p-level">
+                  <p class="p-level-title">主机数</p>
+                  <p class="p-level-number">257</p>
+                </el-col>
+                <el-col :span="5" class="p-level">
+                  <p class="p-level-title">项目数</p>
+                  <p class="p-level-number">17</p>
+                </el-col>
+                <el-col :span="5" class="p-level">
+                  <p class="p-level-title">虚拟化平台</p>
+                  <p class="p-level-number">2</p>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-row class="row-system" :gutter="30">
+      <el-col :span="16">
+        <el-row>
+            <el-card>
+              <el-row :gutter="20">
+                <el-col :span="6">
+                  <el-card class="number-card">
+                    <el-row>
+                      <el-col :span="12">
+                        <awesome :awesclass="'codepen'"></awesome>
+                      </el-col>
+                    <el-col :span="12">
+                      <p class="p-level-title">接管域名</p>
+                      <p class="p-level-number">39</p>
+                    </el-col>
+                    </el-row>
+                  </el-card>
+                </el-col>
+                <el-col :span="6">
+                  <el-card class="number-card">
+                  <el-row>
+                      <el-col :span="12">
+                        <awesome :awesclass="'database'"></awesome>
+                      </el-col>
+                    <el-col :span="12">
+                      <p class="p-level-title">数据库实例</p>
+                      <p class="p-level-number">18</p>
+                    </el-col>
+                    </el-row>
+                  </el-card>
+                </el-col>
+                <el-col :span="6">
+                  <el-card class="number-card">
+                  <el-row>
+                      <el-col :span="12">
+                        <awesome :awesclass="'file-code-o'"></awesome>
+                      </el-col>
+                    <el-col :span="12">
+                      <p class="p-level-title">分发文件</p>
+                      <p class="p-level-number">182</p>
+                    </el-col>
+                    </el-row>
+                  </el-card>
+                </el-col>
+                <el-col :span="6">
+                  <el-card class="number-card">
+                  <el-row>
+                      <el-col :span="12">
+                        <awesome :awesclass="'street-view'"></awesome>
+                      </el-col>
+                    <el-col :span="12">
+                      <p class="p-level-title">用户</p>
+                      <p class="p-level-number">19</p>
+                    </el-col>
+                    </el-row>
+                  </el-card>
+                </el-col>
+              </el-row>
+            </el-card>
         </el-row>
-
-        <!-- <el-row>
-
-        <el-col :span="12">
-          <div class="cpu m-border-box">
+        <el-row class="row-work">
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span>平台事件</span>
+            </div>
+            <div key="1" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Task</span> 并执行成功</div>
+                  <div class="p-time">2018-8-24 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="2" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">徐晨亮 在 <span>[测试]新媒体云服务平台</span> 修改了资产信息</div>
+                  <div class="p-time">2018-8-24 17:09</div>   
+                </el-col>
+              </el-row>
+            </div>
+            <div key="3" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">devEops平台 巡检发现 <span>[预发布]24小时APP</span> 的主机出现<span>磁盘溢出</span></div>
+                  <div class="p-time">2018-8-24 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="4" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">devEops平台 巡检发现 <span>[测试]24小时APP</span> 的主机出现<span>磁盘溢出</span></div>
+                  <div class="p-time">2018-8-24 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="5" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2018-8-24 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="6" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2018-5-24 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="7" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2017-8-24 17:11</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="7" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2017-4-11 17:09</div>
+                </el-col>
+              </el-row>
+            </div>
+            <div key="7" class="row-work-list">
+              <el-row>
+                <el-col :span="1">
+                  <img class="p-logo" :src="logo" alt="logo">
+                </el-col>
+                <el-col :span="23">
+                  <div class="p-name">汪子哲 在 <span>[预发布]浙江新闻</span> 发起工单 <span>[预发布]更新浙江新闻Gateway</span> 并执行成功</div>
+                  <div class="p-time">2017-1-24 23:09</div>
+                </el-col>
+              </el-row>
+            </div>
+          </el-card>
+        </el-row>
+      </el-col>
+      
+      <el-col :span="8">
+        <el-row>
+          <el-card>
+             <div class="systype">
             <IEcharts
-              :option="monitor_obj.CPU"
-              :loading="monitorLoading"
+              :option="systype"
+              :loading="loading"
             />
           </div>
+        </el-card>
+        </el-row>
+        <el-row style="padding-top: 30px;">
+          <el-card>
+              <div class="test">
+              <IEcharts
+                :option="test"
+                :loading="loading"
+              />
+            </div>
+          </el-card>
+        </el-row>
+      </el-col>
+    </el-row>
+
+
+
+    <!-- <el-card class="box-card">
+      <el-row>
+        <el-col :span="5" :offset="1">
+       
         </el-col>
-        <el-col :span="12">
-          <div class="cpu m-border-box">
-            <IEcharts
-              :option="monitor_obj.CPU"
-              :loading="monitorLoading"
-            />
-          </div>
+      </el-row>
+    </el-card> -->
+
+
+    <!-- <el-row>
+      <el-col :span="12" :offset="1">
+        <el-card class="box-card">
+        </el-card>
+      </el-col>
+        <el-col :span="6" :offset="1">
+          <el-card class=box-card>
+              <el-carousel height="300px">
+                <el-carousel-item>
+                  <h1>量化</h1>
+                </el-carousel-item>
+                <el-carousel-item>
+                  <h1>可视化</h1>
+                </el-carousel-item>
+                <el-carousel-item>
+                  <h1>自动化</h1>
+                </el-carousel-item>
+            </el-carousel>
+          </el-card>
         </el-col>
-        </el-row> -->
-    </div>
+    </el-row> -->
+  </div>
 </template>
 
 <script>
-  import IEcharts from 'vue-echarts-v3/src/lite.js';
-    import 'echarts/lib/chart/bar';
-    import 'echarts/lib/chart/line';
-    import 'echarts/lib/component/title';
-    import Awesome from "@/components/Awesome/index";
-    import { fetch_MonitorHostAliyunCPU,fetch_MonitorHostAliyunMemory,fetch_MonitorHostAliyunDiskRead,fetch_MonitorHostAliyunInternetIn } from '@/api/monitor';
-    export default {
-      name: "login",
-        components: {
-            IEcharts,Awesome
+// import echarts from 'echarts';
+// import Echarts from '@/components/Echarts/index';
+import IEcharts from "vue-echarts-v3/src/lite.js";
+import "echarts/lib/chart/bar";
+import "echarts/lib/chart/line";
+import "echarts/lib/component/title";
+import { fetch_SystemStatus } from "@/api/dashboard";
+import logo from "@/assets/wzz.jpg";
+import Awesome from "@/components/Awesome/index";
+export default {
+  data() {
+    return {
+      loading: false,
+      systype: {},
+      logo
+    };
+  },
+  components: {
+    IEcharts,
+    Awesome
+  },
+  created() {
+    this.init_systype();
+    this.init_test();
+  },
+  methods: {
+    init_systype() {
+      this.systype = {
+        title: {
+          text: "一周内工单执行"
         },
-        data (){
-          return {
-            monitorLoading: true,
-            monitor_obj:{
-            }
+        xAxis: {
+          type: "category",
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        },
+        yAxis: {
+          type: "value"
+        },
+        series: [
+          {
+            data: [5, 5, 3, 8, 17, 3, 0],
+            type: "bar"
           }
+        ]
+      };
+    },
+    init_test() {
+      this.test = {
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
-        created(){
-            // fetch_MonitorHostAliyunCPU('a60e72e7-1c87-4fcc-8d84-d165a977c5c0', 1).then((response)=>{
-            //     console.log(response.data)
-            //     this.monitor_obj.CPU = response.data
-            //     this.monitorLoading = false
-            // })
+        legend: {
+          orient: "vertical",
+          x: "left",
+          data: [
+            "浙江新闻",
+            "新媒体云服务平台",
+            "微媒宝",
+            "新闻24小时",
+            "天目云"
+          ]
         },
-        methods: {
-        },
+        series: [
+          {
+            name: "主机个数",
+            type: "pie",
+            radius: ["50%", "70%"],
+            avoidLabelOverlap: false,
+            labelLine: {
+              normal: {
+                show: false
+              }
+            },
+            data: [
+              { value: 36, name: "浙江新闻" },
+              { value: 28, name: "新媒体云服务平台" },
+              { value: 4, name: "微媒宝" },
+              { value: 17, name: "新闻24小时" },
+              { value: 23, name: "天目云" }
+            ]
+          }
+        ]
+      };
     }
+  }
+};
 </script>
-<style scoped>
 
-</style>
-<style rel="stylesheet/scss" lang="scss">
-.number-card{
-    .fa-icon{
-      font-size: 50px;
-      color:#409EFF;
-      padding-top:15px;
+<style rel="stylesheet/scss" lang="scss" scoped>
+.col-logo {
+  height: 100%;
+  .p-logo {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+  }
+}
+.col-title {
+  height: 100%;
+  position: relative;
+  line-height: 100%;
+  .p-name {
+    font-family: "Helvetica Neue";
+    font-size: 25px;
+    padding-top: 50px;
+    padding-bottom: 25px;
+    display: block;
+  }
+  .p-who {
+    font-family: "Helvetica Neue";
+    font-variant: tabular-nums;
+    background-color: #fff;
+    color: rgba(0, 0, 0, 0.45);
+    display: block;
+  }
+}
+.col-level {
+  height: 100%;
+  .p-level {
+    padding-top: 30px;
+    float: right;
+    .p-level-title {
+      color: rgba(0, 0, 0, 0.45);
     }
-width: 800px;
-	height: 400px;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin-top: -200px;
-	margin-left: -400px;
-	border-radius: 8px;
-	box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-	overflow: hidden;
-	z-index: 2;
-	padding: 50px;
-	box-sizing: border-box;
+    .p-level-number {
+      font-weight: bold;
+      font-size: 30px;
+    }
+    p {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 1em;
+    }
   }
-  .number-card::before{
-      content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	-webkit-filter: blur(5px);
-	-moz-filter: blur(5px);
-	-ms-filter: blur(5px);
-	-o-filter: blur(5px);
-	filter: blur(5px);
-	z-index: -3;
-	margin: -30px;
-	background-image: url('~@/assets/dashboard.jpg');
-	background-position: center top;
-	background-size: cover;
-	background-attachment: fixed;
+}
+
+.box-card {
+  height: 180px;
+  // background-color: rgb(39, 50, 56);
+  // border: 5px solid #ebeef5;
+}
+.row-system {
+  padding-top: 20px;
+  .number-card {
+    .fa-icon {
+      font-size: 50px;
+      color: #409eff;
+      padding-top: 15px;
+    }
+    // background: #409EFF;
   }
-  .p-level-number{
+  .p-level-number {
     font-weight: bold;
     font-size: 20px;
   }
-
-  .login-container {
-    position: fixed;
-    height: 100%;
-    width: 100%;	
-    background-position: center top;
-	background-size: cover;
-    // background-color: $bg;
-    background: url('~@/assets/dashboard.jpg') no-repeat;
-    // background-size: 
-    // background: 
-    // -webkit-filter: blur(2px);
-    // -moz-filter: blur(2px);
-    // -ms-filter: blur(2px);
-    // -o-filter: blur(2px);
-    // filter: blur(2px);  
+}
+.row-work {
+  padding-top: 30px;
+  .p-logo {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
   }
+  .p-name {
+    font-family: "Helvetica Neue";
+    font-size: 15px;
+    display: block;
+  }
+  .p-time {
+    font-family: "Helvetica Neue";
+    font-variant: tabular-nums;
+    background-color: #fff;
+    color: rgba(0, 0, 0, 0.45);
+    display: block;
+  }
+  .row-work-list {
+    border-bottom: 1px solid #e8e8e8;
+    padding-left: 20px;
+    padding-top: 10px;
+    span {
+      color: #409eff;
+    }
+  }
+}
+.dashboard-editor-container {
+  padding: 15px;
+  // background-color: rgb(240, 242, 245);
+  background-color: rgb(39, 50, 56);
+  color: #fff;
+}
+.systype {
+  // width: 600px;
+  height: 400px;
+}
+.test {
+  height: 180px;
+}
 </style>

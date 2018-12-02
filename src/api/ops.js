@@ -81,9 +81,10 @@ export function fetch_MissionListByPage(pagination,obj){
   })
 }
 
-export function fetch_MissionListByUser(){
+export function fetch_MissionListByUser(obj){
+  let st = objectIterator(obj)
   return request({
-    url: '/api-ops/v1/mission/byuser/',
+    url: '/api-ops/v1/mission/byuser/'+ st,
     method: 'GET' 
   })
 }
@@ -108,6 +109,20 @@ export function delete_Mission(data){
   return request({
     url: '/api-ops/v1/mission/'+data.uuid+'/delete/',
     method: 'DELETE',
+    data: data
+  })
+}
+
+
+
+/*
+* API_MODULE: Quick
+* API_USE: CREATE
+* */
+export function create_Quick(data){
+  return request({
+    url: '/api-ops/v1/quick/create/',
+    method: 'POST',
     data: data
   })
 }

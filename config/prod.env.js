@@ -8,7 +8,7 @@
 
 module.exports = {
   NODE_ENV: '"production"',
-  API_URL: '"https://deveops.8531.cn/"',
-  API_WEBSOCKET: "'wss://deveops.8531.cn/'",
+  API_URL: '"https://deveops-v3.8531.cn/"',
+  API_WEBSOCKET: "'wss://deveops-v3.8531.cn/'",
   API_TIMEOUT: '"90000"'
 }

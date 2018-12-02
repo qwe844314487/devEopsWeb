@@ -71,6 +71,7 @@
 
       <el-table-column align="center" label="操作" width="450px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="db">
+          <el-button type="warning" size="medium" @click="handleManager(db.row)">实例管理</el-button>
           <el-button type="warning" size="medium" @click="handleUpdate(db.row)">编辑</el-button>
           <el-button type="danger" size="medium" @click="handleDelete(db.row)">删除</el-button>
         </template>
@@ -474,13 +475,9 @@
             })
           })
         },
-        handleManager(){
+        handleManager(row){
           this.commit_obj = Object.assign({}, row) // copy obj
-          this.dialogStatus = 'update'
-          this.dialogDBDetailVisible = true
-          this.$nextTick(() => {
-            this.$refs['importForm'].clearValidate()
-          })
+          this.$router.push({path:'/zdb/'+row.uuid+'/dashboard', params:{id:row.uuid}})
         },
         handleExpired(){
             this.$router.push({path:'/db/expired'})

@@ -59,33 +59,33 @@
       style="width: 100%"
       tooltip-effect="dark">
       <el-table-column width="260px" align="center" label="UUID">
-        <template slot-scope="cdn">
-          <span>{{ cdn.row.uuid }}</span>
+        <template slot-scope="process">
+          <span>{{ process.row.uuid }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="600px" align="center" label="URL">
-        <template slot-scope="cdn">
-          <span>{{ cdn.row.url }}</span>
+        <template slot-scope="process">
+          <span>{{ process.row.url }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="150px" align="center" label="类型" class-name="status-col" >
-        <template slot-scope="cdn">
-          <el-tag>{{optionTypeObj[cdn.row.type]}}</el-tag>
+        <template slot-scope="process">
+          <el-tag>{{optionTypeObj[process.row.type]}}</el-tag>
         </template>
       </el-table-column>
 
       <el-table-column width="250px" align="center" label="状态" class-name="status-col" >
-        <template slot-scope="cdn">
-          <el-tag :type="cdn.row.status | statusFilter">{{cdn.row.process}}%</el-tag>
-          <el-tag :type="cdn.row.status | statusFilter">{{optionStateObj[cdn.row.status]}}</el-tag>
+        <template slot-scope="process">
+          <el-tag :type="process.row.status | statusFilter">{{process.row.process}}%</el-tag>
+          <el-tag :type="process.row.status | statusFilter">{{optionStateObj[process.row.status]}}</el-tag>
         </template>
       </el-table-column>
 
       <el-table-column width="120px" align="center" label="提交用户">
-        <template slot-scope="cdn">
-          <span>{{ cdn.row.username }}</span>
+        <template slot-scope="process">
+          <span>{{ process.row.username }}</span>
         </template>
       </el-table-column>
 
@@ -97,20 +97,20 @@
 
     </el-table>
 
-    <el-form ref="cdnForm" :model="commit_obj" label-position="left" label-width="100px">
+    <el-form ref="processForm" :model="commit_obj" label-position="left" label-width="100px">
       <el-dialog
         width="70%"
         :title="textMap[dialogStatus]"
-        :visible.sync="dialogCDNVisible">
+        :visible.sync="dialogProcessVisible">
             <el-table :data="commit_obj.cdns" border fit highlight-current-row
                       style="width: 100%">
               <el-table-column width="700px" align="center" label="刷新路径">
-                <template slot-scope="cdn">
-                  <span>{{ cdn.row.url }}</span>
+                <template slot-scope="process">
+                  <span>{{ process.row.url }}</span>
                 </template>
               </el-table-column>
-              <el-table-column width="700px" align="center" label="工具">
-                <template slot-scope="cdn">
+              <el-table-column width="450px" align="center" label="工具">
+                <template slot-scope="process">
                   <el-button type="primary" @click="handleCDNDelete(cdn.row)" :disabled="btnStatus">刪除</el-button>
                 </template>
               </el-table-column>

@@ -25,6 +25,11 @@
 
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchGroup" style="float:right;" :disabled="btnStatus">搜索</el-button>
       </el-row>
+            <el-row style="margin-bottom:20px;" v-show="detailSearch">
+        <el-col :span="7" :offset="1">
+          UID： <el-input size="medium" style="width: 300px;" v-model="search_obj.uuid" class="filter-item" placeholder="根据UUID搜索"></el-input>
+        </el-col>
+        </el-row>
     </div>
 
     <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -113,13 +118,12 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false" :disabled="btnStatus">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData" :disabled="btnStatus">提交</el-button>
-        <el-button v-else type="primary" @click="updateData" :disabled="btnStatus">提交</el-button>
+        <el-button type="primary" @click="handleQRCode" :disabled="btnStatus">下一步</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog :title="commit_obj.name+textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="50%" top="2vh">
-      <el-form ref="permissionForm" :model="commit_obj" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
+    <el-dialog :title="commit_obj.name+textMap[dialogStatus]" :visible.sync="dialogPermissionVisible" width="50%" top="15vh">
+      <el-form ref="permissionForm" :model="commit_obj" label-position="left" label-width="90px" style='width: 700px; margin-left:30px;'>
 
         <el-form-item label="所属权限组" prop="pmn_groups">
           <el-transfer v-model="commit_obj.pmn_groups" :data="pmn_groups" placeholder="请选择所属用户组" filterable>
@@ -129,11 +133,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogPermissionVisible = false" :disabled="btnStatus">取消</el-button>
-        <el-button type="primary" @click="updatePermission" :disabled="btnStatus">提交</el-button>
+        <el-button type="primary" @click="handleQRCode" :disabled="btnStatus">提交</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogVariableVisible" width="60%" top="2vh">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogVariableVisible" width="60%" top="17vh">
         <el-table :data="var_data" border fit highlight-current-row
                       style="width: 100%">
           <el-table-column width="120px" align="center" label="ID">
@@ -153,7 +157,13 @@
               <span>{{ vars.row.value }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="220px" align="center" label="删除">
+
+          <el-table-column width="430px" align="center" label="Info">
+            <template slot-scope="vars">
+              <span>{{ vars.row.info }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column width="220px" align="center" label="删除" fixed="right">
             <template slot-scope="vars">
               <el-button type="danger" size="mini" @click="handleVariableDelete(vars.row)" :disabled="btnStatus">刪除</el-button>
             </template>
@@ -164,20 +174,27 @@
           <el-button type="warning" @click="handleVariableCreate" :disabled="btnStatus">新增操作</el-button>
           <el-button @click="dialogVariableVisible = false" :disabled="btnStatus">关闭</el-button>
         </div>
-        <el-form ref="variableForm" :model="tempvar" label-position="left" label-width="100px" style='width: 700px; margin-left:40px;'>
+        <el-form ref="variableForm" :model="tempvar" label-position="left" label-width="50px" style='width: 700px;'>
           <el-dialog
             width="30%"
             title="新增参数"
             :visible.sync="dialogCreateVariableVisible"
             append-to-body>
-              <div :model="tempvar">
-                  <el-input placeholder="NGINX_HOME" v-model="tempvar.key">
-                    <template slot="prepend">Key</template>
-                  </el-input>
-                  <el-input placeholder="/usr/local/nginx" v-model="tempvar.value">
-                    <template slot="prepend">Value</template>
-                  </el-input>
-              </div>
+              <el-form-item label="Key" prop="key">
+                <el-tooltip content="请输入该组参数名称" placement="top" effect="light">
+                  <el-input v-model="tempvar.key" placeholder="NGINX_HOME"></el-input>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="Value" prop="value">
+                <el-tooltip content="请输入该组参数名称" placement="top" effect="light">
+                  <el-input v-model="tempvar.value" placeholder="/usr/local/nginx"></el-input>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="Info" prop="info">
+                <el-tooltip content="请输入该组参数备注" placement="top" effect="light">
+                  <el-input v-model="tempvar.info" placeholder="Nginx家目录"></el-input>
+                </el-tooltip>
+              </el-form-item>
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="createVariable" :disabled="btnStatus">提交</el-button>
               <el-button @click="dialogCreateVariableVisible = false" :disabled="btnStatus">关闭</el-button>
@@ -186,9 +203,19 @@
       </el-form>
     </el-dialog>
 
-
     <el-dialog :title="commit_obj.name+'>'+textMap[dialogStatus]" :visible.sync="dialogImgVisible" width="80%" top="2vh">
       <img :src="commit_obj.framework" style="width:100%;height:100%;">
+    </el-dialog>
+
+    <el-dialog title="QRCode二次验证" :visible.sync="dialogQRCodeVisible" width="30%" top="20vh">
+      <span>请确认您的权限是运维工程师并且已经拥有QR-Code</span>
+      <el-input v-model="commit_obj.qrcode" placeholder="请输入您当前账户的QR-Code"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData" :disabled="btnStatus">创建</el-button>
+        <el-button v-else-if="dialogStatus=='update'" type="primary" @click="updateData" :disabled="btnStatus">更新</el-button>
+        <el-button v-else-if="dialogStatus=='delete'" type="primary" @click="deleteData" :disabled="btnStatus">删除</el-button>
+        <el-button v-else-if="dialogStatus=='permission'" type="primary" @click="updatePermission" :disabled="btnStatus">归类权限</el-button>
+      </div>
     </el-dialog>
 
   </div>
@@ -196,8 +223,8 @@
 
 <script>
   import { fetch_GroupListByPage,update_Group,delete_Group,create_Group,framework_Group } from '@/api/manager'
-  import { fetch_OpsUserList,fetch_PmnGroupList,fetch_KeyList,fetch_JumperList } from '@/api/auth'
-  import { fetch_VariableList,create_Variable,delete_Variable} from '@/api/variable'
+  import { fetch_OpsUserList,fetch_PmnGroupList,fetch_KeyList,fetch_JumperList,is_expire_User } from '@/api/auth'
+  import { fetch_VariableList,create_Variable,delete_Variable } from '@/api/variable'
   import { create_Image } from '@/api/utils'
   export default {
     data(){
@@ -207,10 +234,10 @@
         listLoading: true,
         dialogFormVisible: false,
         dialogImgVisible: false,
-        dialogPermissionVisible:false,
-        dialogKeyVisible:false,
-        dialogVariableVisible:false,
-        dialogCreateVariableVisible:false,
+        dialogPermissionVisible: false,
+        dialogVariableVisible: false,
+        dialogCreateVariableVisible: false,
+        dialogQRCodeVisible: false,
         dialogStatus: '',
         btnStatus: false,
         keys: [],
@@ -221,7 +248,7 @@
         users:[],
         pagination: {
           page: 1,
-          count: 0
+          count: 0,
         },
         textMap: {
           update: '编辑应用组',
@@ -303,6 +330,14 @@
       reset_search(){
         this.search_obj = {}
       },
+      reset_dialog(){
+        this.dialogFormVisible = false
+        this.dialogImgVisible = false
+        this.dialogPermissionVisible = false
+        this.dialogVariableVisible = false
+        this.dialogCreateVariableVisible = false
+        this.dialogQRCodeVisible = false
+      },
       init_jumper(){
         fetch_JumperList().then(response=>{
           this.jumpers = []
@@ -329,9 +364,35 @@
         this.listLoading = true
         fetch_GroupListByPage(this.pagination,this.search_obj).then(response =>{
           this.pagination.count = response.data.count
-          this.list=response.data.results
+          this.list = response.data.results
           this.listLoading = false
         })
+      },
+      handleQRCode() {
+        is_expire_User()
+          .then(response => {
+            if (response.data.isexpire) {
+              this.reset_dialog()
+              this.dialogQRCodeVisible = true
+            } else {
+              if (this.dialogStatus === "create") {
+                this.createData()
+              } else if (this.dialogStatus === "update") {
+                this.updateData()
+              } else if (this.dialogStatus === "permission"){
+                this.updatePermission()
+              } else if (this.dialogStatus === "delete"){
+                this.deleteData()
+              }
+            }
+          }).catch((error) => {
+            console.log(error)
+            this.$message({
+              showClose: true,
+              message: "过期时间确定失败",
+              type: "danger"
+            })
+          })
       },
       handleCurrentChange(val) {
         this.pagination.page = val
@@ -368,6 +429,7 @@
           type: 'warning'
         }).then(()=>{
           delete_Group(this.commit_obj).then((response) => {
+            this.reset_dialog()
             this.$message({
               showClose: true,
               message: '删除成功',
@@ -387,9 +449,8 @@
       },
       handleDelete(row){
         this.commit_obj = Object.assign({},row)
-        this.btnStatus=true
-        this.deleteConfirm()
-        this.btnStatus=false
+        this.dialogStatus = 'delete'
+        this.handleQRCode()
       },
       handleVariable(row){
         this.dialogStatus = 'variable'
@@ -399,11 +460,16 @@
       },
       handleVariableCreate(){
         this.tempvar={group:this.vars_group}
+        this.dialogStatus = 'varcreate'
         this.dialogCreateVariableVisible=true
       },
       handleVariableDelete(row){
-        this.btnStatus=true
         this.tempvar = Object.assign({},row)
+        this.dialogStatus = 'vardelete'
+        this.deleteVariable()
+      },
+      deleteVariable(){
+        this.btnStatus=true
         this.deleteVariableConfirm()
         this.btnStatus=false
       },
@@ -425,7 +491,7 @@
               type: 'success'
             })
             this.getVars()
-            this.dialogCreateVariableVisible = false
+            this.reset_dialog()
           })
         })
       },
@@ -434,7 +500,6 @@
           if (valid) {
             this.btnStatus=true
             create_Variable(this.tempvar).then(() => {
-              this.dialogFormVisible = false
               this.$message({
                 showClose: true,
                 message: '创建成功',
@@ -476,7 +541,7 @@
           if (valid) {
             this.btnStatus=true
             update_Group(this.commit_obj).then(() => {
-              this.dialogPermissionVisible = false
+              this.reset_dialog()
               this.init()
               this.$message({
                 showClose: true,
@@ -486,7 +551,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogPermissionVisible = false
+              this.reset_dialog()
             })
           }
         })
@@ -512,7 +577,7 @@
           if (valid) {
             this.btnStatus=true
             create_Group(this.commit_obj).then(() => {
-              this.dialogFormVisible = false
+              this.reset_dialog()
               this.$message({
                 showClose: true,
                 message: '创建成功',
@@ -522,7 +587,7 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogFormVisible = false
+              this.reset_dialog()
             })
           }
         })
@@ -531,9 +596,9 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.btnStatus=true
-            const tempData = Object.assign({}, this.commit_obj)
+            let tempData = Object.assign({}, this.commit_obj)
             update_Group(tempData).then((response) => {
-              this.dialogFormVisible = false
+              this.reset_dialog()
               this.init()
               this.$message({
                 showClose: true,
@@ -543,11 +608,16 @@
               this.btnStatus=false
             }).catch((error)=>{
               this.btnStatus=false
-              this.dialogFormVisible = false
+              this.reset_dialog()
             })
           }
         })
       },
+      deleteData(){
+        this.btnStatus=true
+        this.deleteConfirm()
+        this.btnStatus=false
+      }
     }
   }
 </script>

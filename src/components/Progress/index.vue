@@ -29,11 +29,13 @@
     },
     methods:{
       initWebSocket(){ //初始化weosocket 
-        this.websock = new WebSocket(this.API_WEBSOCKET+'ansible/'+this.work_uuid+'/',this.$store.getters.token)
+        this.websock = new WebSocket(this.API_WEBSOCKET+'ansible/'+this.work_uuid+'/')
+        // ,this.$store.getters.token)
         this.websock.onmessage = this.websocketonmessage
         this.websock.onclose = this.websocketclose
       },
       websocketonmessage(e){
+        console.log(e)
         if(this.centage+7<100&&e.data=='OK'){
           this.centage = this.centage+11
         }else if(this.centage+7>100&&e.data=='OK'){

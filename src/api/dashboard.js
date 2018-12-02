@@ -33,16 +33,24 @@ export function fetch_ExpiredAliyunMongoDBList(pagination){
   })
 }
 
-export function fetch_SystemStatus(){
+export function fetch_Count(){
   return request({
-    url: '/api-dashboard/v1/systype/',
+    url: '/api-dashboard/v1/count/',
     method: 'GET'
   })
 }
 
-export function fetch_GroupStatus(){
+export function fetch_Work(){
+  return request({
+    url: '/api-dashboard/v1/work/',
+    method: 'GET'
+  })
+}
+
+export function fetch_Group(){
   return request({
     url: '/api-dashboard/v1/group/',
     method: 'GET'
   })
 }
+
