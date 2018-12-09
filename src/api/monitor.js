@@ -37,3 +37,21 @@ export function fetch_MonitorHostAliyunDiskUse(uuid, time){
     url: '/api-monitor/v1/host/'+ uuid + '/disk/use/aliyun/byuuid/'+time+'/',
   })
 }
+
+export function fetch_MonitorHostAliyun1mLoad(uuid, time){
+  return request({
+    url: '/api-monitor/v1/host/'+ uuid + '/1mload/aliyun/byuuid/'+time+'/',
+  })
+}
+
+export function fetch_MonitorHostAliyun5mLoad(uuid, time){
+  return request({
+    url: '/api-monitor/v1/host/'+ uuid + '/5mload/aliyun/byuuid/'+time+'/',
+  })
+}
+
+export function fetch_MonitorHostAliyun15mLoad(uuid, time){
+  return request({
+    url: '/api-monitor/v1/host/'+ uuid + '/15mload/aliyun/byuuid/'+time+'/',
+  })
+}

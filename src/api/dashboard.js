@@ -54,3 +54,9 @@ export function fetch_Group(){
   })
 }
 
+export function fetch_RandomGroupLoad(){
+  return request({
+    url: '/api-dashboard/v1/group/random/load/',
+    method: 'GET'
+  })
+}

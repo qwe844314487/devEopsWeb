@@ -202,7 +202,7 @@
           <div class="disk">
             <IEcharts
               group="123"
-              :option="monitor_obj.DiskRead"
+              :option="monitor_obj.load5m"
               :loading="monitorLoading"
             />
           </div>
@@ -211,7 +211,7 @@
           <div class="internet">
             <IEcharts
               group="123"
-              :option="monitor_obj.InternetIn"
+              :option="monitor_obj.load15m"
               :loading="monitorLoading"
             />
           </div>
@@ -335,7 +335,10 @@ import {
   fetch_MonitorHostAliyunCPU,
   fetch_MonitorHostAliyunMemory,
   fetch_MonitorHostAliyunDiskRead,
-  fetch_MonitorHostAliyunInternetIn
+  fetch_MonitorHostAliyunInternetIn,
+  fetch_MonitorHostAliyun1mLoad,
+  fetch_MonitorHostAliyun5mLoad,
+  fetch_MonitorHostAliyun15mLoad
 } from "@/api/monitor";
 export default {
   data() {
@@ -633,15 +636,13 @@ export default {
           echarts.connect("123");
         }
       });
-      fetch_MonitorHostAliyunDiskRead(
+      fetch_MonitorHostAliyun5mLoad(
         this.commit_obj.uuid,
         this.detail_time
       ).then(response => {
-        // this.monitor_obj.DiskRead = Object.assign({}, this.echarts_options); // copy obj
-        // this.monitor_obj.DiskRead = Object.create(this.echarts_options)
-        this.monitor_obj.DiskRead = JSON.parse(JSON.stringify(this.echarts_options))
-        this.monitor_obj.DiskRead.dataset.source = response.data.dataset;
-        this.monitor_obj.DiskRead.title.text = response.data.title;
+        this.monitor_obj.load5m = JSON.parse(JSON.stringify(this.echarts_options))
+        this.monitor_obj.load5m.dataset.source = response.data.dataset;
+        this.monitor_obj.load5m.title.text = response.data.title;
         this.monitorFlag = this.monitorFlag + 1;
         if (this.monitorFlag >= 4) {
           this.dialogDetailVisible = true;
@@ -649,14 +650,14 @@ export default {
           echarts.connect("123");
         }
       });
-      fetch_MonitorHostAliyunInternetIn(
+      fetch_MonitorHostAliyun15mLoad(
         this.commit_obj.uuid,
         this.detail_time
       ).then(response => {
-        this.monitor_obj.InternetIn = JSON.parse(JSON.stringify(this.echarts_options))
+        this.monitor_obj.load15m = JSON.parse(JSON.stringify(this.echarts_options))
         // this.monitor_obj.InternetIn = Object.assign({}, this.echarts_options); // copy obj
-        this.monitor_obj.InternetIn.dataset.source = response.data.dataset;
-        this.monitor_obj.InternetIn.title.text = response.data.title;
+        this.monitor_obj.load15m.dataset.source = response.data.dataset;
+        this.monitor_obj.load15m.title.text = response.data.title;
         this.monitorFlag = this.monitorFlag + 1;
         if (this.monitorFlag >= 4) {
           this.dialogDetailVisible = true;
