@@ -95,7 +95,7 @@
 
       <el-table-column align="center" label="操作" width="450px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="host">
-          <!-- <el-button type="primary" size="medium" @click="handleQRCode(host.row)" :disabled="btnStatus">密码</el-button> -->
+          <el-button type="primary" size="medium" @click="handlePassword(host.row)" :disabled="btnStatus">密码</el-button>
           <el-button type="primary" size="medium" @click="handleDetail(host.row)" :disabled="btnStatus">详细</el-button>
           <el-button type="warning" size="medium" @click="handleSelectGroup(host.row)" :disabled="btnStatus">应用组</el-button>
           <el-button type="warning" size="medium" @click="handleUpdate(host.row)" :disabled="btnStatus">编辑</el-button>
@@ -137,6 +137,14 @@
         <el-button v-else-if="dialogStatus=='delete'" type="primary" @click="deleteConfirm" :disabled="btnStatus">删除</el-button>
         <el-button v-else-if="dialogStatus=='selecthost'" type="primary" @click="selectHost" :disabled="btnStatus">批量归类权限</el-button>
         <el-button v-else-if="dialogStatus=='selectgroup'" type="primary" @click="selectGroup" :disabled="btnStatus">归类权限</el-button>
+        <el-button v-else-if="dialogStatus=='password'" type="primary" @click="copyPassword()">拷贝密码</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogPasswdVisible" width="20%" top="20vh">
+      <div slot="footer" class="dialog-footer">
+        <span>该服务器组的密码获取周期已经缩短</span>
+        <el-button type="primary" icon="document" v-clipboard:copy='temp_passwd' v-clipboard:success='clipboardSuccess' @click="this.dialogPasswdVisible = false">复制</el-button>
       </div>
     </el-dialog>
 
@@ -352,9 +360,11 @@ export default {
       dialogSelectHostVisible: false,
       dialogSelectGroupVisible: false,
       dialogQRCodeVisible: false,
+      dialogPasswdVisible:false,
       detailSearch: false,
       monitorFlag: null,
       groups: [],
+      temp_passwd: "",
       detail_time: 1,
       multipleSelection: [],
       pagination: {
@@ -698,6 +708,7 @@ export default {
       this.dialogFormVisible = false
       this.dialogDetailVisible = false
       this.dialogQRCodeVisible = false
+      this.dialogPasswdVisible = false
     },
     changeGroup() {
       this.pagination = {
@@ -815,6 +826,11 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
+    handlePassword(row){
+      this.commit_obj = Object.assign({}, row) // copy obj
+      this.dialogStatus = "password"
+      this.handleQRCode()
+    },
     handleQRCode() {
       is_expire_User()
         .then((response) => {
@@ -832,6 +848,9 @@ export default {
               this.selectGroup()
             } else if (this.dialogStatus === "delete"){
               this.deleteConfirm()
+            } else if (this.dialogStatus === 'password'){
+              this.reset_dialog()
+              this.dialogQRCodeVisible = true
             }
           }
         }).catch((error) => {
@@ -847,6 +866,20 @@ export default {
       this.commit_obj = Object.assign({}, row);
       this.dialogStatus = 'delete'
       this.handleQRCode()
+    },
+    copyPassword(){
+      fetch_HostPasswd(this.commit_obj).then((response) => {
+        this.temp_passwd = response.data[0].passwd
+        this.dialogPasswdVisible = true
+      })
+    },
+    clipboardSuccess() {
+      this.$message({
+        message: '复制成功',
+        type: 'success',
+        duration: 1500
+      })
+      this.reset_dialog()
     },
     selectGroup(row) {
       this.$refs["groupForm"].validate(valid => {

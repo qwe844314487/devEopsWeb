@@ -59,6 +59,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column width="120px" align="center" label="密码周期" class-name="status-col" >
+        <template slot-scope="group">
+          <span>{{ group.row.cycle }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="操作" width="500px" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="group">
           <el-button type="primary" @click="handleImage(group.row)" :disabled="btnStatus">架构图</el-button>
@@ -103,6 +109,11 @@
           <el-select v-model="commit_obj.jumper" placeholder="请选择密钥对" clearable>
             <el-option v-for="jumper in this.jumpers" :key="jumper.label" :label="jumper.label" :value="jumper.value"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="密码修正周期" prop="cycle">
+          <el-input-number 
+          :min="-1"
+          v-model="commit_obj.cycle"></el-input-number>
         </el-form-item>
         <!--v-if="dialogStatus=='update'"-->
         <el-form-item label="修改架构图片" prop="framework">

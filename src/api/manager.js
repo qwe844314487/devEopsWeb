@@ -90,7 +90,6 @@ export function fetch_HostListByPage(pagination,obj){
 }
 
 export function fetch_HostPasswd(obj){
-  console.log(obj)
   return request({
     url: '/api-manager/v1/host/'+obj.uuid+'/'+obj.qrcode+'/passwd/',
     method: 'GET',
